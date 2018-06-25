@@ -1,0 +1,9 @@
+en_input_directory=G:/Projects/InterLingualTrace/algorithms/Cross-Lingual-Topic-Model-master/src/train\../../input/0_EasyClinic_10.0%_en_train
+ch_input_directory=G:/Projects/InterLingualTrace/algorithms/Cross-Lingual-Topic-Model-master/src/train\../../input/0_EasyClinic_10.0%_cn_train
+corpus_name=0_EasyClinic_10.0%
+training_iterations=100
+snapshot_interval=10
+number_of_topics=200
+alpha_alpha=0.5
+alpha_beta=0.01
+lam=0.500000

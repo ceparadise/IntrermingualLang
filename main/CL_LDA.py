@@ -7,13 +7,14 @@ import many_stop_words
 import shutil
 import gensim
 
+from common import ALG_DIR
 from model import Model
 
 
 class CL_LDA(Model):
-    def __init__(self, corpus_name):
-        super().__init__()
-        self.working_dir = 'G:/Projects/InterLingualTrace/algorithms/Cross-Lingual-Topic-Model-master/src/train'
+    def __init__(self, corpus_name, fo_lang_code):
+        super().__init__(fo_lang_code)
+        self.working_dir = os.path.join(ALG_DIR, 'Cross-Lingual-Topic-Model-master/src/train')
         self.input_dir_path = os.path.join(self.working_dir, "../../input/")
         self.corpus_name = corpus_name
 

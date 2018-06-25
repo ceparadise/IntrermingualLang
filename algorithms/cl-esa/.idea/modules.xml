@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/clesa.iml" filepath="$PROJECT_DIR$/clesa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ds.clesa/ds.clesa.iml" filepath="$PROJECT_DIR$/ds.clesa/ds.clesa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lucene.basic/lucene.basic.iml" filepath="$PROJECT_DIR$/lucene.basic/lucene.basic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/processor/processor.iml" filepath="$PROJECT_DIR$/processor/processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/processor/processor.wiki.abstracts/processor.wiki.abstracts.iml" filepath="$PROJECT_DIR$/processor/processor.wiki.abstracts/processor.wiki.abstracts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/processor/processor.wiki.articles/processor.wiki.articles.iml" filepath="$PROJECT_DIR$/processor/processor.wiki.articles/processor.wiki.articles.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reader/reader.iml" filepath="$PROJECT_DIR$/reader/reader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reader/reader.rdf/reader.rdf.iml" filepath="$PROJECT_DIR$/reader/reader.rdf/reader.rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reader/reader.wiki.article/reader.wiki.article.iml" filepath="$PROJECT_DIR$/reader/reader.wiki.article/reader.wiki.article.iml" />
+    </modules>
+  </component>
+</project>

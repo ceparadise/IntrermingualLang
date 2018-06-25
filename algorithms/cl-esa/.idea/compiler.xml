@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="core" />
+        <module name="ds.clesa" />
+        <module name="lucene.basic" />
+        <module name="processor.wiki.abstracts" />
+        <module name="processor.wiki.articles" />
+        <module name="reader.rdf" />
+        <module name="reader.wiki.article" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="clesa" target="1.6" />
+      <module name="core" target="1.6" />
+      <module name="ds.clesa" target="1.6" />
+      <module name="lucene.basic" target="1.6" />
+      <module name="processor" target="1.6" />
+      <module name="processor.wiki.abstracts" target="1.6" />
+      <module name="processor.wiki.articles" target="1.6" />
+      <module name="reader" target="1.6" />
+      <module name="reader.rdf" target="1.6" />
+      <module name="reader.wiki.article" target="1.6" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

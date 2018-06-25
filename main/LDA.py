@@ -1,25 +1,25 @@
 import gensim
 from gensim import corpora, matutils
-from gensim.corpora import dictionary
 
 from model import Model
 
 
 class LDA(Model):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, fo_lang_code):
+        super().__init__(fo_lang_code)
         self.ldamodel = None
 
     def train(self, docs, num_topics=5, passes=100):
-        docs_token = []
+        # docs = [doc.split() for doc in docs]
+        clean_docs = []
         for doc in docs:
-            ch_tks, en_tks = self.segment(doc)
             tmp = []
-            tmp.extend(ch_tks)
-            tmp.extend(en_tks)
-            docs_token.append(tmp)
-
-        corpus = [dictionary.doc2bow(x) for x in docs_token]
+            zh,en = self.segment(doc)
+            tmp.extend(zh)
+            tmp.extend(en)
+            clean_docs.append(tmp)
+        dictionary = corpora.Dictionary(clean_docs)
+        corpus = [dictionary.doc2bow(x) for x in clean_docs]
         self.ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word=dictionary,
                                                         passes=passes)
 
@@ -30,11 +30,11 @@ class LDA(Model):
     def get_doc_similarity(self, doc1, doc2):
         doc1_tk = doc1.split()
         doc2_tk = doc2.split()
-        dis1 = lda.get_topic_distrb(doc1_tk)
-        dis2 = lda.get_topic_distrb(doc2_tk)
+        dis1 = self.get_topic_distrb(doc1_tk)
+        dis2 = self.get_topic_distrb(doc2_tk)
         return 1 - matutils.hellinger(dis1, dis2)
 
-    def get_moda_name(self):
+    def get_model_name(self):
         return "LDA"
 
 
