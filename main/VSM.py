@@ -9,13 +9,17 @@ class VSM(Model):
         self.tfidf_model = None
 
     def build_model(self, docs):
+        print("Building VSM model...")
         docs_tokens = []
+        cnt = 0
         for doc in docs:
-            doc = self.clean_doc(doc)
+            print(cnt,len(docs))
+            cnt+=1
             docs_tokens.append(self.get_tokens(doc))
         dictionary = corpora.Dictionary(docs_tokens)
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
         self.tfidf_model = models.TfidfModel(corpus, id2word=dictionary)
+        print("Finish building VSM model")
 
     def get_doc_similarity(self, doc1, doc2):
         doc1_tk = self.get_tokens(doc1)

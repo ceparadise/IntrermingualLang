@@ -14,7 +14,7 @@ class LDA(Model):
         clean_docs = []
         for doc in docs:
             tmp = []
-            zh,en = self.segment(doc)
+            zh, en = self.segment(doc)
             tmp.extend(zh)
             tmp.extend(en)
             clean_docs.append(tmp)
@@ -28,8 +28,8 @@ class LDA(Model):
         return self.ldamodel.get_document_topics(bow_doc)
 
     def get_doc_similarity(self, doc1, doc2):
-        doc1_tk = doc1.split()
-        doc2_tk = doc2.split()
+        doc1_tk = self.get_tokens(doc1)
+        doc2_tk = self.get_tokens(doc2)
         dis1 = self.get_topic_distrb(doc1_tk)
         dis2 = self.get_topic_distrb(doc2_tk)
         return 1 - matutils.hellinger(dis1, dis2)

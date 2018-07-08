@@ -2,10 +2,12 @@ import shutil
 
 import common
 from CL_ESA import CL_ESA
+from ESA import ESA
 from LDA import LDA
 from VSM import VSM
 from common import *
 from CL_LDA import CL_LDA
+from subprocess import Popen, PIPE
 
 
 class Experiment_easyClinic:
@@ -17,6 +19,22 @@ class Experiment_easyClinic:
         self.artifact2id = {}  # Get the document ids belong to a artifact
         self.output_dir = "../output"
         self.lang_code = lang_code
+        stanforNLP_server_cmd = " java -mx4g -cp * edu.stanford.nlp.pipeline.StanfordCoreNLPServer -preload tokenize,ssplit,pos,lemma,parse,depparse  -status_port 9000 -port 9000 -timeout 15000 -serverProperties StanfordCoreNLP-chinese.properties"
+        self.start_server = Popen(stanforNLP_server_cmd.split(), cwd="G:\lib\stanford-corenlp-full-2016-10-31",
+                                  stderr=PIPE, stdout=PIPE, shell=True)
+        while (True):
+            line = str(self.start_server.stderr.readline())
+            print(line)
+            success_mark = 'StanfordCoreNLPServer listening at'
+            except_mark = 'Address already in use'
+            if success_mark in line:
+                print("server started...")
+                break
+            elif except_mark in line:
+                print("server already started or port occupied...")
+                break
+        self.start_server.stderr.close()
+        self.start_server.stdout.close()
 
     def readData(self):
         data_dir_path = os.path.join(DATA_DIR, "easyClinic_" + self.lang_code)
@@ -89,33 +107,36 @@ class Experiment_easyClinic:
         return links
 
     def get_models(self, project_name, docs):
-        if self.lang_code == "zh":
-            vsm = VSM("zh")
-            vsm.build_model(docs)
-            yield vsm
-            # lda = LDA("zh")
-            # lda.train(docs, num_topics=200)
-            # yield lda
+        vsm = VSM(self.lang_code)
+        vsm.build_model(docs)
+        yield vsm
 
-            # cl_lsa = CL_LDA(project_name,"zh")
-            # cl_lsa.to_CL_LAS_data_files(docs)
-            # cl_lsa.train_CL_LSA(200)
-            # cl_lsa.get_tfidf_model()
-            # yield cl_lsa
-        elif self.lang_code == "fr":
-            vsm = VSM("fr")
-            vsm.build_model(docs)
-            yield vsm
-            # corpus_dir = os.path.join(common.ALG_DIR, "cl-esa", "wiki_corpus")
-            # en_ntf = os.path.join(corpus_dir, "short-abstracts_en.nt")
-            # fr_ntf = os.path.join(corpus_dir, "short-abstracts-en-uris_fr.nt")
-            # cl_esa = CL_ESA(en_ntf_path=en_ntf, fo_ntf_path=fr_ntf, fo_lang_code='fr')
-            # cl_esa.set_model(os.path.join(cl_esa.output_dir, "final_multi_lingual_OTDFIndex"))
-            # yield cl_esa
+        lda = LDA(self.lang_code)
+        lda.train(docs, num_topics=200)
+        yield lda
 
-    def get_links(self, doc_dict, arti_type1, arti_type2, model, output_file):
+        wiki_dir = os.path.join(common.ALG_DIR, "Wiki-ESA-master", "data")
+        en_wiki = os.path.join(wiki_dir, "enwiki-20180320-pages-articles-multistream.xml")
+        fo_wiki = os.path.join(wiki_dir, "{}wiki-20180701-pages-articles-multistream.xml".format(self.lang_code))
+        esa = ESA(self.lang_code)
+        esa.build(en_wiki=en_wiki, fo_wiki=fo_wiki, rebuild_en=False)
+        yield esa
+
+        cl_lda = CL_LDA(project_name, self.lang_code)
+        cl_lda.to_CL_LAS_data_files(docs)
+        cl_lda.train_CL_LSA(200)
+        cl_lda.get_tfidf_model()
+        yield cl_lda
+
+        corpus_dir = os.path.join(common.ALG_DIR, "cl-esa", "wiki_corpus")
+        en_ntf = os.path.join(corpus_dir, "short-abstracts_en.nt")
+        fo_ntf = os.path.join(corpus_dir, "short-abstracts-en-uris_{}.nt".format(self.lang_code))
+        cl_esa = CL_ESA(en_ntf_path=en_ntf, fo_ntf_path=fo_ntf, fo_lang_code=self.lang_code)
+        yield cl_esa
+
+    def get_links(self, doc_dict, arti_type1, arti_type2, model, output_file, regen_links=True):
         links = []
-        if os.path.isfile(output_file):
+        if os.path.isfile(output_file) and not regen_links:
             with open(output_file, encoding='utf8') as fin:
                 for line in fin.readlines():
                     from_id, to_id, score = line.split(",")
@@ -163,7 +184,7 @@ class Experiment_easyClinic:
         cnt = 0
         for percent in self.percent_dict:
             cnt += 1
-            if cnt != 1:
+            if cnt != 2:
                 continue
             print("processing " + percent)
             project_name = "_".join(["0_EasyClinic", percent])
@@ -177,19 +198,20 @@ class Experiment_easyClinic:
                     print("Running model {}".format(model.get_model_name()))
                     gen_links = []
                     gold_links = []
-                    gen_links.extend(self.UC_TC(self.percent_dict[percent], model, percent_output_dir))
                     gen_links.extend(self.ID_CC(self.percent_dict[percent], model, percent_output_dir))
+                    gen_links.extend(self.UC_TC(self.percent_dict[percent], model, percent_output_dir))
                     gen_links.extend(self.UC_CC(self.percent_dict[percent], model, percent_output_dir))
-                    gold_links.extend(self.file2links["UC_TC"])
                     gold_links.extend(self.file2links["ID_CC"])
+                    gold_links.extend(self.file2links["UC_TC"])
                     gold_links.extend(self.file2links["UC_CC"])
                     total_num = len(gen_links)
                     for threshold in range(0, 100, 10):
                         threshold = threshold / 100.0
                         gen_links_above_thre = [(x[0], x[1]) for x in gen_links if (float)(x[2]) >= threshold]
-                        res_out.write(str(self.eval(gen_links_above_thre, gold_links, total_num)) + "\n")
+                        res_out.write("threshod=" + str(threshold) + ":" +
+                                      str(self.eval(gen_links_above_thre, gold_links, total_num)) + "\n")
 
 
 if __name__ == "__main__":
-    exp = Experiment_easyClinic(lang_code='fr')
+    exp = Experiment_easyClinic(lang_code='zh')
     exp.run()

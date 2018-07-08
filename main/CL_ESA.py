@@ -7,13 +7,19 @@ from model import Model
 
 class CL_ESA(Model):
     def __init__(self, en_ntf_path, fo_ntf_path, fo_lang_code):
+        """
+        Github https://github.com/kasooja/cl-esa
+        :param en_ntf_path:
+        :param fo_ntf_path:
+        :param fo_lang_code:
+        """
         super().__init__(fo_lang_code)
         self.en_ntf_path = en_ntf_path
         self.fo_ntf_path = fo_ntf_path
         self.project_root = os.path.join(common.ALG_DIR, 'cl-esa')
-        self.output_dir = os.path.join(common.OUTPUT_DIR, self.get_model_name())
+        self.output_dir = os.path.join(common.OUTPUT_DIR, self.get_model_name(), self.fo_lang_code)
         if not os.path.exists(self.output_dir):
-            os.mkdir(self.output_dir)
+            os.makedirs(self.output_dir)
 
         self.en_OTDFXML_path = os.path.join(self.output_dir, "OTDFXml_en.xml")
         self.fo_OTDFXML_path = os.path.join(self.output_dir, "OTDFXml_" + self.fo_lang_code + ".xml")
@@ -25,6 +31,7 @@ class CL_ESA(Model):
         self.filtered_multiLingual_OTDF = os.path.join(self.output_dir, "filtered_multiLingual_OTDF.xml")
         self.final_multi_lingual_OTDFIndex = os.path.join(self.output_dir, "final_multi_lingual_OTDFIndex")
         self.model_config = os.path.join(self.project_root, "ds.clesa/load/eu.monnetproject.clesa.CLESA.properties")
+        self.set_model(self.final_multi_lingual_OTDFIndex)
 
     def step1(self):
         config_path = os.path.join(self.project_root,
@@ -39,7 +46,7 @@ class CL_ESA(Model):
         res = subprocess.Popen(command, cwd=os.path.join(common.ALG_DIR, "cl-esa"))
         res.wait()
         config["DBpediaNTFilePathToRead"] = self.fo_ntf_path
-        config['AbstractLanguageISOCode'] = self.foreign_lang_code
+        config['AbstractLanguageISOCode'] = self.fo_lang_code
         config['OTDFXmlToWrite'] = self.fo_OTDFXML_path
         self.write_config(config_path, config)
         res = subprocess.Popen(command, cwd=self.project_root)
@@ -52,7 +59,7 @@ class CL_ESA(Model):
 
         config = self.readConfig(config_path)
         config['indexDirPathToWrite'] = self.fo_index_path
-        config['LanguageISOCodeForIndexer'] = self.foreign_lang_code
+        config['LanguageISOCodeForIndexer'] = self.fo_lang_code
         config['OTDFXmlToRead'] = self.fo_OTDFXML_path
         self.write_config(config_path, config)
         res = subprocess.Popen(command, cwd=self.project_root)
@@ -79,7 +86,7 @@ class CL_ESA(Model):
         res.wait()
         config['multiLingualOTDFXmlToWrite'] = self.new_multi_lang_OTDFXml
         config['otherLanguageOTDFIndexDirPathToRead'] = self.fo_index_path
-        config['abstractLanguageISOCodeThisTime'] = self.foreign_lang_code
+        config['abstractLanguageISOCodeThisTime'] = self.fo_lang_code
         config['multiLingualOTDFXmlToRead'] = self.multi_lang_OTDFXml
         self.write_config(config_path, config)
         print(self.readConfig(config_path))
@@ -96,7 +103,7 @@ class CL_ESA(Model):
         config['multiLingualOTDFXmlToRead'] = self.new_multi_lang_OTDFXml
         config['multiLingualOTDFXmlToWrite'] = self.filtered_multiLingual_OTDF
         config['maxHowManyDocs'] = '4000000'
-        config["languages"] = "en;" + self.foreign_lang_code
+        config["languages"] = "en;" + self.fo_lang_code
         self.write_config(config_path, config)
         res = subprocess.Popen(command, cwd=self.project_root)
         res.wait()
@@ -108,7 +115,7 @@ class CL_ESA(Model):
         config = self.readConfig(config_path)
         config['indexDirPathToWrite'] = self.final_multi_lingual_OTDFIndex
         config['OTDFXmlFileToRead'] = self.filtered_multiLingual_OTDF
-        config['languages'] = "en;" + self.foreign_lang_code
+        config['languages'] = "en;" + self.fo_lang_code
         self.write_config(config_path, config)
         res = subprocess.Popen(command, cwd=self.project_root)
         res.wait()
@@ -135,7 +142,12 @@ class CL_ESA(Model):
                 fout.flush()
 
     def build_model(self):
-        pass
+        self.step1()
+        self.step2()
+        self.step3()
+        self.step4()
+        self.step5()
+        print("Finished building model for cl-esa en-{}".format(self.fo_lang_code))
 
     def get_cl_doc_similarity(self, doc1, doc2, doc1_lang_code, doc2_lang_code):
         command = 'java -classpath "C:/Program Files/Java/jdk1.8.0_131/jre/lib/charsets.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/deploy.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/access-bridge-64.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/cldrdata.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/dnsns.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/jaccess.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/jfxrt.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/localedata.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/nashorn.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/sunec.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/sunjce_provider.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/sunmscapi.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/sunpkcs11.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/ext/zipfs.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/javaws.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/jce.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/jfr.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/jfxswt.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/jsse.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/management-agent.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/plugin.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/resources.jar;C:/Program Files/Java/jdk1.8.0_131/jre/lib/rt.jar;G:/Projects/InterLingualTrace/algorithms/cl-esa/ds.clesa/target/classes;G:/Projects/InterLingualTrace/algorithms/cl-esa/core/target/classes;C:/Users/ljfnw/.m2/repository/org/jblas/jblas/1.2.3/jblas-1.2.3.jar;C:/Users/ljfnw/.m2/repository/com/googlecode/efficient-java-matrix-library/ejml/0.23/ejml-0.23.jar;G:/Projects/InterLingualTrace/algorithms/cl-esa/lucene.basic/target/classes;C:/Users/ljfnw/.m2/repository/org/apache/lucene/lucene-core/3.6.1/lucene-core-3.6.1.jar;C:/Users/ljfnw/.m2/repository/org/apache/lucene/lucene-analyzers/3.6.1/lucene-analyzers-3.6.1.jar;G:/Projects/InterLingualTrace/algorithms/cl-esa/core/lib/trove-3.0.3.jar;C:/Users/ljfnw/.m2/repository/junit/junit/4.10/junit-4.10.jar;C:/Users/ljfnw/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" eu.monnetproject.clesa.ds.clesa.CLESA \"{}\" \"{}\" {} {}'.format(
@@ -146,8 +158,8 @@ class CL_ESA(Model):
         return (float)(score)
 
     def get_doc_similarity(self, doc1, doc2):
-        doc1_tk = doc1.split()
-        doc2_tk = doc2.split()
+        doc1_tk = self.get_tokens(doc1)
+        doc2_tk = self.get_tokens(doc2)
         doc1_lang_dict = self.split_tokens_by_lang(doc1_tk)
         doc2_lang_dict = self.split_tokens_by_lang(doc2_tk)
         sum_score = 0
@@ -177,11 +189,12 @@ class CL_ESA(Model):
 if __name__ == "__main__":
     corpus_dir = os.path.join(common.ALG_DIR, "cl-esa", "wiki_corpus")
     en_ntf = os.path.join(corpus_dir, "short-abstracts_en.nt")
-    fr_ntf = os.path.join(corpus_dir, "short-abstracts-en-uris_fr.nt")
-    cl_esa = CL_ESA(en_ntf_path=en_ntf, fo_ntf_path=fr_ntf, fo_lang_code='fr')
+    fr_ntf = os.path.join(corpus_dir, "short-abstracts-en-uris_it.nt")
+    cl_esa = CL_ESA(en_ntf_path=en_ntf, fo_ntf_path=fr_ntf, fo_lang_code='it')
+    cl_esa.build_model()
     cl_esa.set_model(os.path.join(cl_esa.output_dir, "final_multi_lingual_OTDFIndex"))
     text1 = "software engineering can build applications to support various activities"
-    text2 = "le génie logiciel peut créer des applications pour soutenir diverses activities and publication"
-    text3 = "github can manage source code and is useful to software engineering"
+    # text3 = "github can manage source code and is useful to software engineering"
+    text3 = "github può gestire il codice sorgente ed è utile per l'ingegneria del software"
 
-    print(cl_esa.get_doc_similarity(text1, text2))
+    print(cl_esa.get_doc_similarity(text1, text3))
