@@ -2,7 +2,6 @@ import re
 
 import many_stop_words
 from nltk.parse.corenlp import CoreNLPParser
-from langdetect import detect
 from nltk.stem.snowball import SnowballStemmer
 
 
@@ -68,7 +67,7 @@ class Model:
     def get_en(self, doc):
         pattern = re.compile("[a-zA-Z]+")
         res = pattern.findall(doc)
-        return res;
+        return res
 
     def __clean_tokens(self, token_list, language):
         cleaned = []
@@ -90,15 +89,11 @@ class Model:
         lang_dict['en'] = []
         lang_dict[self.fo_lang_code] = []
         for token in tokens:
-            try:
-                detectedLangCode = detect(token)
-                if detectedLangCode == self.fo_lang_code:
-                    lang_dict[detectedLangCode].append(token)
-                else:
-                    lang_dict['en'].append(token)
-            except Exception:
-                pass
-
+            m = re.match("^[a-zA-Z]+$", token)
+            if not m:
+                lang_dict[self.fo_lang_code].append(token)
+            else:
+                lang_dict['en'].append(token)
         return lang_dict
 
     def __clean_doc(self, doc_str):

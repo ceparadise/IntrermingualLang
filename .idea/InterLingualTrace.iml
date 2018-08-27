@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/train/lda" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/train" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/algorithms/Wiki-ESA-master" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

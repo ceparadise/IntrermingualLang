@@ -3,11 +3,12 @@ import re
 from htmlentitydefs import name2codepoint
 
 namespaces = set(['help', 'file talk', 'module', 'topic', 'mediawiki',
-'wikipedia talk', 'file', 'user talk', 'special', 'category talk', 'category',
-'media', 'wikipedia', 'book', 'draft', 'book talk', 'template', 'help talk',
-'timedtext', 'mediawiki talk', 'portal talk', 'portal', 'user', 'module talk',
-'template talk', 'education program talk', 'education program',
-'timedtext talk', 'draft talk', 'talk'])
+                  'wikipedia talk', 'file', 'user talk', 'special', 'category talk', 'category',
+                  'media', 'wikipedia', 'book', 'draft', 'book talk', 'template', 'help talk',
+                  'timedtext', 'mediawiki talk', 'portal talk', 'portal', 'user', 'module talk',
+                  'template talk', 'education program talk', 'education program',
+                  'timedtext talk', 'draft talk', 'talk'])
+
 
 def dropNested(text, openDelim, closeDelim):
     '''Helper function to match nested expressions which may cause problems
@@ -17,8 +18,8 @@ def dropNested(text, openDelim, closeDelim):
     openRE = re.compile(openDelim)
     closeRE = re.compile(closeDelim)
     # partition text in separate blocks { } { }
-    matches = []                # pairs (s, e) for each partition
-    nest = 0                    # nesting level
+    matches = []  # pairs (s, e) for each partition
+    nest = 0  # nesting level
     start = openRE.search(text, 0)
     if not start:
         return text
@@ -26,9 +27,9 @@ def dropNested(text, openDelim, closeDelim):
     next = start
     while end:
         next = openRE.search(text, next.end())
-        if not next:            # termination
-            while nest:         # close all pending
-                nest -=1
+        if not next:  # termination
+            while nest:  # close all pending
+                nest -= 1
                 end0 = closeRE.search(text, end.end())
                 if end0:
                     end = end0
@@ -43,7 +44,7 @@ def dropNested(text, openDelim, closeDelim):
                 # try closing more
                 last = end.end()
                 end = closeRE.search(text, end.end())
-                if not end:     # unbalanced
+                if not end:  # unbalanced
                     if matches:
                         span = (matches[0][0], last)
                     else:
@@ -55,23 +56,25 @@ def dropNested(text, openDelim, closeDelim):
                 # advance start, find next close
                 start = next
                 end = closeRE.search(text, next.end())
-                break           # { }
+                break  # { }
         if next != start:
             # { { }
             nest += 1
     # collect text outside partitions
     res = ''
     start = 0
-    for s, e in  matches:
+    for s, e in matches:
         res += text[start:s]
         start = e
     res += text[start:]
     return res
 
+
 def unescape(text):
     '''Removes HTML or XML character references and entities
     from a text string.
     @return nice text'''
+
     def fixup(m):
         text = m.group(0)
         code = m.group(1)
@@ -82,51 +85,53 @@ def unescape(text):
                     return unichr(int(code[1:], 16))
                 else:
                     return unichr(int(code))
-            else:               # named entity
+            else:  # named entity
                 return unichr(name2codepoint[code])
         except UnicodeDecodeError:
-            return text # leave as is
+            return text  # leave as is
 
     return re.sub("&#?(\w+);", fixup, text)
+
 
 def drop_spans(matches, text):
     """Drop from text the blocks identified in matches"""
     matches.sort()
     res = ''
     start = 0
-    for s, e in  matches:
+    for s, e in matches:
         res += text[start:s]
         start = e
     res += text[start:]
     return res
 
+
 ###Compile regexps for text cleanup:
-#Construct patterns for elements to be discarded:
+# Construct patterns for elements to be discarded:
 discard_elements = set([
-        'gallery', 'timeline', 'noinclude', 'pre',
-        'table', 'tr', 'td', 'th', 'caption',
-        'form', 'input', 'select', 'option', 'textarea',
-        'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir',
-        'ref', 'references', 'img', 'imagemap', 'source'
-        ])
+    'gallery', 'timeline', 'noinclude', 'pre',
+    'table', 'tr', 'td', 'th', 'caption',
+    'form', 'input', 'select', 'option', 'textarea',
+    'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir',
+    'ref', 'references', 'img', 'imagemap', 'source'
+])
 discard_element_patterns = []
 for tag in discard_elements:
     pattern = re.compile(r'<\s*%s\b[^>]*>.*?<\s*/\s*%s>' % (tag, tag), re.DOTALL | re.IGNORECASE)
     discard_element_patterns.append(pattern)
 
-#Construct patterns to recognize HTML tags
-selfclosing_tags = set([ 'br', 'hr', 'nobr', 'ref', 'references' ])
+# Construct patterns to recognize HTML tags
+selfclosing_tags = set(['br', 'hr', 'nobr', 'ref', 'references'])
 selfclosing_tag_patterns = []
 for tag in selfclosing_tags:
     pattern = re.compile(r'<\s*%s\b[^/]*/\s*>' % tag, re.DOTALL | re.IGNORECASE)
     selfclosing_tag_patterns.append(pattern)
 
-#Construct patterns for tags to be ignored
+# Construct patterns for tags to be ignored
 ignored_tags = set([
-        'a', 'b', 'big', 'blockquote', 'center', 'cite', 'div', 'em',
-        'font', 'h1', 'h2', 'h3', 'h4', 'hiero', 'i', 'kbd', 'nowiki',
-        'p', 'plaintext', 's', 'small', 'span', 'strike', 'strong',
-        'sub', 'sup', 'tt', 'u', 'var',
+    'a', 'b', 'big', 'blockquote', 'center', 'cite', 'div', 'em',
+    'font', 'h1', 'h2', 'h3', 'h4', 'hiero', 'i', 'kbd', 'nowiki',
+    'p', 'plaintext', 's', 'small', 'span', 'strike', 'strong',
+    'sub', 'sup', 'tt', 'u', 'var',
 ])
 ignored_tag_patterns = []
 for tag in ignored_tags:
@@ -134,44 +139,45 @@ for tag in ignored_tags:
     right = re.compile(r'<\s*/\s*%s>' % tag, re.IGNORECASE)
     ignored_tag_patterns.append((left, right))
 
-#Construct patterns to recognize math and code
-placeholder_tags = {'math':'formula', 'code':'codice'}
+# Construct patterns to recognize math and code
+placeholder_tags = {'math': 'formula', 'code': 'codice'}
 placeholder_tag_patterns = []
 for tag, repl in placeholder_tags.items():
     pattern = re.compile(r'<\s*%s(\s*| [^>]+?)>.*?<\s*/\s*%s\s*>' % (tag, tag), re.DOTALL | re.IGNORECASE)
     placeholder_tag_patterns.append((pattern, repl))
 
-#HTML comments
+# HTML comments
 comment = re.compile(r'<!--.*?-->', re.DOTALL)
 
-#Wikilinks
+# Wikilinks
 wiki_link = re.compile(r'\[\[([^[]*?)(?:\|([^[]*?))?\]\](\w*)')
 parametrized_link = re.compile(r'\[\[.*?\]\]')
 
-#External links
+# External links
 externalLink = re.compile(r'\[\w+.*? (.*?)\]')
 externalLinkNoAnchor = re.compile(r'\[\w+[&\]]*\]')
 
-#Bold/italic text
+# Bold/italic text
 bold_italic = re.compile(r"'''''([^']*?)'''''")
 bold = re.compile(r"'''(.*?)'''")
 italic_quote = re.compile(r"''\"(.*?)\"''")
 italic = re.compile(r"''([^']*)''")
 quote_quote = re.compile(r'""(.*?)""')
 
-#Spaces
+# Spaces
 spaces = re.compile(r' {2,}')
 
-#Dots
+# Dots
 dots = re.compile(r'\.{4,}')
 
-#Sections
+# Sections
 section = re.compile(r'(==+)\s*(.*?)\s*\1')
 
 # Match preformatted lines
 preformatted = re.compile(r'^ .*?$', re.MULTILINE)
 
-#Wikilinks
+
+# Wikilinks
 def make_anchor_tag(match):
     '''Recognizes links and returns only their anchor. Example:
     <a href="www.something.org">Link text</a> -> Link text'''
@@ -183,10 +189,11 @@ def make_anchor_tag(match):
     anchor = match.group(2)
     if not anchor:
         if link[:colon] in namespaces:
-            return '' #Don't keep stuff like "category:shellfish"
+            return ''  # Don't keep stuff like "category:shellfish"
         anchor = link
     anchor += trail
     return anchor
+
 
 def clean(text):
     '''Outputs an article in plaintext from its format in the raw xml dump.'''
@@ -205,7 +212,7 @@ def clean(text):
     text = externalLink.sub(r'\1', text)
     text = externalLinkNoAnchor.sub('', text)
 
-    #Handle text formatting
+    # Handle text formatting
     text = bold_italic.sub(r'\1', text)
     text = bold.sub(r'\1', text)
     text = italic_quote.sub(r'&quot;\1&quot;', text)
@@ -226,7 +233,7 @@ def clean(text):
     matches = []
     # Drop HTML comments
     for m in comment.finditer(text):
-            matches.append((m.start(), m.end()))
+        matches.append((m.start(), m.end()))
 
     # Drop self-closing tags
     for pattern in selfclosing_tag_patterns:
@@ -267,10 +274,10 @@ def clean(text):
     text = dots.sub('...', text)
     text = re.sub(u' (,:\.\)\]»)', r'\1', text)
     text = re.sub(u'(\[\(«) ', r'\1', text)
-    text = re.sub(r'\n\W+?\n', '\n', text) # lines with only punctuations
+    text = re.sub(r'\n\W+?\n', '\n', text)  # lines with only punctuations
     text = text.replace(',,', ',').replace(',.', '.')
 
-    #Handle section headers, residua etc.
+    # Handle section headers, residua etc.
     page = []
     headers = {}
     empty_section = False
@@ -315,16 +322,16 @@ def clean(text):
             for (i, v) in items:
                 page.append(v)
             headers.clear()
-            page.append(line)   # first line
+            page.append(line)  # first line
             empty_section = False
         elif not empty_section:
             page.append(line)
 
     text = ''.join(page)
 
-    #Remove quote tags.
+    # Remove quote tags.
     text = text.replace("&quot;", '')
 
-    #Get rid of parentheses, punctuation and the like
-    text = re.sub('[^\w\s\d\'\-]','', text)
+    # Get rid of parentheses, punctuation and the like
+    text = re.sub('[^\w\s\d\'\-]', ' ', text, flags=re.UNICODE)
     return text

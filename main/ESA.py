@@ -14,13 +14,13 @@ class ESA(Model):
     def __init__(self, fo_lang_code):
         super(ESA, self).__init__(fo_lang_code)
 
-    def build(self, en_wiki, fo_wiki, rebuild_en=True, rebuild_fo=True):
+    def build(self, en_wiki, fo_wiki, rebuild_en=False, rebuild_fo=True):
         project_dir = os.path.join(ALG_DIR, "Wiki-ESA-master")
         default_matrix_dir = os.path.join(project_dir, "matrix")
         fo_matrix_dir = os.path.join(project_dir, "matrix_" + self.fo_lang_code)
         en_matrix_dir = os.path.join(project_dir, "matrix_en")
+        cwd = project_dir
         if rebuild_en:
-            cwd = project_dir
             print("parsing en xml...")
             s1 = Popen('C:\Python27\python.exe xml_parse.py {}'.format(en_wiki).split(), cwd=cwd)
             s1.wait()
@@ -57,8 +57,14 @@ class ESA(Model):
         doc1_fo = doc1_lang_dict[self.fo_lang_code]
         doc2_en = doc2_lang_dict["en"]
         doc2_fo = doc2_lang_dict[self.fo_lang_code]
+
+        doc1_en = " ".join(doc1_en)
+        doc1_fo = " ".join(doc1_fo)
+        doc2_en = " ".join(doc2_en)
+        doc2_fo = " ".join(doc2_fo)
+
         en_sim = self.en_esa.cosine_similarity(doc1_en, doc2_en)
-        fo_sim = self.fo_esa.cosin_similarity(doc1_fo, doc2_fo)
+        fo_sim = self.fo_esa.cosine_similarity(doc1_fo, doc2_fo)
         return (en_sim * len(doc1_en + doc2_en) + fo_sim * len(doc1_fo + doc2_fo)) / (
             len(doc1_en) + len(doc1_fo) + len(doc2_en) + len(doc2_fo))
 
@@ -67,10 +73,11 @@ class ESA(Model):
 
 
 if __name__ == "__main__":
-    esa = ESA("it")
+    esa = ESA("zh")
     esa.build(en_wiki="data/enwiki-20180320-pages-articles-multistream.xml",
-              fo_wiki="data/itwiki-20180701-pages-articles-multistream.xml")
-    text1 = "software engineering can build applications to support various activities"
-    # text3 = "github can manage source code and is useful to software engineering"
-    text3 = "github può gestire il codice sorgente ed è utile per l'ingegneria del software"
-    print(esa.get_doc_similarity(text1, text3))
+              fo_wiki="data/zhwiki-20180301-pages-articles-multistream.xml", rebuild_en=False,rebuild_fo=True)
+    text1 = "蔡凤云"
+    text2 = "蔡凤云"
+    text3 = "苹果公司也是开发软件的硬件公司"
+    print(esa.get_doc_similarity(text1, text2))
+

@@ -1,12 +1,15 @@
 package eu.monnetproject.clesa.ds.clesa;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.sun.security.ntlm.Server;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
@@ -221,24 +224,59 @@ public class CLESA {
 
     }
 
-    public static void main(String[] args) {
-        String text1 = "";
-        String text2 = "";
-        String lang1_code = "";
-        String lang2_code = "";
-        if (args.length == 4) {
-            text1 = args[0];
-            text2 = args[1];
-            lang1_code = args[2];
-            lang2_code = args[3];
-        }
-
+    public static String getScore(String message, CLESA clesa) {
+        String[] parts = message.split("\\|");
+        String text1 = parts[0];
+        String text2 = parts[1];
+        String lang1_code = parts[2];
+        String lang2_code = parts[3];
         Pair<String, Language> pair1 = new Pair<String, Language>(text1, Language.get(lang1_code));
         Pair<String, Language> pair2 = new Pair<String, Language>(text2, Language.get(lang2_code));
-        boolean onRAM = true;
-        CLESA clesa = new CLESA(onRAM);
         double score = clesa.score(pair1, pair2);
-        System.out.println(score);
+        return String.valueOf(score);
+    }
+
+    public static void main(String[] args) {
+        //Start the clesa as a service
+        final int port = Integer.parseInt(args[0]);
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ServerSocket serverSocket = new ServerSocket(port);
+                    serverSocket.setSoTimeout(10000);
+                    boolean onRAM = true;
+                    CLESA clesa = new CLESA(onRAM);
+                    while (true) {
+                        try {
+                            System.out.println("Waiting for client on port " +
+                                    serverSocket.getLocalPort() + "...");
+                            Socket server = serverSocket.accept();
+
+                            System.out.println("Just connected to " + server.getRemoteSocketAddress());
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(server.getInputStream()));
+                            String message = reader.readLine();
+                            String score = getScore(message, clesa);
+                            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
+                            out.write(score);
+                            server.close();
+                        } catch (SocketTimeoutException s) {
+                            System.out.println("Socket timed out!");
+                            break;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            break;
+                        }
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
 }

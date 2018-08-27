@@ -10,111 +10,76 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/InterLingualTrace$main.coverage" NAME="main Coverage Results" MODIFIED="1528286172053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$np_extractor.coverage" NAME="np_extractor Coverage Results" MODIFIED="1532029360588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main/interlang_dataset_maker" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$VSM.coverage" NAME="VSM Coverage Results" MODIFIED="1529966841955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$ESA.coverage" NAME="ESA Coverage Results" MODIFIED="1532919704081" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$mean_average_precision.coverage" NAME="mean_average_precision Coverage Results" MODIFIED="1534291179467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
     <SUITE FILE_PATH="coverage/InterLingualTrace$Unittests_in_test_except_py.coverage" NAME="Unittests in test_except.py Coverage Results" MODIFIED="1528220181908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
     <SUITE FILE_PATH="coverage/InterLingualTrace$model.coverage" NAME="model Coverage Results" MODIFIED="1529966834959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
-    <SUITE FILE_PATH="coverage/InterLingualTrace$main.coverage" NAME="main Coverage Results" MODIFIED="1528286172053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
     <SUITE FILE_PATH="coverage/InterLingualTrace$CL_ESA.coverage" NAME="CL_ESA Coverage Results" MODIFIED="1530988116529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
     <SUITE FILE_PATH="coverage/InterLingualTrace$except.coverage" NAME="except Coverage Results" MODIFIED="1528220309679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
     <SUITE FILE_PATH="coverage/InterLingualTrace$LSI.coverage" NAME="LSI Coverage Results" MODIFIED="1528255792761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
-    <SUITE FILE_PATH="coverage/InterLingualTrace$mixer.coverage" NAME="mixer Coverage Results" MODIFIED="1530586780036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main/interlang_dataset_maker" />
-    <SUITE FILE_PATH="coverage/InterLingualTrace$VSM.coverage" NAME="VSM Coverage Results" MODIFIED="1529966841955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
-    <SUITE FILE_PATH="coverage/InterLingualTrace$easyClinic_experiment.coverage" NAME="easyClinic_experiment Coverage Results" MODIFIED="1529997661704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
-    <SUITE FILE_PATH="coverage/InterLingualTrace$ESA.coverage" NAME="ESA Coverage Results" MODIFIED="1530998387480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
-    <SUITE FILE_PATH="coverage/InterLingualTrace$CSVConverter.coverage" NAME="CSVConverter Coverage Results" MODIFIED="1530586934137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main/interlang_dataset_maker" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$mixer.coverage" NAME="mixer Coverage Results" MODIFIED="1532815817292" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main/interlang_dataset_maker" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$easyClinic_experiment.coverage" NAME="easyClinic_experiment Coverage Results" MODIFIED="1532920673574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$trans_cache_manage.coverage" NAME="trans_cache_manage Coverage Results" MODIFIED="1531773335466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$analyze_experiment.coverage" NAME="analyze_experiment Coverage Results" MODIFIED="1534739045053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main/experiments" />
+    <SUITE FILE_PATH="coverage/InterLingualTrace$CSVConverter.coverage" NAME="CSVConverter Coverage Results" MODIFIED="1532823381748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main/interlang_dataset_maker" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="easyClinic_experiment.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/easyClinic_experiment.py">
+      <file leaf-file-name="analyze_experiment.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main/experiments/analyze_experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="108" column="8" lean-forward="false" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
+            <state relative-caret-position="262">
+              <caret line="388" column="48" lean-forward="true" selection-start-line="388" selection-start-column="48" selection-end-line="388" selection-end-column="48" />
               <folding>
-                <element signature="e#0#13#0" expanded="true" />
-                <element signature="e#3807#3879#0" expanded="false" />
+                <element signature="e#0#34#0" expanded="true" />
+                <element signature="e#201#580#1" expanded="false" />
+                <element signature="e#902#1859#0" expanded="false" />
+                <element signature="e#3606#4340#0" expanded="false" />
+                <element signature="e#4388#4940#0" expanded="false" />
+                <element signature="e#4995#5123#0" expanded="false" />
+                <element signature="e#6227#7191#0" expanded="false" />
+                <element signature="e#7238#8521#0" expanded="false" />
+                <element signature="e#9193#10225#0" expanded="false" />
+                <element signature="e#9193#9291#1" expanded="false" />
+                <element signature="e#9346#9888#0" expanded="false" />
+                <element signature="e#14314#14409#0" expanded="false" />
+                <element signature="e#14471#14729#0" expanded="false" />
+                <element signature="e#18703#21860#0" expanded="false" />
+                <element signature="e#21884#24646#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VSM.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/VSM.py">
+      <file leaf-file-name="high_frequency.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/high_frequency.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="24" column="31" lean-forward="false" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
+            <state relative-caret-position="38">
+              <caret line="2" column="6" lean-forward="true" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CL_LDA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/CL_LDA.py">
+      <file leaf-file-name="exp2_high_frequency_replacement_2.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_2.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="210" column="19" lean-forward="false" selection-start-line="210" selection-start-column="19" selection-end-line="210" selection-end-column="19" />
+            <state relative-caret-position="293">
+              <caret line="38" column="54" lean-forward="true" selection-start-line="38" selection-start-column="54" selection-end-line="38" selection-end-column="54" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/model.py">
+      <file leaf-file-name="exp2_high_frequency_replacement_1.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_1.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="87" column="8" lean-forward="false" selection-start-line="87" selection-start-column="8" selection-end-line="87" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LDA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/LDA.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="31" column="39" lean-forward="false" selection-start-line="31" selection-start-column="39" selection-end-line="31" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ESA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/ESA.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="53" column="59" lean-forward="false" selection-start-line="53" selection-start-column="59" selection-end-line="53" selection-end-column="59" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CL_ESA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/CL_ESA.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="154" column="39" lean-forward="true" selection-start-line="154" selection-start-column="39" selection-end-line="154" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="5" column="31" lean-forward="false" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="common.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main/common.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+            <state relative-caret-position="521">
+              <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -131,37 +96,40 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>workdi</find>
-      <find>tfidf</find>
-      <find>building vsm mod</find>
-      <find>matrix_dir</find>
-      <find>htmlentitydefs</find>
-      <find>interpret_input</find>
-      <find>similari</find>
+      <find>get_word_weight</find>
+      <find>errno</find>
+      <find>commit.csv</find>
+      <find>get_links</find>
+      <find>replace</find>
+      <find>\word_replace_list\top_10_replace.txt</find>
+      <find>return</find>
+      <find>word_gold_lin</find>
+      <find>link_fout</find>
+      <find>weight</find>
+      <find>toke</find>
+      <find>dfs</find>
+      <find>bow</find>
+      <find>g</find>
+      <find>ground</find>
+      <find>many_</find>
+      <find>data_</find>
+      <find>replace_words_in_target_artifacts</find>
+      <find>run_model</find>
+      <find>impactedAr</find>
+      <find>self.impacted_artifacts</find>
+      <find>get_impact</find>
+      <find>map</find>
       <find>print</find>
-      <find>matrix_filename</find>
-      <find>row</find>
-      <find>extension</find>
-      <find>load</find>
-      <find>row_chunk_size</find>
-      <find>mload</find>
-      <find>translate</find>
-      <find>clean_artifact_name</find>
-      <find>dataset_name</find>
-      <find>get_writing_path</find>
-      <find>base</find>
-      <find>while</find>
-      <find>cn</find>
-      <find>train</find>
-      <find>dictionary</find>
-      <find>yield</find>
-      <find>final_multi_lingual_OTDFIndex</find>
-      <find>mkdir</find>
-      <find>forei</find>
-      <find>get_models</find>
-      <find>get_model</find>
-      <find>get_doc</find>
+      <find>self.gen_l</find>
+      <find>get_</find>
+      <find>word_thre</find>
+      <find>read+</find>
+      <find>5070</find>
+      <find>100</find>
     </findStrings>
+    <dirStrings>
+      <dir>G:\Projects\InterLingualTrace\data\cm1</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -169,48 +137,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/main/__init__.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/test/model_test.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/train/lda/launch_train.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/train/lda/inferencer.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/train/lda/crosslda.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/test/mc_eval.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/test_output/0_EasyClinic_10.0%/180605-004143-crosslda-I50-0_EasyClinic_10.0%/topics/CrossLDA_ge30_lamda0.5_30_0_EasyClinic_10.0%_topics.txt" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/input/0_EasyClinic_10.0%_cn_test/test.dat" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/input/0_EasyClinic_10.0%_en_test/test.dat" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/test_output/0_EasyClinic_10.0%/180605-010435-crosslda-I50-0_EasyClinic_10.0%/topics/CrossLDA_ge30_lamda0.5_30_0_EasyClinic_10.0%_topics.txt" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/test_output/0_EasyClinic_10.0%/180605-010609-crosslda-I50-0_EasyClinic_10.0%/topics/CrossLDA_ge30_lamda0.5_30_0_EasyClinic_10.0%_topics.txt" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/train_output/0_EasyClinic_10.0%/180604-224053-crosslda-I100-S10-Kge30-aa0.500000-ab0.010000-lamda0.500000/exp_beta-10_doc" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/train_output/0_EasyClinic_10.0%/180604-224053-crosslda-I100-S10-Kge30-aa0.500000-ab0.010000-lamda0.500000/exp_beta-20_doc" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/test_output/0_EasyClinic/180605-132724-crosslda-I50-0_EasyClinic/topics/CrossLDA_ge30_lamda0.5_30_0_EasyClinic_topics.txt" />
-        <option value="$PROJECT_DIR$/main/test_except.py" />
-        <option value="$PROJECT_DIR$/main/except.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/test_output/0_EasyClinic/180605-142625-crosslda-I1-0_EasyClinic/topics/CrossLDA_ge30_lamda0.5_30_0_EasyClinic_topics.txt" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/train_output/0_EasyClinic/180605-151543-crosslda-I100-S10-Kge10-aa0.500000-ab0.010000-lamda0.500000/exp_beta-100_cn" />
-        <option value="$PROJECT_DIR$/main/CL_LSA.py" />
-        <option value="$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/input/0_EasyClinic_en_train/train.dat" />
-        <option value="$PROJECT_DIR$/main/LSI.py" />
-        <option value="$PROJECT_DIR$/main/main.py" />
-        <option value="$PROJECT_DIR$/main/CL-ESA.py" />
+        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/crc_build_matrix.crc" />
+        <option value="$PROJECT_DIR$/main/TR_model.py" />
+        <option value="$PROJECT_DIR$/main/TR_VSM.py" />
+        <option value="$PROJECT_DIR$/main/TR_LDA.py" />
+        <option value="$PROJECT_DIR$/main/TR_ESA.py" />
         <option value="$PROJECT_DIR$/main/common.py" />
-        <option value="$PROJECT_DIR$/output/CL_ESA/OTDFXml_en.xml" />
-        <option value="$PROJECT_DIR$/main/VSM.py" />
-        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/wikicleaner.py" />
-        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/xml_parse.py" />
-        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/shared.py" />
-        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/cunning_linguistics.py" />
-        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/chineseReplacement.py" />
-        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/mixReplacement.py" />
-        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/common.py" />
+        <option value="$PROJECT_DIR$/output/trans_cache/test/par_fo.txt" />
+        <option value="$PROJECT_DIR$/main/trans_cache_manage.py" />
+        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/NounPhraseExtractor.py" />
+        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/raw_data/EasyClinicDataset/2 - docs (English)/1 - use cases/4.txt" />
+        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/np_extractor.py" />
+        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/output/np_extractor_output/nouns.csv" />
+        <option value="$PROJECT_DIR$/main/interlang_dataset_maker/output/np_extractor_output/nouns_zh.csv" />
         <option value="$PROJECT_DIR$/main/interlang_dataset_maker/mixer.py" />
         <option value="$PROJECT_DIR$/main/interlang_dataset_maker/CSVConverter.py" />
+        <option value="$PROJECT_DIR$/main/CL_ESA.py" />
         <option value="$PROJECT_DIR$/main/model.py" />
         <option value="$PROJECT_DIR$/main/ESA.py" />
-        <option value="$PROJECT_DIR$/main/CL_LDA.py" />
+        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/wikicleaner.py" />
+        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/shared.py" />
+        <option value="$PROJECT_DIR$/algorithms/Wiki-ESA-master/xml_parse.py" />
         <option value="$PROJECT_DIR$/main/easyClinic_experiment.py" />
-        <option value="$PROJECT_DIR$/main/LDA.py" />
-        <option value="$PROJECT_DIR$/main/CL_ESA.py" />
-        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/output/map_cal/UC_CC.csv" />
+        <option value="$PROJECT_DIR$/main/mean_average_precision.py" />
+        <option value="$PROJECT_DIR$/main/experiments/easyClinic_experiment.py" />
+        <option value="$PROJECT_DIR$/main/experiments/maven_experiment.py" />
+        <option value="$PROJECT_DIR$/data/cm1/CM1-sourceArtifacts.xml" />
+        <option value="$PROJECT_DIR$/data/cm1/CM1-targetArtifacts.xml" />
+        <option value="$PROJECT_DIR$/main/experiments/playground.py" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/word_weight.txt" />
+        <option value="$PROJECT_DIR$/data/cm1/word_replace_list/top_10_replace.txt" />
+        <option value="$PROJECT_DIR$/data/cm1/word_replace_list/top_20_replace.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/no_replace.res" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/repalce_10.res" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/replace_20.res" />
+        <option value="$PROJECT_DIR$/data/cm1/word_replace_list/high_occurance.txt" />
+        <option value="$PROJECT_DIR$/output/maven_analyze/word_gold_links.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/word_gold_links.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/word_distribution.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/gen_links.txt" />
+        <option value="$PROJECT_DIR$/data/cm1/word_replace_list/high_frequncy.txt" />
+        <option value="$PROJECT_DIR$/main/VSM.py" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_1.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_2.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_3.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_4.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_5.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_6.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_8.txt" />
+        <option value="$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_7.txt" />
+        <option value="$PROJECT_DIR$/main/experiments/analyze_experiment.py" />
       </list>
     </option>
   </component>
@@ -290,6 +267,46 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="output" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cm1_analyze" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InterLingualTrace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InterLingualTrace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="output" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cm1_analyze" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resutl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InterLingualTrace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="InterLingualTrace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -308,7 +325,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="interlang_dataset_maker" />
+              <option name="myItemId" value="experiments" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -336,11 +353,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="algorithms" />
+              <option name="myItemId" value="data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Wiki-ESA-master" />
+              <option name="myItemId" value="cm1" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -354,7 +371,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="algorithms" />
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cm1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="word_replace_list" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -364,22 +389,23 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/data/cm1" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="G:\Projects\InterLingualTrace\algorithms\Wiki-ESA-master\data" />
-      <recent name="G:\Projects\InterLingualTrace\algorithms\cl-esa\wiki_corpus" />
+      <recent name="G:\Projects\InterLingualTrace\output\cm1_analyze\resutl" />
+      <recent name="G:\Projects\InterLingualTrace\data\cm1\word_replace_list" />
       <recent name="G:\Projects\InterLingualTrace\data" />
-      <recent name="G:\Projects\InterLingualTrace\main\interlang_dataset_maker\raw_data\EasyClinicDataset" />
-      <recent name="G:\Projects\InterLingualTrace\main\interlang_dataset_maker\raw_data" />
+      <recent name="G:\Projects\InterLingualTrace\output\map_cal" />
+      <recent name="G:\Projects\InterLingualTrace\algorithms\Wiki-ESA-master\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="G:\Projects\InterLingualTrace\main\experiments" />
+      <recent name="G:\Projects\InterLingualTrace\main\interlang_dataset_maker\output" />
       <recent name="G:\Projects\InterLingualTrace\main\interlang_dataset_maker\output\EasyClinicDataset\it" />
       <recent name="G:\Projects\InterLingualTrace\algorithms" />
       <recent name="G:\Projects\InterLingualTrace\data" />
-      <recent name="G:\Projects\InterLingualTrace\data\easyClinic" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -394,7 +420,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.ESA">
+  <component name="RunManager" selected="Python.analyze_experiment">
     <configuration default="false" name="easyClinic_experiment" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -408,7 +434,26 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="InterLingualTrace" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/easyClinic_experiment.py" />
+      <option name="SCRIPT_NAME" value="G:\Projects\InterLingualTrace\main\experiments\easyClinic_experiment.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="CL_ESA" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="InterLingualTrace" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/CL_ESA.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -433,45 +478,7 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="mixer" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main/interlang_dataset_maker" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="InterLingualTrace" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/interlang_dataset_maker/mixer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="CSVConverter" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main/interlang_dataset_maker" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="InterLingualTrace" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/interlang_dataset_maker/CSVConverter.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="CL_ESA" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration default="false" name="mean_average_precision" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -484,7 +491,26 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="InterLingualTrace" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/CL_ESA.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/mean_average_precision.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="analyze_experiment" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main/experiments" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="InterLingualTrace" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/experiments/analyze_experiment.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -640,18 +666,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.easyClinic_experiment" />
-      <item index="1" class="java.lang.String" itemvalue="Python.ESA" />
-      <item index="2" class="java.lang.String" itemvalue="Python.mixer" />
-      <item index="3" class="java.lang.String" itemvalue="Python.CSVConverter" />
-      <item index="4" class="java.lang.String" itemvalue="Python.CL_ESA" />
+      <item index="1" class="java.lang.String" itemvalue="Python.CL_ESA" />
+      <item index="2" class="java.lang.String" itemvalue="Python.ESA" />
+      <item index="3" class="java.lang.String" itemvalue="Python.mean_average_precision" />
+      <item index="4" class="java.lang.String" itemvalue="Python.analyze_experiment" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.ESA" />
-        <item index="1" class="java.lang.String" itemvalue="Python.CL_ESA" />
-        <item index="2" class="java.lang.String" itemvalue="Python.CSVConverter" />
-        <item index="3" class="java.lang.String" itemvalue="Python.mixer" />
-        <item index="4" class="java.lang.String" itemvalue="Python.easyClinic_experiment" />
+        <item index="0" class="java.lang.String" itemvalue="Python.analyze_experiment" />
+        <item index="1" class="java.lang.String" itemvalue="Python.mean_average_precision" />
+        <item index="2" class="java.lang.String" itemvalue="Python.easyClinic_experiment" />
+        <item index="3" class="java.lang.String" itemvalue="Python.ESA" />
+        <item index="4" class="java.lang.String" itemvalue="Python.CL_ESA" />
       </list>
     </recent_temporary>
   </component>
@@ -680,32 +706,80 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24147122" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28060672" sideWeight="0.5021322" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34561214" sideWeight="0.50319827" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36403033" sideWeight="0.4978678" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26705757" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28060672" sideWeight="0.4978678" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34236187" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40195015" sideWeight="0.4968017" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4280384" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34561214" sideWeight="0.50319827" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.4978678" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36403033" sideWeight="0.4978678" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2979744" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40195015" sideWeight="0.4968017" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4280384" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="processedProjectFiles" value="true" />
   </component>
   <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.csv" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.properties" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -714,14 +788,24 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/cunning_linguistics.py</url>
-          <line>134</line>
-          <option name="timeStamp" value="100" />
+          <url>file://$PROJECT_DIR$/main/trans_cache_manage.py</url>
+          <line>64</line>
+          <option name="timeStamp" value="152" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main/interlang_dataset_maker/CSVConverter.py</url>
-          <line>48</line>
-          <option name="timeStamp" value="116" />
+          <url>file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/cunning_linguistics.py</url>
+          <line>93</line>
+          <option name="timeStamp" value="167" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/experiments/analyze_experiment.py</url>
+          <line>256</line>
+          <option name="timeStamp" value="217" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/experiments/analyze_experiment.py</url>
+          <line>384</line>
+          <option name="timeStamp" value="239" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -731,386 +815,415 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="118" />
+      <option name="time" value="240" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="en_sentences" language="Python" />
-        <watch expression="fo_sentences" language="Python" />
-        <watch expression="len(en_sentences)" language="Python" />
-        <watch expression="len(fo_sentences)" language="Python" />
-        <watch expression="source_root_path" language="Python" />
-        <watch expression="os.path.join(csv_dir_path, package_name)" language="Python" />
+        <watch expression="replaced_tokens" language="Python" />
+        <watch expression="run_cm1_exp2" language="Python" />
+        <watch expression="cm1_exp2" language="Python" />
+        <watch expression="gold" language="Python" />
+        <watch expression="rank" language="Python" />
+        <watch expression="self.gen_impacted_link" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/output/0_EasyClinic_10.0%/fr/ID_CC_VSM.links">
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/gensim/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="16" column="24" lean-forward="true" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/nltk/tokenize/stanford_segmenter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="55" column="8" lean-forward="false" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/nltk/tokenize/stanford.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="41" column="8" lean-forward="false" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://G:/lib/stanford-corenlp-full-2016-10-31/SemgrexDemo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9">
-          <caret line="28" column="57" lean-forward="true" selection-start-line="28" selection-start-column="57" selection-end-line="28" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/nltk/parse/corenlp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="247" column="36" lean-forward="false" selection-start-line="247" selection-start-column="36" selection-end-line="247" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/0_EasyClinic_10.0%/fr/VSM.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="75" lean-forward="true" selection-start-line="2" selection-start-column="75" selection-end-line="2" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/0_EasyClinic_10.0%/fr/UC_TC_VSM.links">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/data/zhwiki-20180301-pages-articles-multistream.xml">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="399">
-          <caret line="21" column="71" lean-forward="true" selection-start-line="21" selection-start-column="71" selection-end-line="21" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_bundle/pydev_monkey.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="419" column="0" lean-forward="false" selection-start-line="419" selection-start-column="0" selection-end-line="419" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/subprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="991" column="0" lean-forward="false" selection-start-line="991" selection-start-column="0" selection-end-line="991" selection-end-column="0" />
+        <state relative-caret-position="175">
+          <caret line="503" column="4" lean-forward="false" selection-start-line="503" selection-start-column="4" selection-end-line="503" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.PyCharm2017.1/system/python_stubs/-1120166012/_io.py">
+    <entry file="file://$PROJECT_DIR$/data/cm1/CM1-sourceArtifacts.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="1331" column="8" lean-forward="false" selection-start-line="1331" selection-start-column="8" selection-end-line="1331" selection-end-column="8" />
+        <state relative-caret-position="-57">
+          <caret line="18" column="117" lean-forward="false" selection-start-line="18" selection-start-column="117" selection-end-line="18" selection-end-column="117" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/wikicleaner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/xml_parse.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="154" column="14" lean-forward="false" selection-start-line="154" selection-start-column="14" selection-end-line="154" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="102" lean-forward="false" selection-start-line="5" selection-start-column="102" selection-end-line="5" selection-end-column="102" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/json/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/numpy/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/shared.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="119" column="32" lean-forward="false" selection-start-line="119" selection-start-column="32" selection-end-line="119" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm2017.1/system/python_stubs/-1120166012/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="475" column="4" lean-forward="false" selection-start-line="475" selection-start-column="4" selection-end-line="475" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/cunning_linguistics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="59" column="0" lean-forward="false" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
-          <folding>
-            <element signature="e#256#287#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/easyClinic_fr/docs-0.0%/class_description.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/mixReplacement.py" />
-    <entry file="file://C:/Program Files/Python36/Lib/os.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="276" column="4" lean-forward="false" selection-start-line="276" selection-start-column="4" selection-end-line="276" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/raw_data/EasyClinicDataset/relations/CC_CC.txt" />
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/raw_data/EasyClinicDataset/2 - docs (English)/1 - use cases/dsaf/dsaf" />
-    <entry file="file://C:/Program Files/Python36/Lib/ntpath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="558" column="4" lean-forward="false" selection-start-line="558" selection-start-column="4" selection-end-line="558" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/docs-10.0%">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-342">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/Program Files/Python36/Lib/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="320" column="0" lean-forward="false" selection-start-line="320" selection-start-column="0" selection-end-line="320" selection-end-column="0" />
+        <state relative-caret-position="213">
+          <caret line="310" column="0" lean-forward="false" selection-start-line="310" selection-start-column="0" selection-end-line="310" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/docs-100.0%/4 - class description/114.txt">
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/word_links.txt" />
+    <entry file="file://$PROJECT_DIR$/data/cm1/CM1-targetArtifacts.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="17" column="37" lean-forward="true" selection-start-line="17" selection-start-column="37" selection-end-line="17" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/relations/UC_TC.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/relations/UC_CC.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/relations/ID_CC.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/csv/docs-10.0%/UC_CC.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/output/EasyClinicDataset/it/csv/docs-100.0%/UC_CC.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/CSVConverter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="715">
-          <caret line="73" column="122" lean-forward="false" selection-start-line="73" selection-start-column="122" selection-end-line="73" selection-end-column="122" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/common.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/easyClinic_it/docs-0.0%/ID_CC.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="275">
+          <caret line="212" column="46" lean-forward="false" selection-start-line="212" selection-start-column="46" selection-end-line="212" selection-end-column="46" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/interlang_dataset_maker/mixer.py">
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/gensim/models/tfidfmodel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="89" column="43" lean-forward="true" selection-start-line="89" selection-start-column="43" selection-end-line="89" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#34#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Cross-Lingual-Topic-Model-master/src/test/ch_en_dict.dat">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="10" lean-forward="true" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
+        <state relative-caret-position="352">
+          <caret line="148" column="31" lean-forward="true" selection-start-line="148" selection-start-column="31" selection-end-line="148" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/cl-esa/wiki_corpus/short-abstracts-en-uris_it.nt">
-      <provider selected="true" editor-type-id="LargeFileEditor">
+    <entry file="file://$PROJECT_DIR$/main/experiments/easyClinic_experiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="229" column="45" lean-forward="false" selection-start-line="229" selection-start-column="45" selection-end-line="229" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/maven/bug.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2907">
+          <caret line="0" column="35" lean-forward="false" selection-start-line="0" selection-start-column="28" selection-end-line="0" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/maven/code.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6954">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/maven_analyze/word_distribution.txt">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/CL_ESA/it/OTDFXml_it.xml">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="-456">
+    <entry file="file://$PROJECT_DIR$/data/maven/improvementCommitLinks.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/data/enwiki-20180320-pages-articles-multistream.xml">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="209">
-          <caret line="26" column="36" lean-forward="false" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/Wiki-ESA-master/data/itwiki-20180701-pages-articles-multistream.xml">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="361">
-          <caret line="19" column="29" lean-forward="true" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/easyClinic_experiment.py">
+    <entry file="file://$PROJECT_DIR$/data/maven/improvement.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="108" column="8" lean-forward="false" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#3807#3879#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/model.py">
+    <entry file="file://$PROJECT_DIR$/data/maven/CommitCodeLinks.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="87" column="8" lean-forward="false" selection-start-line="87" selection-start-column="8" selection-end-line="87" selection-end-column="8" />
-          <folding />
+        <state relative-caret-position="437">
+          <caret line="23" column="69" lean-forward="false" selection-start-line="23" selection-start-column="69" selection-end-line="23" selection-end-column="69" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/ESA.py">
+    <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/top_10_replace" />
+    <entry file="file://$PROJECT_DIR$/output/maven_analyze/word_weight.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="53" column="59" lean-forward="false" selection-start-line="53" selection-start-column="59" selection-end-line="53" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/VSM.py">
+    <entry file="file://$PROJECT_DIR$/data/maven/commits.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="24" column="31" lean-forward="false" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-          <folding />
+        <state relative-caret-position="38">
+          <caret line="2" column="153" lean-forward="false" selection-start-line="2" selection-start-column="153" selection-end-line="2" selection-end-column="153" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/CL_LDA.py">
+    <entry file="file://$PROJECT_DIR$/main/experiments/playground.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="210" column="19" lean-forward="false" selection-start-line="210" selection-start-column="19" selection-end-line="210" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/LDA.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="31" column="39" lean-forward="false" selection-start-line="31" selection-start-column="39" selection-end-line="31" selection-end-column="39" />
+        <state relative-caret-position="19">
+          <caret line="1" column="8" lean-forward="false" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main/common.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
+        <state relative-caret-position="38">
           <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/CL_ESA.py">
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/no_replace.res">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="154" column="39" lean-forward="true" selection-start-line="154" selection-start-column="39" selection-end-line="154" selection-end-column="39" />
+        <state relative-caret-position="361">
+          <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/top_10_replace.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="9" lean-forward="true" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/replace_20.res">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" column="23" lean-forward="true" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/high_occurance.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/maven_analyze/word_gold_links.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="1" column="26" lean-forward="false" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/word_weight.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="31" lean-forward="false" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
+        <state relative-caret-position="665">
+          <caret line="35" column="27" lean-forward="true" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/repalce_10.res">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/word_gold_links.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="7" lean-forward="false" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/top_30_replace.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/top_20_replace.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="16" column="10" lean-forward="true" selection-start-line="16" selection-start-column="10" selection-end-line="16" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/many_stop_words/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.1/system/python_stubs/-1120166012/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="2819" column="8" lean-forward="false" selection-start-line="2819" selection-start-column="8" selection-end-line="2819" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/gensim/corpora/dictionary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="141" column="52" lean-forward="false" selection-start-line="141" selection-start-column="52" selection-end-line="141" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/cm1_exp_selected_words.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="24" column="9" lean-forward="false" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cm1/CM1-answerSet.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="64" column="26" lean-forward="false" selection-start-line="64" selection-start-column="26" selection-end-line="64" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/0_EasyClinic_50.0%/zh/UC_CC_ESA.links">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/0_EasyClinic_50.0%/zh/UC_CC_TR-VSM.links">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/gen_links.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="56" lean-forward="true" selection-start-line="15" selection-start-column="56" selection-end-line="15" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/word_distribution.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="38" column="24" lean-forward="true" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/mean_average_precision.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-971">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="60" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/VSM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cm1/word_replace_list/high_frequency.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="6" lean-forward="true" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_7.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="521">
+          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="38" column="54" lean-forward="true" selection-start-line="38" selection-start-column="54" selection-end-line="38" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="692">
+          <caret line="50" column="23" lean-forward="false" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_4.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="35" column="45" lean-forward="false" selection-start-line="35" selection-start-column="39" selection-end-line="35" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_6.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="36" column="75" lean-forward="true" selection-start-line="36" selection-start-column="75" selection-end-line="36" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_8.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="34" column="61" lean-forward="true" selection-start-line="34" selection-start-column="61" selection-end-line="34" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_5.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="31" column="60" lean-forward="true" selection-start-line="31" selection-start-column="60" selection-end-line="31" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/cm1_analyze/resutl/exp2_high_frequency_replacement_9.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="23" column="22" lean-forward="true" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/experiments/analyze_experiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="388" column="48" lean-forward="true" selection-start-line="388" selection-start-column="48" selection-end-line="388" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+            <element signature="e#201#580#1" expanded="false" />
+            <element signature="e#902#1859#0" expanded="false" />
+            <element signature="e#3606#4340#0" expanded="false" />
+            <element signature="e#4388#4940#0" expanded="false" />
+            <element signature="e#4995#5123#0" expanded="false" />
+            <element signature="e#6227#7191#0" expanded="false" />
+            <element signature="e#7238#8521#0" expanded="false" />
+            <element signature="e#9193#10225#0" expanded="false" />
+            <element signature="e#9193#9291#1" expanded="false" />
+            <element signature="e#9346#9888#0" expanded="false" />
+            <element signature="e#14314#14409#0" expanded="false" />
+            <element signature="e#14471#14729#0" expanded="false" />
+            <element signature="e#18703#21860#0" expanded="false" />
+            <element signature="e#21884#24646#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

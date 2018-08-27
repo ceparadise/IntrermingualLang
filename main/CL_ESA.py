@@ -6,7 +6,7 @@ from model import Model
 
 
 class CL_ESA(Model):
-    def __init__(self, en_ntf_path, fo_ntf_path, fo_lang_code):
+    def __init__(self, en_ntf_path, fo_ntf_path, fo_lang_code, esa_model):
         """
         Github https://github.com/kasooja/cl-esa
         :param en_ntf_path:
@@ -16,6 +16,7 @@ class CL_ESA(Model):
         super().__init__(fo_lang_code)
         self.en_ntf_path = en_ntf_path
         self.fo_ntf_path = fo_ntf_path
+        self.esa_model = esa_model
         self.project_root = os.path.join(common.ALG_DIR, 'cl-esa')
         self.output_dir = os.path.join(common.OUTPUT_DIR, self.get_model_name(), self.fo_lang_code)
         if not os.path.exists(self.output_dir):
@@ -168,10 +169,13 @@ class CL_ESA(Model):
             for d2_lang_code in doc2_lang_dict.keys():
                 d1_doc = " ".join(doc1_lang_dict[d1_lang_code])
                 d2_doc = " ".join(doc2_lang_dict[d2_lang_code])
-                score = self.get_cl_doc_similarity(d1_doc, d2_doc, d1_lang_code, d2_lang_code)
-                if score > 0.01:
-                    sum_score += score
-                    cnt += 1
+                if d1_lang_code == d2_lang_code:
+                    score = self.esa_model.get_doc_similarity(d1_doc, d2_doc)
+                else:
+                    score = self.get_cl_doc_similarity(d1_doc, d2_doc, d1_lang_code, d2_lang_code)
+                sum_score += score
+                cnt += 1
+
         if cnt == 0:
             return 0
         else:

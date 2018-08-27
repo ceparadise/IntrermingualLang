@@ -1,10 +1,120 @@
+import math
 from googletrans import Translator
 import os
 import random
 from time import sleep
 
 
+class wordReplacement:
+    """
+    Given a word dictionary, replace words in english corpus with a given chance.
+    """
+
+    def __init__(self, chance_to_replace, replace_word_list, output_dir="output", input_dir="raw_data",
+                 dataset_name="EasyClinicDataset",
+                 en_dir_name="2 - docs (English)", fo_code="zh"):
+        self.chance_to_replace = chance_to_replace
+        self.fo_lang_code = fo_code
+
+        self.input_dataset_dir_path = os.path.join(input_dir, dataset_name)
+        self.output_dataset_dir_path = os.path.join(output_dir, dataset_name)
+        self.output_lang_dir_path = os.path.join(self.output_dataset_dir_path, fo_code)
+        if not os.path.isdir(self.output_dataset_dir_path):
+            os.makedirs(self.output_dataset_dir_path)
+        self.en_dir_path = os.path.join(self.input_dataset_dir_path, en_dir_name)
+        self.paths = []
+        self.en_dir_path = os.path.join(self.input_dataset_dir_path, en_dir_name)
+        self.get_file_paths(self.en_dir_path)
+        # Every language directory must have same acrhitecutre as the english directory
+        self.paths = [os.path.relpath(x, self.en_dir_path) for x in self.paths]
+
+        self.word_table = dict()
+        with open(replace_word_list, encoding='utf8') as fin:
+            for line in fin:
+                parts = line.strip("\n\t\r").split(",")
+                en_word = parts[0]
+                num = int(parts[1])
+                fo_word = parts[2]
+                self.word_table[en_word] = (fo_word, math.floor(num * self.chance_to_replace))
+
+    def get_file_paths(self, root):
+        file_names = os.listdir(root)
+        for name in file_names:
+            file_path = os.path.join(root, name)
+            if os.path.isdir(file_path):
+                self.get_file_paths(file_path)
+            else:
+                self.paths.append(file_path)
+
+    def gen_package_name(self, percentage):
+        return "docs-{}%".format(round(percentage * 100, 2))
+
+    def replace_percent_of_file(self, word_pair, paths):
+        """
+        Given one tokens-fo_word,this replace policy will replace ALL appearance of that token in <given percent> of files.
+
+        :return:
+        """
+        file_contain_token = []
+        en_word = word_pair[0]
+        fo_word = word_pair[1]
+        for rel_path in paths:
+            en_file_path = os.path.join(self.en_dir_path, rel_path)
+            with open(en_file_path, encoding='utf8', errors="ignore") as fin:
+                content = fin.read()
+                tokens = set(content.split())
+                if en_word in tokens:
+                    file_contain_token.append(rel_path)
+
+        selected_files = random.sample(file_contain_token, math.ceil(self.chance_to_replace * len(file_contain_token)))
+        #print("selected",len(selected_files),"from",len(file_contain_token))
+        fo_lang_output_dir_root = os.path.join(self.output_dataset_dir_path, self.fo_lang_code)
+
+        for rel_path in selected_files:
+            # Read en docs
+            en_file_path = os.path.join(self.en_dir_path, rel_path)
+            with open(en_file_path, encoding='utf8', errors="ignore") as fin:
+                en_sentences = fin.readlines()
+
+            # Prepare output dir
+            parent_dir_name = os.path.basename(os.path.dirname(rel_path))
+            file_name = os.path.basename(rel_path)
+            pack_path = os.path.join(fo_lang_output_dir_root, self.gen_package_name(self.chance_to_replace))
+            target_dir = os.path.join(pack_path, parent_dir_name)
+
+            if not os.path.isdir(target_dir):
+                os.makedirs(target_dir)
+
+            # Replace and write
+            with open(os.path.join(target_dir, file_name), 'w', encoding='utf8') as fout:
+                for en_sent in en_sentences:
+                    tokens = en_sent.strip("\n\t\r").split()
+                    resemble = []
+                    for token in tokens:
+                        if token == en_word:
+                            token = fo_word
+                        resemble.append(token)
+                    inter_sent = " ".join(resemble)
+                    fout.write(inter_sent+"\n")
+
+    def replace_percent_of_content(self, word_pair, paths):
+        """
+        Given one tokens-fo_word pair, this policy will replace <given percent> words in every files.
+        """
+        pass
+
+    def process(self):
+        for en_word in self.word_table:
+            fo_word, num = self.word_table[en_word]
+            word_pair = (en_word, fo_word)
+            self.replace_percent_of_file(word_pair, self.paths)
+
+
 class translateReplacement:
+    """
+    Intermingual parallel corpus into one or create an intermingualed corpus through translation
+    """
+
     def __init__(self, interval, dataset_name="EasyClinicDataset", en_dir_name="2 - docs (English)",
                  fo_dir_names_codes=[("1 - docs (Italian)", "it")], input_dir="raw_data", output_dir="output",
                  translate=False):
@@ -68,7 +178,7 @@ class translateReplacement:
             en_sentences = []
             fo_sentences = []
 
-            with open(en_file_path, encoding='utf8',errors="ignore") as fin:
+            with open(en_file_path, encoding='utf8', errors="ignore") as fin:
                 en_sentences = fin.readlines()
                 en_sentences = [sent.strip("\n\t\r ") for sent in en_sentences]
 
@@ -121,6 +231,7 @@ class translateReplacement:
 
 
 if __name__ == "__main__":
-    replacer = translateReplacement(0.1)
-    replacer.run()
+    word_list = "output/np_extractor_output/nouns_zh.csv"
+    replacer = wordReplacement(0.5, word_list)
+    replacer.process()
     print("finished")

@@ -68,8 +68,9 @@ def relation_convert(doc_dir_path, relation_dir):
 
 if __name__ == '__main__':
     percent = 0.0
-    for i in range(0, 11):
+    for i in range(5, 6):
+        percent = i * 0.1
         package_name = "docs-{}%".format(round(percent * 100, 2))
-        artifact_convert(os.path.join("output/EasyClinicDataset/it", package_name))
-        relation_convert(os.path.join("output/EasyClinicDataset/it", package_name), "output/EasyClinicDataset/it/relations")
-        percent += 0.1
+        artifact_convert(os.path.join("output/EasyClinicDataset/zh", package_name))
+        relation_convert(os.path.join("output/EasyClinicDataset/zh", package_name),
+                         "output/EasyClinicDataset/it/relations")

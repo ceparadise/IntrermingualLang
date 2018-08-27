@@ -4,24 +4,33 @@ import common
 from CL_ESA import CL_ESA
 from ESA import ESA
 from LDA import LDA
+from TR_LDA import TR_LDA
+from TR_VSM import TR_VSM
 from VSM import VSM
 from common import *
 from CL_LDA import CL_LDA
 from subprocess import Popen, PIPE
 
+from trans_cache_manage import Trans_Agent
+
 
 class Experiment_easyClinic:
-    def __init__(self, lang_code):
+    def __init__(self, lang_code, data_dir_name_root="easyClinic_"):
         self.answer = dict()
         self.file2links = dict()
         self.percent_dict = dict()
         self.id2artifact = {}  # map document id to artifact name
         self.artifact2id = {}  # Get the document ids belong to a artifact
-        self.output_dir = "../output"
+        self.output_dir = "../../output"
         self.lang_code = lang_code
+        self.data_dir_name_root = data_dir_name_root
         stanforNLP_server_cmd = " java -mx4g -cp * edu.stanford.nlp.pipeline.StanfordCoreNLPServer -preload tokenize,ssplit,pos,lemma,parse,depparse  -status_port 9000 -port 9000 -timeout 15000 -serverProperties StanfordCoreNLP-chinese.properties"
         self.start_server = Popen(stanforNLP_server_cmd.split(), cwd="G:\lib\stanford-corenlp-full-2016-10-31",
                                   stderr=PIPE, stdout=PIPE, shell=True)
+
+        trans_cache_dir = os.path.join(self.output_dir, "trans_cache", lang_code)
+        self.trans_agent = Trans_Agent(trans_cache_dir_path=trans_cache_dir)
+
         while (True):
             line = str(self.start_server.stderr.readline())
             print(line)
@@ -37,7 +46,7 @@ class Experiment_easyClinic:
         self.start_server.stdout.close()
 
     def readData(self):
-        data_dir_path = os.path.join(DATA_DIR, "easyClinic_" + self.lang_code)
+        data_dir_path = os.path.join(DATA_DIR, self.data_dir_name_root + self.lang_code)
         percent_dirs = os.listdir(data_dir_path)
         for dir_name in percent_dirs:
             percent = dir_name.split("-")[1]
@@ -108,31 +117,45 @@ class Experiment_easyClinic:
 
     def get_models(self, project_name, docs):
         vsm = VSM(self.lang_code)
+        print("Building model:", vsm.get_model_name())
         vsm.build_model(docs)
         yield vsm
 
-        lda = LDA(self.lang_code)
-        lda.train(docs, num_topics=200)
-        yield lda
+        tr_vsm = TR_VSM(self.lang_code, self.trans_agent)
+        print("Building model:", tr_vsm.get_model_name())
+        tr_vsm.build_model(docs)
+        print(tr_vsm.get_model_name(), " ready")
+        self.trans_agent.dump_trans_cache()
+        yield tr_vsm
+
+        # lda = LDA(self.lang_code)
+        # lda.train(docs, num_topics=200)
+        # yield lda
+
+        # tr_lda = TR_LDA(self.lang_code)
+        # tr_lda.train(docs, num_topics=200)
+        # yield tr_lda
 
         wiki_dir = os.path.join(common.ALG_DIR, "Wiki-ESA-master", "data")
         en_wiki = os.path.join(wiki_dir, "enwiki-20180320-pages-articles-multistream.xml")
         fo_wiki = os.path.join(wiki_dir, "{}wiki-20180701-pages-articles-multistream.xml".format(self.lang_code))
         esa = ESA(self.lang_code)
-        esa.build(en_wiki=en_wiki, fo_wiki=fo_wiki, rebuild_en=False)
+        print("Building model:", esa.get_model_name())
+        esa.build(en_wiki=en_wiki, fo_wiki=fo_wiki, rebuild_en=False, rebuild_fo=False)
+        print(esa.get_model_name(), " ready")
         yield esa
 
-        cl_lda = CL_LDA(project_name, self.lang_code)
-        cl_lda.to_CL_LAS_data_files(docs)
-        cl_lda.train_CL_LSA(200)
-        cl_lda.get_tfidf_model()
-        yield cl_lda
+        # cl_lda = CL_LDA(project_name, self.lang_code)
+        # cl_lda.to_CL_LAS_data_files(docs)
+        # cl_lda.train_CL_LSA(200)
+        # cl_lda.get_tfidf_model()
+        # yield cl_lda
 
-        corpus_dir = os.path.join(common.ALG_DIR, "cl-esa", "wiki_corpus")
-        en_ntf = os.path.join(corpus_dir, "short-abstracts_en.nt")
-        fo_ntf = os.path.join(corpus_dir, "short-abstracts-en-uris_{}.nt".format(self.lang_code))
-        cl_esa = CL_ESA(en_ntf_path=en_ntf, fo_ntf_path=fo_ntf, fo_lang_code=self.lang_code)
-        yield cl_esa
+        # corpus_dir = os.path.join(common.ALG_DIR, "cl-esa", "wiki_corpus")
+        # en_ntf = os.path.join(corpus_dir, "short-abstracts_en.nt")
+        # fo_ntf = os.path.join(corpus_dir, "short-abstracts-en-uris_{}.nt".format(self.lang_code))
+        # cl_esa = CL_ESA(en_ntf_path=en_ntf, fo_ntf_path=fo_ntf, fo_lang_code=self.lang_code)
+        # yield cl_esa
 
     def get_links(self, doc_dict, arti_type1, arti_type2, model, output_file, regen_links=True):
         links = []
@@ -184,8 +207,6 @@ class Experiment_easyClinic:
         cnt = 0
         for percent in self.percent_dict:
             cnt += 1
-            if cnt != 2:
-                continue
             print("processing " + percent)
             project_name = "_".join(["0_EasyClinic", percent])
             percent_output_dir = os.path.join(self.output_dir, project_name, self.lang_code)
@@ -198,20 +219,22 @@ class Experiment_easyClinic:
                     print("Running model {}".format(model.get_model_name()))
                     gen_links = []
                     gold_links = []
-                    gen_links.extend(self.ID_CC(self.percent_dict[percent], model, percent_output_dir))
-                    gen_links.extend(self.UC_TC(self.percent_dict[percent], model, percent_output_dir))
+                    # gen_links.extend(self.ID_CC(self.percent_dict[percent], model, percent_output_dir))
+                    # gen_links.extend(self.UC_TC(self.percent_dict[percent], model, percent_output_dir))
                     gen_links.extend(self.UC_CC(self.percent_dict[percent], model, percent_output_dir))
-                    gold_links.extend(self.file2links["ID_CC"])
-                    gold_links.extend(self.file2links["UC_TC"])
+                    # gold_links.extend(self.file2links["ID_CC"])
+                    # gold_links.extend(self.file2links["UC_TC"])
                     gold_links.extend(self.file2links["UC_CC"])
                     total_num = len(gen_links)
-                    for threshold in range(0, 100, 10):
+                    for threshold in range(0, 100, 1):
                         threshold = threshold / 100.0
                         gen_links_above_thre = [(x[0], x[1]) for x in gen_links if (float)(x[2]) >= threshold]
                         res_out.write("threshod=" + str(threshold) + ":" +
                                       str(self.eval(gen_links_above_thre, gold_links, total_num)) + "\n")
+                    print("Done - Model {}".format(model.get_model_name()))
+        self.trans_agent.dump_trans_cache()
 
 
 if __name__ == "__main__":
-    exp = Experiment_easyClinic(lang_code='zh')
+    exp = Experiment_easyClinic(lang_code='zh', data_dir_name_root="easyClinicWordReplace_")
     exp.run()

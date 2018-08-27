@@ -13,8 +13,8 @@ class VSM(Model):
         docs_tokens = []
         cnt = 0
         for doc in docs:
-            print(cnt,len(docs))
-            cnt+=1
+            #print(cnt, len(docs))
+            cnt += 1
             docs_tokens.append(self.get_tokens(doc))
         dictionary = corpora.Dictionary(docs_tokens)
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
@@ -30,6 +30,16 @@ class VSM(Model):
 
     def get_model_name(self):
         return "VSM"
+
+    def get_word_weights(self):
+        dfs = self.tfidf_model.dfs
+        idfs = self.tfidf_model.idfs
+        res = []
+        for termid in dfs:
+            word = self.tfidf_model.id2word[termid]
+            idf = idfs.get(termid)
+            res.append((word,idf))
+        return res
 
 
 if __name__ == "__main__":
