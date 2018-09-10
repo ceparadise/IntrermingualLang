@@ -9,17 +9,16 @@ class LDA(Model):
         super().__init__(fo_lang_code)
         self.ldamodel = None
 
-    def train(self, docs, num_topics=5, passes=100):
-        # docs = [doc.split() for doc in docs]
-        clean_docs = []
+    def train(self, docs, num_topics=10, passes=100):
+
+        docs_tokens = []
+        cnt = 0
         for doc in docs:
-            tmp = []
-            zh, en = self.segment(doc)
-            tmp.extend(zh)
-            tmp.extend(en)
-            clean_docs.append(tmp)
-        dictionary = corpora.Dictionary(clean_docs)
-        corpus = [dictionary.doc2bow(x) for x in clean_docs]
+            #print(cnt, len(docs))
+            cnt += 1
+            docs_tokens.append(self.get_tokens(doc))
+        dictionary = corpora.Dictionary(docs_tokens)
+        corpus = [dictionary.doc2bow(x) for x in docs_tokens]
         self.ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word=dictionary,
                                                         passes=passes)
 

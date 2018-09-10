@@ -2,6 +2,7 @@ from subprocess import Popen, PIPE
 
 import many_stop_words
 
+from LDA import LDA
 from VSM import VSM
 from common import *
 import xml.etree.ElementTree as ET
@@ -189,43 +190,6 @@ class CM1_Experiment:
                         cnt += 1
                 t_art_with_wd.append((t_artif, cnt))
         return s_art_with_wd, t_art_with_wd
-
-
-class Maven_Experiment(CM1_Experiment):
-    def __init__(self):
-        self.answer = dict()
-        self.sourceArtifact = dict()
-        self.targetArtifact = dict()
-        self.output_dir = os.path.join("../../output", "maven_analyze")
-        self.model = None
-        self.readData()
-
-    def readData(self):
-        source_path = os.path.join(DATA_DIR, "maven", "improvement.csv")
-        target_path = os.path.join(DATA_DIR, "maven", "commits.csv")
-        answer_path = os.path.join(DATA_DIR, "maven", "improvementCommitLinks.csv")
-
-        with open(source_path) as fin:
-            for line in fin:
-                parts = line.split(",")
-                id = parts[0]
-                content = parts[3]
-                self.sourceArtifact[id] = content
-        with open(target_path) as fin:
-            for line in fin:
-                parts = line.split(",")
-                id = parts[0]
-                content = parts[2]
-                self.targetArtifact[id] = content
-
-        with open(answer_path) as fin:
-            for line in fin:
-                parts = line.split(",")
-                improve_id = parts[0]
-                commit_id = parts[1]
-                if improve_id not in self.answer:
-                    self.answer[improve_id] = set()
-                self.answer[improve_id].add(commit_id)
 
 
 class CM1_Experiment2(CM1_Experiment):
@@ -434,6 +398,71 @@ class CM1_Experiment2(CM1_Experiment):
         return links
 
 
+class Maven_Experiment(CM1_Experiment2):
+    def __init__(self, word_threshold = 10):
+        super(Maven_Experiment, self).__init__(word_threshold)
+        self.answer = dict()
+        self.sourceArtifact = dict()
+        self.targetArtifact = dict()
+        self.output_dir = os.path.join("../../output", "maven_analyze")
+        self.model = None
+        self.readData()
+
+    def read_replace_list(self):
+        file_path = os.path.join(DATA_DIR, "maven", 'word_replace_list', "high_frequency.txt")
+        replace_words = dict()
+        with open(file_path, encoding='utf8') as fin:
+            for line in fin:
+                parts = line.split(",")
+                if len(parts) == 3:
+                    en_word = parts[0].strip()
+                    cnt = parts[1]
+                    fo_word = parts[2].strip()
+                    if int(cnt) >= self.word_threshold:
+                        replace_words[en_word] = fo_word
+        print("Word Threshold = {}, {} word are selected to replace".format(self.word_threshold, len(replace_words)))
+        return replace_words
+
+    def readData(self):
+        source_path = os.path.join(DATA_DIR, "maven", "improvement.csv")
+        target_path = os.path.join(DATA_DIR, "maven", "commits.csv")
+        answer_path = os.path.join(DATA_DIR, "maven", "improvementCommitLinks.csv")
+
+        with open(source_path) as fin:
+            cnt = 0
+            for line in fin:
+                cnt += 1
+                if cnt == 1:
+                    continue
+                parts = line.split(",")
+                id = parts[0]
+                content = parts[3]
+                self.sourceArtifact[id] = content
+        with open(target_path) as fin:
+            cnt = 0
+            for line in fin:
+                cnt += 1
+                if cnt == 1:
+                    continue
+                parts = line.split(",")
+                id = parts[0]
+                content = parts[2]
+                self.targetArtifact[id] = content
+
+        with open(answer_path) as fin:
+            cnt = 0
+            for line in fin:
+                cnt += 1
+                if cnt == 1:
+                    continue
+                parts = line.split(",")
+                improve_id = parts[0]
+                commit_id = parts[1]
+                if improve_id not in self.answer:
+                    self.answer[improve_id] = set()
+                self.answer[improve_id].add(commit_id)
+
+
 class MAP_cal:
     def __init__(self, rank, gold):
         self.rank_gold_pairs = []
@@ -480,6 +509,12 @@ class MAP_cal:
 
 
 def link_with_artifact(links, artifact_id):
+    """
+    Collect the links which contains the given artifact
+    :param links:
+    :param artifact_id:
+    :return:
+    """
     res = set()
     for link in links:
         if link[0] == artifact_id or link[1] == artifact_id:
@@ -557,68 +592,25 @@ def run_cm1_exp(replace_list_name):
 
 def run_maven():
     maven_exp = Maven_Experiment()
+    maven_exp.replace_words_in_target_artifacts()
+    maven_exp.get_impacted_links()
+
     vsm = VSM(fo_lang_code="en")
     vsm.build_model(maven_exp.get_docs())
-    print("Generating links")
-    maven_exp.run_model(vsm)
-    print("Link generated")
+    maven_exp.run_origin_model(vsm)
 
-    word_weights = vsm.get_word_weights()
-    word_weights = sorted(word_weights, key=lambda x: x[1], reverse=True)
-    maven_exp.write_list(word_weights, os.path.join(maven_exp.output_dir, "word_weight.txt"))
-    with open(os.path.join(maven_exp.output_dir, "word_gold_links.txt"), 'w', encoding='utf8') as link_fout, \
-            open(os.path.join(maven_exp.output_dir, "word_distribution.txt"), 'w', encoding='utf8') as distrib_fout:
-        for word_weight in word_weights:
-            word = word_weight[0]
-            s_art_contain_wd, t_art_contain_wd = maven_exp.word_distribution(word)
+    vsm_replace = VSM(fo_lang_code="en")
+    vsm_replace.build_model(maven_exp.get_docs())
 
-            s_art_cnt = 0
-            t_art_cnt = 0
-            for item in s_art_contain_wd:
-                s_art_cnt += item[1]
-            for item in t_art_contain_wd:
-                t_art_cnt += item[1]
+    maven_exp.run_replaced_model(vsm_replace)
 
-            distrib_fout.write(word + "|||" + str(s_art_cnt) + "," + str(t_art_cnt) + "|||")
-            distrib_fout.write(str(s_art_contain_wd))
-            distrib_fout.write(str(t_art_contain_wd) + "\n")
-
-            gold_link_contain_wd = []
-            gold_links = set(maven_exp.gold_links)
-            for s_art in s_art_contain_wd:
-                art_id = s_art[0]
-                gold_link_contain_wd.extend(link_with_artifact(gold_links, art_id))
-            for t_art in t_art_contain_wd:
-                art_id = t_art[0]
-                gold_link_contain_wd.extend(link_with_artifact(gold_links, art_id))
-
-            gen_link_contain_wd = []
-            gen_links = set(maven_exp.gen_links)
-            for s_art in s_art_contain_wd:
-                art_id = s_art[0]
-                gen_link_contain_wd.extend(link_with_artifact(gen_links, art_id))
-            for t_art in t_art_contain_wd:
-                art_id = t_art[0]
-                gen_link_contain_wd.extend(link_with_artifact(gen_links, art_id))
-            gen_in_gold = [x for x in gen_link_contain_wd if x in gold_link_contain_wd]
-
-            gen_links = sorted(gen_links, key=lambda k: k[2], reverse=True)
-            gen_in_gold = sorted(gen_in_gold, key=lambda k: k[2], reverse=True)
-            link_fout.write(word + "|||")
-            link_fout.write(str(gold_links) + "\n")
-    maven_exp.write_list(maven_exp.gen_links, os.path.join(maven_exp.output_dir, "gen_links.txt"))
-
-    with open(os.path.join(maven_exp.output_dir, "gen_links.txt"), 'w', encoding='utf8') as link_fout:
-        for item in maven_exp.gen_links:
-            if (item[0], item[1]) in gold_links:
-                link_fout.write("*")
-            link_fout.write(str(item) + "\n")
-    maven_exp.eval()
+    maven_exp.eval_and_compare()
 
 
-def run_cm1_exp2():
+
+def run_cm1_exp2_VSM():
     """
-    Based on Jane's suggestion:
+    Based on Jane's suggestion: evaluate the result on the impacted artifacts only
     :return:
     """
     cm1_exp2 = CM1_Experiment2(word_threshold=90)
@@ -638,7 +630,29 @@ def run_cm1_exp2():
     cm1_exp2.eval_and_compare()
 
 
+def run_cm1_exp2_LDA():
+    """
+    Based on Jane's suggestion: evaluate the result on the impacted artifacts only
+    :return:
+    """
+    cm1_exp2 = CM1_Experiment2(word_threshold=70)
+    # cm1_exp2.select_word_all_doc_threshold()
+    cm1_exp2.replace_words_in_target_artifacts()
+    cm1_exp2.get_impacted_links()
+
+    vsm = LDA(fo_lang_code="en")
+    vsm.train(cm1_exp2.get_docs(), num_topics=20)
+
+    vsm_replace = LDA(fo_lang_code="en")
+    vsm_replace.train(cm1_exp2.get_docs(), num_topics=20)
+
+    cm1_exp2.run_origin_model(vsm)
+    cm1_exp2.run_replaced_model(vsm_replace)
+
+    cm1_exp2.eval_and_compare()
+
+
 if __name__ == "__main__":
-    # run_maven()
+    run_maven()
     # run_cm1_exp("high_occurance.txt")
-    run_cm1_exp2()
+    # run_cm1_exp2_LDA()
