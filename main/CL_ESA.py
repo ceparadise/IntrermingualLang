@@ -13,6 +13,7 @@ class CL_ESA(Model):
         :param fo_ntf_path:
         :param fo_lang_code:
         """
+        #
         super().__init__(fo_lang_code)
         self.en_ntf_path = en_ntf_path
         self.fo_ntf_path = fo_ntf_path
