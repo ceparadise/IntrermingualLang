@@ -7,3 +7,4 @@ algorithms/Wiki-ESA-master/temp
 main/interlang_dataset_maker/output
 main/interlang_dataset_maker/output
 .idea/*
+**.pyc
