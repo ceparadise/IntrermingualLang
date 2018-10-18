@@ -6,7 +6,6 @@ from LDA import LDA
 from VSM import VSM
 from common import *
 import xml.etree.ElementTree as ET
-from gensim import corpora
 import re
 
 
@@ -233,6 +232,42 @@ class CM1_Experiment2(CM1_Experiment):
             for wd in self.selected_replace_words:
                 fout.write(wd + "," + str(self.selected_replace_words[wd]) + "\n")
 
+    def select_word_in_both_side(self):
+        source_contents = []
+        target_contents = []
+        source_contents.extend(self.sourceArtifact.items())
+        target_contents.extend(self.targetArtifact.items())
+        source_contents = [x[1] for x in source_contents]
+        target_contents = [x[1] for x in target_contents]
+        source_vocab = {}
+        target_vocab = {}
+        for content in source_contents:
+            content = content.lower()
+            cl_content = re.sub("[^a-z]", " ", content)
+            tokens = cl_content.split()
+            for tk in tokens:
+                if len(tk) > 2 and tk not in self.stop_words:
+                    source_vocab[tk] = source_vocab.get(tk, 0) + 1
+
+        for content in target_contents:
+            content = content.lower()
+            cl_content = re.sub("[^a-z]", " ", content)
+            tokens = cl_content.split()
+            for tk in tokens:
+                if len(tk) > 2 and tk not in self.stop_words:
+                    target_vocab[tk] = target_vocab.get(tk, 0) + 1
+
+        common_vocab = set(source_vocab.keys()) & set(target_vocab.keys())
+
+
+        with open(os.path.join(self.output_dir, "cm1_exp_selected_words.txt"), 'w', encoding='utf8') as fout:
+            common_vocab_cnt = {}
+            for wd in common_vocab:
+                common_vocab_cnt[wd] = source_vocab[wd] + target_vocab[wd]
+            ordered_words = sorted(common_vocab_cnt.items(), key=lambda k: k[1], reverse=True)
+            for wd in ordered_words:
+                fout.write(str(wd[0]) + "," + str(wd[1]) + "\n")
+
     def select_word_all_doc_threshold(self):
         contents = []
         contents.extend(self.sourceArtifact.items())
@@ -251,7 +286,7 @@ class CM1_Experiment2(CM1_Experiment):
                 fout.write(str(wd[0]) + "," + str(wd[1]) + "\n")
 
     def read_replace_list(self):
-        file_path = os.path.join(DATA_DIR, "cm1", 'word_replace_list', "high_frequency.txt")
+        file_path = os.path.join(DATA_DIR, "cm1", 'word_replace_list', "both_size_contain.txt")
         replace_words = dict()
         with open(file_path, encoding='utf8') as fin:
             for line in fin:
@@ -399,7 +434,7 @@ class CM1_Experiment2(CM1_Experiment):
 
 
 class Maven_Experiment(CM1_Experiment2):
-    def __init__(self, word_threshold = 10):
+    def __init__(self, word_threshold=10):
         super(Maven_Experiment, self).__init__(word_threshold)
         self.answer = dict()
         self.sourceArtifact = dict()
@@ -607,14 +642,14 @@ def run_maven():
     maven_exp.eval_and_compare()
 
 
-
 def run_cm1_exp2_VSM():
     """
     Based on Jane's suggestion: evaluate the result on the impacted artifacts only
     :return:
     """
-    cm1_exp2 = CM1_Experiment2(word_threshold=90)
-    # cm1_exp2.select_word_all_doc_threshold()
+    cm1_exp2 = CM1_Experiment2(word_threshold=80)
+    #cm1_exp2.select_word_in_both_side()
+    #return None
     cm1_exp2.replace_words_in_target_artifacts()
     cm1_exp2.get_impacted_links()
 
@@ -635,7 +670,7 @@ def run_cm1_exp2_LDA():
     Based on Jane's suggestion: evaluate the result on the impacted artifacts only
     :return:
     """
-    cm1_exp2 = CM1_Experiment2(word_threshold=70)
+    cm1_exp2 = CM1_Experiment2(word_threshold=5)
     # cm1_exp2.select_word_all_doc_threshold()
     cm1_exp2.replace_words_in_target_artifacts()
     cm1_exp2.get_impacted_links()
@@ -653,6 +688,6 @@ def run_cm1_exp2_LDA():
 
 
 if __name__ == "__main__":
-    run_maven()
-    # run_cm1_exp("high_occurance.txt")
+    # run_maven()
+    run_cm1_exp2_VSM()
     # run_cm1_exp2_LDA()
