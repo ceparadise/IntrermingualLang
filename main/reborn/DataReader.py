@@ -80,4 +80,3 @@ class EzCLinizReader:
             link_set = LinkSet(artif_pair, links)
             link_sets.append(link_set)
         return Dataset(link_sets)
-

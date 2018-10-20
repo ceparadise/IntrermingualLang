@@ -106,4 +106,4 @@ if __name__ == "__main__":
     dummy = Model("en")
     print(dummy.split_tokens_by_lang("The latter by the Laboratory of application shall".split()))
     test_clean_doc1 = ",./你好，世界-=+asd8987"
-    print(dummy.clean_doc(test_clean_doc1))
+    print(dummy.get_tokens(test_clean_doc1))
