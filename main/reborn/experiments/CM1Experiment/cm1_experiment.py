@@ -1,6 +1,7 @@
 import os
 import argparse
 
+from LDA import LDA
 from VSM import VSM
 from common import DATA_DIR
 from reborn.DataReader import CM1Reader
@@ -8,7 +9,7 @@ from reborn.Datasets import Dataset, MAP_cal
 
 
 class CM1_Experiment:
-    def __init__(self, replace_word_interval, link_threshold_interval=5, model_type="vsm"):
+    def __init__(self, replace_word_interval, model_type,link_threshold_interval=5):
         self.exp_name = self.__class__.__name__
         self.selected_replace_words = dict()
         reader = CM1Reader()
@@ -17,6 +18,12 @@ class CM1_Experiment:
         self.replace_word_inverval = replace_word_interval
         self.link_threshold_interval = link_threshold_interval
         self.model_type = model_type
+
+    def get_model(self, model_type, fo_lang_code):
+        if model_type == "vsm":
+            return VSM(fo_lang_code=fo_lang_code)
+        elif model_type == "LDA":
+            return LDA(fo_lang_code=fo_lang_code)
 
     def run(self):
         full_replace_list = self.read_replace_list()
@@ -33,12 +40,12 @@ class CM1_Experiment:
             impacted_dataSet = self.dataSet.get_impacted_dataSet(replace_dict)
             replaced_dataSet = self.dataSet.get_replaced_dataSet(replace_dict)
 
-            vsm_origin = VSM(fo_lang_code="en")
+            vsm_origin = self.get_model(self.model_type, "zh")
             vsm_origin.build_model(self.dataSet.get_docs())
             origin_results = self.run_model(vsm_origin, self.dataSet)
 
-            vsm_impacted = VSM(
-                fo_lang_code="en")  # vsm_impacted is trained with a dataset that contains foreign language
+            vsm_impacted = self.get_model(self.model_type,
+                                          "zh")  # vsm_impacted is trained with a dataset that contains foreign language
             vsm_impacted.build_model(replaced_dataSet.get_docs())
 
             # replaced_result contains scores for all links, impacted_results contains scores for impacted links only
@@ -66,16 +73,16 @@ class CM1_Experiment:
                 origin_scores = []
                 impacted_scores = []
                 while threshold <= 100:
-                    filter_origin_above_threshold = [x for x in filter_origin_result if x[2] >= threshold]
-                    impacted_result_above_threshold = [x for x in impacted_result if x[2] >= threshold]
+                    filter_origin_above_threshold = [x for x in filter_origin_result if x[2] >= threshold / 100]
+                    impacted_result_above_threshold = [x for x in impacted_result if x[2] >= threshold / 100]
                     origin_eval_score = impacted_dataSet.evaluate_link_set(linkset_id, filter_origin_above_threshold)
                     impacted_eval_score = impacted_dataSet.evaluate_link_set(linkset_id,
                                                                              impacted_result_above_threshold)
                     origin_scores.append(origin_eval_score)
                     impacted_scores.append(impacted_eval_score)
-                    threshold += self.link_threshold_interval / 100
-                file_name = "cm1_{}_{}_{}.txt".format(self.model_type, linkset_id,
-                                                      replace_percentage)
+                    threshold += self.link_threshold_interval
+                file_name = "{}_{}_{}.txt".format(self.model_type, linkset_id,
+                                                  replace_percentage)
                 write_dir = os.path.join("results", self.model_type)
                 if not os.path.isdir(write_dir):
                     os.mkdir(write_dir)
@@ -133,13 +140,13 @@ class CM1_Experiment:
         return results
 
     def write_result(self, writer, origin_score, origin_map, impacted_score, impacted_map):
-        writer.write("origin MAP=", origin_map)
-        writer.write("Origin P,C,F")
-        writer.write(origin_score)
+        writer.write("origin MAP= {}\n".format(origin_map))
+        writer.write("origin P,C,F\n")
+        writer.write(str(origin_score) + "\n")
 
-        writer.write("impacted_MAP=", impacted_score)
-        writer.write("impacted P,C,F")
-        writer.write(impacted_map)
+        writer.write("impacted_MAP= {}\n".format(impacted_map))
+        writer.write("impacted P,C,F\n")
+        writer.write(str(impacted_score) + "\n")
 
 
 if __name__ == "__main__":
@@ -148,9 +155,10 @@ if __name__ == "__main__":
                         help="Create a list of word, this list will be used to replace words in target artifacts after manually adding Chinese translation")
     parser.add_argument("--replace_interval", default=10, type=int,
                         help="Increase the usage percentage of replace list that will be used for replacement by this interval ")
+    parser.add_argument("--model", help="Model used for experiment")
     args = parser.parse_args()
 
-    exp = CM1_Experiment(args.replace_interval)
+    exp = CM1_Experiment(args.replace_interval, model_type=args.model)
     if args.create_replace_list:
         exp.create_list(args.create_replace_list)
     else:

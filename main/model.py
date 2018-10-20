@@ -3,6 +3,8 @@ import re
 import many_stop_words
 from nltk.parse.corenlp import CoreNLPParser
 from nltk.stem.snowball import SnowballStemmer
+from nltk import word_tokenize
+from subprocess import Popen, PIPE
 
 
 class Model:
@@ -36,7 +38,7 @@ class Model:
             tokens.extend(zh)
             tokens.extend(en)
         else:
-            tokens.extend(doc_str.split())
+            tokens.extend(word_tokenize(doc_str))
         # lang_dict = self.split_tokens_by_lang(tokens)
         # clean the tokens by removing stopwords and short tokens
         # en_tokens = self.__clean_tokens(lang_dict["en"], 'en')
@@ -54,10 +56,18 @@ class Model:
         return tokens
 
     def segment(self, doc):
-        seg_str = " ".join(self.parser.tokenize(doc))
-        ch_token = self.get_zh(seg_str)
-        en_token = self.get_en(doc)
-        return ch_token, en_token
+        if self.contains_zh(doc):
+            seg_str = " ".join(self.parser.tokenize(doc))
+            ch_token = self.get_zh(seg_str)
+            en_token = self.get_en(doc)
+            return ch_token, en_token
+        else:
+            return [],word_tokenize(doc)
+
+    def contains_zh(self,doc):
+        zh_part = self.get_zh(doc)
+        return len(zh_part)>0
+
 
     def get_zh(self, doc):
         pattern = re.compile("[\u4e00-\u9fff]+")
@@ -70,11 +80,17 @@ class Model:
         return res
 
     def __clean_tokens(self, token_list, language):
+        """
+        remove stop words and remove tokens
+        :param token_list:
+        :param language:
+        :return:
+        """
         cleaned = []
         stop_words = many_stop_words.get_stop_words(language)
         for token in token_list:
             token = token.lower()
-            if token not in stop_words and len(token) >= 2:
+            if token not in stop_words:
                 cleaned.append(token)
         return cleaned
 
@@ -101,9 +117,27 @@ class Model:
         doc_str = doc_str.lower()
         return doc_str
 
+    def startStanforNLP(self):
+        stanforNLP_server_cmd = " java -mx4g -cp * edu.stanford.nlp.pipeline.StanfordCoreNLPServer -preload tokenize,ssplit,pos,lemma,parse,depparse  -status_port 9000 -port 9000 -timeout 15000 -serverProperties StanfordCoreNLP-chinese.properties"
+        self.start_server = Popen(stanforNLP_server_cmd.split(), cwd="G:\lib\stanford-corenlp-full-2016-10-31",
+                                  stderr=PIPE, stdout=PIPE, shell=True)
+
+        while (True):
+            line = str(self.start_server.stderr.readline())
+            print(line)
+            success_mark = 'StanfordCoreNLPServer listening at'
+            except_mark = 'Address already in use'
+            if success_mark in line:
+                print("server started...")
+                break
+            elif except_mark in line:
+                print("server already started or port occupied...")
+                break
+        self.start_server.stderr.close()
+        self.start_server.stdout.close()
+
 
 if __name__ == "__main__":
-    dummy = Model("en")
-    print(dummy.split_tokens_by_lang("The latter by the Laboratory of application shall".split()))
-    test_clean_doc1 = ",./你好，世界-=+asd8987"
+    dummy = Model("zh")
+    test_clean_doc1 = ",./足球世界-=+asd8987adf adfa是打发"
     print(dummy.get_tokens(test_clean_doc1))
