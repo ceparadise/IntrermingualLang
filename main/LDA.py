@@ -9,18 +9,20 @@ class LDA(Model):
         super().__init__(fo_lang_code)
         self.ldamodel = None
 
-    def train(self, docs, num_topics=10, passes=100):
-
+    def train(self, docs, num_topics=40, passes=100):
         docs_tokens = []
         cnt = 0
         for doc in docs:
-            #print(cnt, len(docs))
+            # print(cnt, len(docs))
             cnt += 1
             docs_tokens.append(self.get_tokens(doc))
         dictionary = corpora.Dictionary(docs_tokens)
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
         self.ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word=dictionary,
                                                         passes=passes)
+
+    def build_model(self, docs, num_topics=400, passes=1000):
+        self.train(docs, num_topics, passes)
 
     def get_topic_distrb(self, doc):
         bow_doc = self.ldamodel.id2word.doc2bow(doc)

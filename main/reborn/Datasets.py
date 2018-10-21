@@ -112,6 +112,7 @@ class LinkSet:
     def __init__(self, artiPair: ArtifactPair, links):
         self.artiPair = artiPair
         self.links = links
+        self.replacement_info = ""
 
     def get_pair_id(self):
         return self.artiPair.get_pair_id()
@@ -167,14 +168,18 @@ class LinkSet:
     def get_impacted_links(self, replace_wd_list):
         impacted_artifacts = self.get_impacted_artifacts(replace_wd_list)
         impacted_links = []
-        print("{} target artifacts out of {} artifacts are impacted ...".format(len(self.artiPair.target_artif),
-                                                                                len(impacted_artifacts)))
+        impacted_artifact_info = "{} target artifacts out of {} artifacts are impacted ...".format(
+            len(self.artiPair.target_artif),
+            len(impacted_artifacts))
 
         for link in self.links:
             if link[0] in impacted_artifacts or link[1] in impacted_artifacts:
                 impacted_links.append(link)
-        print(str(len(impacted_links)) + "links are impacted by the replacedment, total links num=" + str(
-            len(self.links)))
+        impacted_link_info = str(
+            len(impacted_links)) + " links are impacted by the replacement, total links num=" + str(
+            len(self.links))
+        self.replacement_info = impacted_artifact_info + "\n" + impacted_link_info
+        print(self.replacement_info)
         return impacted_links
 
     def get_docs(self):
