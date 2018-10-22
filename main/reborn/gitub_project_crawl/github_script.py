@@ -22,6 +22,21 @@ class MyIssue:
         return "{},{}\n".format(self.issue_id, content_str)
 
 
+class MyCommit:
+    def __init__(self, commit_id, summary, diffs):
+        self.commit_id = commit_id
+        self.summary = summary
+        self.diffs = diffs
+
+    def __str__(self):
+        summary = re.sub("[,]+", " ", self.summary)
+        summary = re.sub("\n", "\\n", self.summary)
+        diffs = " ".join(self.diffs)
+        diffs = re.sub("[,]+", " ", diffs)
+        diffs = re.sub("\n", "\\n", diffs)
+        return "{},{},{}\n".format(self.commit_id, summary, diffs)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Github script")
     parser.add_argument("-u", help="user name")
@@ -31,6 +46,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     git = Github(args.u, args.p)
     git.get_user()
+
+    EMPTY_TREE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
     output_dir = os.path.join("git_projects", args.r)
     if not os.path.isdir(output_dir):
@@ -51,6 +68,20 @@ if __name__ == "__main__":
     #             content.append(comment.body)
     #         fout.write(str(MyIssue(issue_number, content)))
 
-    repo_url = "git@github.com:alibaba/canal.git"
-    local_git.refresh("/g/Tool/Git/bin")
-    local_git.Repo.clone_from(repo_url, os.path.join(args.d, 'repo'), branch='master')
+    repo_url = "git@github.com:{}.git".format(args.r)
+    repo_name = repo_url.split("/")[1]
+    clone_path = os.path.join(args.d, repo_name)
+    if not os.path.exists(clone_path):
+        local_git.Repo.clone_from(repo_url, clone_path, branch='master')
+    local_repo = local_git.Repo(clone_path)
+
+    with open(os.path.join(output_dir, "commit.csv"), 'w', encoding="utf8") as fout:
+        fout.write("commit_id,commit_summary, commit_diff")
+        for commit in local_repo.iter_commits():
+            id = commit.hexsha
+            summary = commit.summary
+            parent = commit.parents[0] if commit.parents else EMPTY_TREE_SHA
+            differs = []
+            for diff in commit.diff(parent, create_patch=True):
+                diff_str = differs.append(str(diff))
+            fout.write(str(MyCommit(id,summary,differs)))
