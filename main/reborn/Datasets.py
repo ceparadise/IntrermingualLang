@@ -1,5 +1,7 @@
 import pickle
 
+from reborn.Preprocessor import Preprocessor
+
 
 class Dataset:
     """
@@ -113,6 +115,7 @@ class LinkSet:
         self.artiPair = artiPair
         self.links = links
         self.replacement_info = ""
+        self.preprocessor = Preprocessor()
 
     def get_pair_id(self):
         return self.artiPair.get_pair_id()
@@ -143,7 +146,7 @@ class LinkSet:
         return LinkSet(impacted_arti_pair, impacted_links)
 
     def replace_tokens(self, content, replace_dict):
-        tokens = set(content.split())
+        tokens = set(self.preprocessor.get_tokens(content))
         replaced_content = []
         for rep_word in replace_dict:
             fo_word = replace_dict[rep_word]
@@ -160,7 +163,7 @@ class LinkSet:
         replace_dict = set(replace_dict.keys())
         for artif in self.artiPair.source_artif:
             content = self.artiPair.source_artif[artif]
-            tokens = set(content.split())
+            tokens = set(self.preprocessor.get_tokens(content))
             if len(tokens & replace_dict) > 0:
                 impacted.add(artif)
         return impacted

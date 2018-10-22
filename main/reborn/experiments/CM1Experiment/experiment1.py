@@ -1,13 +1,17 @@
+import operator
 import os
 import argparse
 
+import nltk
 from gensim import corpora, models
 
 from LDA import LDA
 from VSM import VSM
 from common import DATA_DIR
+from model import Model
 from reborn.DataReader import CM1Reader, EzCLinizReader
 from reborn.Datasets import Dataset, MAP_cal
+from reborn.Preprocessor import Preprocessor
 
 
 class Experiment1:
@@ -22,11 +26,11 @@ class Experiment1:
         reader = None
         if data_set == "cm1":
             reader = CM1Reader()
-        elif data_set == "ezclinc":
+        elif data_set == "ezclinic":
             reader = EzCLinizReader()
 
         self.dataSet = reader.readData()
-        self.replace_word_population_percentage = 0
+        self.replace_word_population_percentage = replace_word_interval
         self.replace_word_inverval = replace_word_interval
         self.link_threshold_interval = link_threshold_interval
         self.model_type = model_type
@@ -39,14 +43,14 @@ class Experiment1:
             model.build_model(docs)
         elif model_type == "lda":
             model = LDA(fo_lang_code=fo_lang_code)
-            model.build_model(docs, num_topics=40, passes=300)
+            model.build_model(docs, num_topics=60, passes=100)
         return model
 
     def run(self):
         full_replace_list = self.read_replace_list(self.replace_list_name)
         replace_percentage = self.replace_word_population_percentage
 
-        while replace_percentage < 100:
+        while replace_percentage <= 100:
             # Create a sub set of replace list
             replace_dict = dict()
             rep_word_size = int(len(full_replace_list) * (replace_percentage / 100))
@@ -57,11 +61,11 @@ class Experiment1:
             impacted_dataSet = self.dataSet.get_impacted_dataSet(replace_dict)
             replaced_dataSet = self.dataSet.get_replaced_dataSet(replace_dict)
 
-            origin_model = self.get_model(self.model_type, "en",self.dataSet.get_docs())
+            origin_model = self.get_model(self.model_type, "en", self.dataSet.get_docs())
             origin_results = self.run_model(origin_model, self.dataSet)
 
             impacted_model = self.get_model(self.model_type,
-                                            "en",replaced_dataSet.get_docs())
+                                            "en", replaced_dataSet.get_docs())
             # impacted_model is trained with a dataSet that contains foreign language
 
             # replaced_result contains scores for all links, impacted_results contains scores for impacted links only
@@ -105,7 +109,7 @@ class Experiment1:
                     os.makedirs(write_dir)
                 output_file_path = os.path.join(write_dir, file_name)
                 with open(output_file_path, 'w') as fout:
-                    fout.write(replaced_dataSet[linkset_id].replacement_info + "\n")
+                    fout.write(replaced_dataSet.gold_link_sets[linkset_id].replacement_info + "\n")
                     self.write_result(fout, origin_scores, origin_map, impacted_scores, impacted_map)
                 print("origin MAP=", origin_map)
                 print("Origin P,C,F")
@@ -163,6 +167,38 @@ class Experiment1:
         writer.write("impacted P,C,F\n")
         writer.write(str(impacted_score) + "\n")
 
+    def create_list(self, output_file_path):
+        preprocessor = Preprocessor()
+        words_in_both_side_cnt = dict()
+        with open(output_file_path, 'w') as fout:
+            for linkSet_id in self.dataSet.gold_link_sets:
+                link_set = self.dataSet.gold_link_sets[linkSet_id]
+                source_cnt_dict = dict()
+                target_cnt_dict = dict()
+                # Count the word in both side
+                for source_artif in link_set.artiPair.source_artif:
+                    doc = link_set.artiPair.source_artif[source_artif]
+                    tokens = preprocessor.get_tokens(doc)
+                    for tk in tokens:
+                        source_cnt_dict[tk] = source_cnt_dict.get(tk, 0) + 1
+
+                for target_artif in link_set.artiPair.target_artif:
+                    doc = link_set.artiPair.target_artif[target_artif]
+                    tokens = preprocessor.get_tokens(doc)
+                    for tk in tokens:
+                        target_cnt_dict[tk] = target_cnt_dict.get(tk, 0) + 1
+
+                words_in_both_side = source_cnt_dict.keys() & target_cnt_dict.keys()
+                for word_in_both_side in words_in_both_side:
+                    source_cnt = source_cnt_dict[word_in_both_side]
+                    target_cnt = target_cnt_dict[word_in_both_side]
+                    total_cnt = source_cnt + target_cnt
+                    words_in_both_side_cnt[word_in_both_side] = words_in_both_side_cnt.get(word_in_both_side,
+                                                                                           0) + total_cnt
+            sorted_wd_cnt_list = sorted(words_in_both_side_cnt.items(), key=operator.itemgetter(1), reverse=True)
+            for wd in sorted_wd_cnt_list:
+                fout.write("{},{},\n".format(wd[0], wd[1]))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("CM1 Experiment")
@@ -178,7 +214,6 @@ if __name__ == "__main__":
     exp = Experiment1(args.replace_interval, model_type=args.model, data_set=args.data_set,
                       replace_list_name=args.replace_list)
     if args.create_replace_list:
-        pass
-        # exp.create_list(args.create_replace_list)
+        exp.create_list(args.create_replace_list)
     else:
         exp.run()
