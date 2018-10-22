@@ -1,6 +1,6 @@
 from common import *
 import xml.etree.ElementTree as ET
-from .Datasets import Dataset, LinkSet, ArtifactPair
+
 
 
 class CM1Reader:
@@ -82,3 +82,54 @@ class EzCLinizReader:
             link_set = LinkSet(artif_pair, links)
             link_sets.append(link_set)
         return Dataset(link_sets)
+
+
+class MavenReader:
+    def __init__(self):
+        pass
+
+    def read_csv(self, path, id_index, content_index):
+        res = dict()
+        with open(path) as fin:
+            cnt = 0
+            for line in fin:
+                cnt += 1
+                if cnt == 1:
+                    continue
+                parts = line.split(",")
+                id = parts[id_index]
+                content = parts[content_index]
+                res[id] = content
+        return res
+
+    def __read_code(self, data_dir_path):
+        id_path = self.read_csv(os.path.join(data_dir_path, "code.csv"), 0, 1)
+        artifact_code = dict()
+        for id in id_path:
+            path = id_path[id].strip("\n")
+            path = os.path.join(data_dir_path, path)
+            with open(path) as fin:
+                content = fin.read()
+            artifact_code[id] = content
+        return artifact_code
+
+    def readData(self):
+        data_dir_path = os.path.join(DATA_DIR, "maven")
+        artifact_bug = dict()
+        artifact_commit = dict()
+        artifact_code = dict()
+        artifact_improvement = dict()
+
+        bug_commit_links = []
+        commit_code_links = []
+        improvement_commit_links = []
+
+        artifact_bug = self.read_csv(os.path.join(data_dir_path, "bug.csv"), 0, 3)
+        artifact_commit = self.read_csv(os.path.join(data_dir_path, "commits.csv"), 0, 2)
+        artifact_improvement = self.read_csv(os.path.join(data_dir_path, "improvement.csv"), 0, 3)
+        artifact_code = self.__read_code(data_dir_path)
+
+
+if __name__ == "__main__":
+    mr = MavenReader()
+    mr.readData()

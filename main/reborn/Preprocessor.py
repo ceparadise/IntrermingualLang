@@ -7,6 +7,18 @@ import nltk
 class Preprocessor():
     def __init__(self):
         self.parser = nltk.CoreNLPParser()
+        self.java_keywords = set([w.strip('*') for w in """
+        abstract    continue    for     new     switch
+        assert   default     goto*   package     synchronized
+        boolean     do  if  private     this
+        break   double  implements  protected   throw
+        byte    else    import  public  throws
+        case    enum****    instanceof  return  transient
+        catch   extends     int     short   try
+        char    final   interface   static  void
+        class   finally     long    strictfp**  volatile
+        const*  float   native  super   while
+        """.split()])
 
     def get_stemmer(self, lang_code):
         "danish dutch english finnish french german hungarian italian norwegian porter portuguese romanian russian spanish swedish"
@@ -35,6 +47,9 @@ class Preprocessor():
         doc_str = re.sub("(\d+|[^\w]+)", " ", doc_str, flags=re.UNICODE)
         return doc_str
 
+    def remove_java_keyword(self, tokens):
+        return [x for x in tokens if x not in self.java_keywords]
+
     def get_tokens(self, doc, language="en"):
         tokens = []
         doc = self.__clean_doc(doc)
@@ -50,6 +65,7 @@ class Preprocessor():
         for wd in res:
             tokens.extend(self.split_camal_case(wd))
         tokens = [x.lower() for x in tokens]
+        tokens = self.remove_java_keyword(tokens)
         tokens = self.remove_stop_word(tokens, language=language)
         return tokens
 
