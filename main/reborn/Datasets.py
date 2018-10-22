@@ -171,9 +171,9 @@ class LinkSet:
     def get_impacted_links(self, replace_wd_list):
         impacted_artifacts = self.get_impacted_artifacts(replace_wd_list)
         impacted_links = []
-        impacted_artifact_info = "{} target artifacts out of {} artifacts are impacted ...".format(
-            len(self.artiPair.target_artif),
-            len(impacted_artifacts))
+        impacted_artifact_info = "{} source artifacts out of {} artifacts are impacted ...".format(
+            len(impacted_artifacts),
+            len(self.artiPair.target_artif))
 
         for link in self.links:
             if link[0] in impacted_artifacts or link[1] in impacted_artifacts:

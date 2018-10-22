@@ -9,7 +9,7 @@ from LDA import LDA
 from VSM import VSM
 from common import DATA_DIR
 from model import Model
-from reborn.DataReader import CM1Reader, EzCLinizReader
+from reborn.DataReader import CM1Reader, EzCLinizReader, MavenReader
 from reborn.Datasets import Dataset, MAP_cal
 from reborn.Preprocessor import Preprocessor
 
@@ -28,6 +28,8 @@ class Experiment1:
             reader = CM1Reader()
         elif data_set == "ezclinic":
             reader = EzCLinizReader()
+        elif data_set == "maven":
+            reader = MavenReader()
 
         self.dataSet = reader.readData()
         self.replace_word_population_percentage = replace_word_interval

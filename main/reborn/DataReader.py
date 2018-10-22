@@ -1,6 +1,7 @@
 from common import *
 import xml.etree.ElementTree as ET
 
+from reborn.Datasets import ArtifactPair, LinkSet, Dataset
 
 
 class CM1Reader:
@@ -88,6 +89,14 @@ class MavenReader:
     def __init__(self):
         pass
 
+    def read_link(self, path):
+        links = []
+        raw_links = self.read_csv(path, 0, 1)
+        for source_artifact in raw_links.keys():
+            target_artifact = raw_links[source_artifact]
+            links.append((source_artifact, target_artifact))
+        return links
+
     def read_csv(self, path, id_index, content_index):
         res = dict()
         with open(path) as fin:
@@ -115,21 +124,28 @@ class MavenReader:
 
     def readData(self):
         data_dir_path = os.path.join(DATA_DIR, "maven")
-        artifact_bug = dict()
-        artifact_commit = dict()
-        artifact_code = dict()
-        artifact_improvement = dict()
-
-        bug_commit_links = []
-        commit_code_links = []
-        improvement_commit_links = []
-
         artifact_bug = self.read_csv(os.path.join(data_dir_path, "bug.csv"), 0, 3)
         artifact_commit = self.read_csv(os.path.join(data_dir_path, "commits.csv"), 0, 2)
         artifact_improvement = self.read_csv(os.path.join(data_dir_path, "improvement.csv"), 0, 3)
         artifact_code = self.__read_code(data_dir_path)
 
+        bug_commit_links = self.read_link(os.path.join(data_dir_path, "bugCommitLinks.csv"))
+        commit_code_links = self.read_link(os.path.join(data_dir_path, "CommitCodeLinks.csv"))
+        improvement_commit_links = self.read_link(os.path.join(data_dir_path, "improvementCommitLinks.csv"))
+
+        bug_commit_pair = ArtifactPair(artifact_bug, "bug", artifact_commit, "commit")
+        commit_code_pair = ArtifactPair(artifact_commit, "commit", artifact_code, "code")
+        improvement_commit_pair = ArtifactPair(artifact_improvement, "improvement", artifact_commit, "commit")
+
+        bug_commit_set = LinkSet(bug_commit_pair, bug_commit_links)
+        commit_code_set = LinkSet(commit_code_pair, commit_code_links)
+        improvement_commit_set = LinkSet(improvement_commit_pair, improvement_commit_links)
+
+        link_sets = [bug_commit_set, commit_code_set, improvement_commit_set]
+        return Dataset(link_sets)
+
 
 if __name__ == "__main__":
     mr = MavenReader()
-    mr.readData()
+    data = mr.readData()
+
