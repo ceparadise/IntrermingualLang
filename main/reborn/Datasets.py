@@ -173,7 +173,7 @@ class LinkSet:
         impacted_links = []
         impacted_artifact_info = "{} source artifacts out of {} artifacts are impacted ...".format(
             len(impacted_artifacts),
-            len(self.artiPair.target_artif))
+            len(self.artiPair.source_artif))
 
         for link in self.links:
             if link[0] in impacted_artifacts or link[1] in impacted_artifacts:
