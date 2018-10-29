@@ -1,4 +1,5 @@
 import pickle
+import math
 
 from reborn.Preprocessor import Preprocessor
 
@@ -25,6 +26,11 @@ class Dataset:
         return Dataset(impacted_link_sets)
 
     def get_replaced_dataSet(self, replace_list):
+        """
+        Replace part of the english tokens with the given replace list. The data size is equal to origin dataset
+        :param replace_list:
+        :return:
+        """
         replaced_link_sets = []
         for link_set_id in self.gold_link_sets.keys():
             link_set = self.gold_link_sets[link_set_id]
@@ -148,14 +154,13 @@ class LinkSet:
     def replace_tokens(self, content, replace_dict):
         tokens = set(self.preprocessor.get_tokens(content))
         replaced_content = []
-        for rep_word in replace_dict:
-            fo_word = replace_dict[rep_word]
-            for token in tokens:
-                if token == rep_word:
-                    replaced_content.append(fo_word)
-                else:
-                    replaced_content.append(token)
 
+        for token in tokens:
+            if token in replace_dict:
+                fo_word = replace_dict[token]
+                replaced_content.append(fo_word)
+            else:
+                replaced_content.append(token)
         return " ".join(replaced_content)
 
     def get_impacted_artifacts(self, replace_dict):
@@ -197,10 +202,10 @@ class LinkSet:
 class MAP_cal:
     def __init__(self, rank, gold, round_digit_num=4, do_sort=True):
         self.round_digit_num = round_digit_num
-        self.rank_gold_pairs = []
+        self.rank_gold_pairs = []  # keep data for multiple experiments if necessary in future
         if do_sort:  # for performance consideration in case the the rank is and large and sorted already
             rank = sorted(rank, key=lambda k: k[2], reverse=True)
-        rank = [(x[0], x[1]) for x in rank]
+        rank = [(x[0], x[1], round(x[2], 5)) for x in rank]
         self.rank_gold_pairs.append((rank, gold))
 
     def recall(self, rank, gold, num):
@@ -214,16 +219,37 @@ class MAP_cal:
     def precision(self, rank, gold, num):
         hit = 0
         for i in range(0, num + 1):
-            if rank[i] in gold:
+            link = (rank[i][0], rank[i][1])
+            if link in gold:
                 hit += 1
         return hit / (num + 1)
+
+    def __get_average_index(self, gold_link, ranks):
+        """
+        If multiple links share same score with the gold, then the index of the gold link should be averaged
+        :return:
+        """
+        gold_index = 0
+        gold_score = 0
+        for i, link in enumerate(ranks):
+            if (link[0], link[1]) == gold_link:
+                gold_index = i
+                gold_score = link[2]
+                break
+        left_index = gold_index
+        right_index = gold_index
+        while left_index >= 0 and ranks[left_index][2] == gold_score:
+            left_index -= 1
+        while right_index < len(ranks) and ranks[right_index][2] == gold_score:
+            right_index += 1
+        return math.floor((left_index + right_index) / 2)
 
     def average_precision(self, rank, gold):
         sum = 0
         if len(gold) == 0:
             return 0
         for g in gold:
-            g_index = rank.index(g)
+            g_index = self.__get_average_index(g, rank)
             precision = self.precision(rank, gold, g_index)
             sum += precision
         return round(sum / len(gold), self.round_digit_num)

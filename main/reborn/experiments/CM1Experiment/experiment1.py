@@ -8,7 +8,7 @@ from gensim import corpora, models
 from LDA import LDA
 from VSM import VSM
 from common import DATA_DIR
-from model import Model
+from experiments.analyzeTools import Analyzer
 from reborn.DataReader import CM1Reader, EzCLinizReader, MavenReader
 from reborn.Datasets import Dataset, MAP_cal
 from reborn.Preprocessor import Preprocessor
@@ -37,6 +37,7 @@ class Experiment1:
         self.link_threshold_interval = link_threshold_interval
         self.model_type = model_type
         self.replace_list_name = replace_list_name
+        self.analyzer = Analyzer()
 
     def get_model(self, model_type, fo_lang_code, docs):
         model = None
@@ -110,9 +111,10 @@ class Experiment1:
                 if not os.path.isdir(write_dir):
                     os.makedirs(write_dir)
                 output_file_path = os.path.join(write_dir, file_name)
-                with open(output_file_path, 'w') as fout:
-                    fout.write(replaced_dataSet.gold_link_sets[linkset_id].replacement_info + "\n")
-                    self.write_result(fout, origin_scores, origin_map, impacted_scores, impacted_map)
+                replace_infomations = self.analyzer.get_changed_ranks(linkset_id, origin_result, impacted_result,
+                                                                      self.dataSet,
+                                                                      impacted_dataSet)
+
                 print("origin MAP=", origin_map)
                 print("Origin P,C,F")
                 print(origin_scores)
@@ -120,6 +122,17 @@ class Experiment1:
                 print("impacted_MAP=", impacted_map)
                 print("impacted P,C,F")
                 print(impacted_scores)
+
+                print("++++Details++++")
+                print(replace_infomations)
+
+                with open(output_file_path, 'w', encoding='utf8') as fout:
+                    fout.write(replaced_dataSet.gold_link_sets[linkset_id].replacement_info + "\n")
+                    self.write_result(fout, origin_scores, origin_map, impacted_scores, impacted_map)
+                    fout.write("+++++Details+++++\n")
+                    for replace_info in replace_infomations:
+                        fout.write("{}\n".format(replace_info))
+
             replace_percentage += self.replace_word_inverval
 
     def read_replace_list(self, replace_list_name):
@@ -185,6 +198,7 @@ class Experiment1:
                     total_cnt = source_cnt + target_cnt
                     words_in_both_side_cnt[word_in_both_side] = words_in_both_side_cnt.get(word_in_both_side,
                                                                                            0) + total_cnt
+
             sorted_wd_cnt_list = sorted(words_in_both_side_cnt.items(), key=operator.itemgetter(1), reverse=True)
             for wd in sorted_wd_cnt_list:
                 fout.write("{},{},\n".format(wd[0], wd[1]))
