@@ -18,11 +18,31 @@ class Model:
         self.fo_lang_code = fo_lang_code
         self.preprocessor = Preprocessor()
 
-    def get_doc_similarity(self, doc1, doc2):
+    def _get_doc_similarity(self, doc1, doc2):
         raise NotImplementedError
 
     def get_model_name(self):
         raise NotImplementedError
+
+    def get_link_scores(self, source_artifacts, target_artifacts):
+        links = []
+        self.processed_artifacts = dict()
+        for s_id in source_artifacts:
+            content = source_artifacts[s_id]
+            tokens = self.preprocessor.get_stemmed_tokens(content, self.fo_lang_code)
+            self.processed_artifacts[s_id] = tokens
+        for t_id in target_artifacts:
+            content = target_artifacts[t_id]
+            tokens = self.preprocessor.get_stemmed_tokens(content, self.fo_lang_code)
+            self.processed_artifacts[t_id] = tokens
+
+        for s_id in source_artifacts:
+            for t_id in target_artifacts:
+                s_tokens = self.processed_artifacts[s_id]
+                t_tokens = self.processed_artifacts[t_id]
+                score = self._get_doc_similarity(s_tokens, t_tokens)
+                links.append((s_id, t_id, score))
+        return links
 
     def split_tokens_by_lang(self, tokens):
         lang_dict = {}

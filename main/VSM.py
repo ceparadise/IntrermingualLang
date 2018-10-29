@@ -21,9 +21,7 @@ class VSM(Model):
         self.tfidf_model = models.TfidfModel(corpus, id2word=dictionary)
         print("Finish building VSM model")
 
-    def get_doc_similarity(self, doc1, doc2):
-        doc1_tk = self.preprocessor.get_stemmed_tokens(doc1, self.fo_lang_code)
-        doc2_tk = self.preprocessor.get_stemmed_tokens(doc2, self.fo_lang_code)
+    def _get_doc_similarity(self, doc1_tk, doc2_tk):
         doc1_vec = self.tfidf_model[self.tfidf_model.id2word.doc2bow(doc1_tk)]
         doc2_vec = self.tfidf_model[self.tfidf_model.id2word.doc2bow(doc2_tk)]
         return matutils.cossim(doc1_vec, doc2_vec)

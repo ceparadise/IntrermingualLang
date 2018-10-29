@@ -21,20 +21,24 @@ class LDA(Model):
         self.ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word=dictionary,
                                                         passes=passes, alpha='auto')
 
-    def build_model(self, docs, num_topics=20, passes=100):
+    def build_model(self, docs, num_topics=40, passes=200):
         self.train(docs, num_topics, passes)
 
     def get_topic_distrb(self, doc):
         bow_doc = self.ldamodel.id2word.doc2bow(doc)
         return self.ldamodel.get_document_topics(bow_doc)
 
-    def get_doc_similarity(self, doc1, doc2):
-        doc1_tk = self.preprocessor.get_stemmed_tokens(doc1, self.fo_lang_code)
-        doc2_tk = self.preprocessor.get_stemmed_tokens(doc2, self.fo_lang_code)
+    def _get_doc_similarity(self, doc1_tk, doc2_tk):
+        """
+        :param doc1_tk: Preprocessed documents as tokens
+        :param doc2_tk: Preprocessed documents as tokens
+        :return:
+        """
         dis1 = self.get_topic_distrb(doc1_tk)
         dis2 = self.get_topic_distrb(doc2_tk)
-        return 1 - matutils.hellinger(dis1, dis2)
-        # return matutils.cossim(dis1, dis2)
+        #return 1 - matutils.hellinger(dis1, dis2)
+        return matutils.cossim(dis1, dis2)
+
 
     def get_model_name(self):
         return "LDA"

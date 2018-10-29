@@ -136,19 +136,7 @@ class Experiment1:
             return tmp
 
     def get_links(self, trace_model, source_artifact, target_artifact):
-        links = []
-        total = len(source_artifact) * len(target_artifact)
-        cnt = 0
-        for s_id in source_artifact:
-            for t_id in target_artifact:
-                # if cnt % 1000 == 0:
-                #     print(str(cnt) + "/" + str(total))
-                cnt += 1
-                s_content = source_artifact[s_id]
-                t_content = target_artifact[t_id]
-                score = trace_model.get_doc_similarity(s_content, t_content)
-                links.append((s_id, t_id, score))
-        return links
+        return trace_model.get_link_scores(source_artifact, target_artifact)
 
     def run_model(self, model, dataset: Dataset):
         results = dict()
