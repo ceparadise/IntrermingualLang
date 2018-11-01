@@ -3,11 +3,14 @@ import subprocess
 from shutil import copyfile
 from os import path
 
+# pip install PyGithub. Lib operates on remote github to get issues
 from github import Github
 import re
 import github.Issue
 
 import argparse
+
+# pip install GitPython. Lib operates on local repo to get commits
 import git as local_git
 
 
@@ -29,11 +32,9 @@ class MyCommit:
         self.diffs = diffs
 
     def __str__(self):
-        summary = re.sub("[,]+", " ", self.summary)
-        summary = re.sub("\n", "\\n", self.summary)
+        summary = re.sub("[,\r\n]+", " ", self.summary)
         diffs = " ".join(self.diffs)
-        diffs = re.sub("[,]+", " ", diffs)
-        diffs = re.sub("\n", "\\n", diffs)
+        diffs = re.sub("[,\r\n]+", " ", diffs)
         return "{},{},{}\n".format(self.commit_id, summary, diffs)
 
 
@@ -55,18 +56,18 @@ if __name__ == "__main__":
 
     issue_dict = dict()
     repo = git.get_repo(args.r)
-    # issues = repo.get_issues()
-    # with open(os.path.join(output_dir, "issue.csv"), "w", encoding='utf8') as fout:
-    #     fout.write("issue_id,issue_content\n")
-    #     for issue in issues:
-    #         issue_number = issue.number
-    #         print(issue_number)
-    #         content = []
-    #         content.append(issue.title)
-    #         content.append(issue.body)
-    #         for comment in issue.get_comments():
-    #             content.append(comment.body)
-    #         fout.write(str(MyIssue(issue_number, content)))
+    issues = repo.get_issues(state="closed")
+    with open(os.path.join(output_dir, "issue.csv"), "w", encoding='utf8') as fout:
+        fout.write("issue_id,issue_content\n")
+        for issue in issues:
+            issue_number = issue.number
+            print(issue_number)
+            content = []
+            content.append(issue.title)
+            content.append(issue.body)
+            for comment in issue.get_comments():
+                content.append(comment.body)
+            fout.write(str(MyIssue(issue_number, content)))
 
     repo_url = "git@github.com:{}.git".format(args.r)
     repo_name = repo_url.split("/")[1]
@@ -81,7 +82,10 @@ if __name__ == "__main__":
             id = commit.hexsha
             summary = commit.summary
             parent = commit.parents[0] if commit.parents else EMPTY_TREE_SHA
-            differs = []
+            differs = set()
             for diff in commit.diff(parent, create_patch=True):
-                diff_str = differs.append(str(diff))
-            fout.write(str(MyCommit(id,summary,differs)))
+                diff_lines = str(diff).split("\n")
+                for diff_line in diff_lines:
+                    if diff_line.startswith("+") or diff_line.startswith("-") and '@' not in diff_line:
+                        differs.add(diff_line)
+            fout.write(str(MyCommit(id, summary, differs)))

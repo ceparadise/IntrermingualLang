@@ -32,6 +32,9 @@ class Experiment1:
             reader = MavenReader()
 
         self.dataSet = reader.readData()
+        key = "commit-code"
+        self.dataSet.gold_link_sets = {key:self.dataSet.gold_link_sets[key]}
+
         self.replace_word_population_percentage = replace_word_interval
         self.replace_word_inverval = replace_word_interval
         self.link_threshold_interval = link_threshold_interval

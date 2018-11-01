@@ -1,5 +1,6 @@
 from gensim import corpora, models, matutils
 
+from Preprocessor import Preprocessor
 from model import Model
 
 
@@ -39,17 +40,15 @@ class VSM(Model):
             res.append((word, idf))
         return res
 
-
 if __name__ == "__main__":
     docs = [
         'this is a test',
         'test assure quality',
         'test is important',
     ]
-    vsm = VSM("fr")
-    new_doc1 = "software quality rely on test"
-    new_doc2 = "quality is important"
-    new_doc3 = "i have a pretty dog"
+    vsm = VSM("en")
     vsm.build_model(docs)
-    print(vsm.get_doc_similarity(new_doc1, new_doc2))
-    print(vsm.get_doc_similarity(new_doc1, new_doc3))
+    preprocessor = Preprocessor()
+    new_doc1 = preprocessor.get_stemmed_tokens("software quality rely on test", "en")
+    new_doc2 = preprocessor.get_stemmed_tokens("quality is important", "en")
+    new_doc3 = preprocessor.get_stemmed_tokens("i have a pretty dog", "en")
