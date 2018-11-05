@@ -1,6 +1,7 @@
 import argparse
 
 import os
+import re
 
 from LDA import LDA
 from VSM import VSM
@@ -19,7 +20,7 @@ class Experiment2:
         self.repo_path = repo_path
         self.data_dir = os.path.join(self.git_projects_dir, repo_path)
         self.preprocessor = Preprocessor()
-        self.preprocessed_dataset()
+        self.preprocessed_dataset()  # Create clean tokens if not exist
         self.link_threshold_interval = link_threshold_interval
 
     def get_model(self, model_type, fo_lang_code, docs):
@@ -53,6 +54,10 @@ class Experiment2:
                     fout.write(line)
                     continue
                 id, content = line.split(",")
+
+                # Remove a few patterns
+                content = re.sub("\[[^\]]+\]", " ", content)
+
                 issue_tokens = self.preprocessor.get_tokens(content, "zh")
                 content_tks = " ".join(issue_tokens)
                 fout.write("{},{}\n".format(id, content_tks))
@@ -64,6 +69,10 @@ class Experiment2:
                     fout.write(line)
                     continue
                 id, summary, content = line.split(",")
+
+                # Remove a few patterns
+                pass
+
                 summary_tokens = self.preprocessor.get_tokens(summary, 'zh')
                 content_tks = self.preprocessor.get_tokens(content, "zh")
                 fout.write("{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks)))

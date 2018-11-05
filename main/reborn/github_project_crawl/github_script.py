@@ -5,6 +5,8 @@ from os import path
 
 # pip install PyGithub. Lib operates on remote github to get issues
 import math
+from time import sleep
+
 from github import Github
 import re
 import github.Issue
@@ -13,9 +15,8 @@ import argparse
 
 # pip install GitPython. Lib operates on local repo to get commits
 import git as local_git
-from googletrans import Translator
 
-from common import translate_long_sentence, translate_tokens
+from common import translate_long_sentence, translate_tokens, sentence_contains_chinese, translate_intermingual_sentence
 
 
 class MyIssue:
@@ -48,10 +49,12 @@ if __name__ == "__main__":
     parser.add_argument("-p", help="password")
     parser.add_argument("-d", help="download path")
     parser.add_argument("-r", help="repo path in github")
+    parser.add_argument("-t", type=bool, help="boolean value determine whether do translation")
     args = parser.parse_args()
     git = Github(args.u, args.p)
     git.get_user()
 
+    translate_project_flag = args.t
     EMPTY_TREE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
     output_dir = os.path.join("git_projects", args.r)
@@ -100,40 +103,41 @@ if __name__ == "__main__":
                             differs.add(diff_line)
                 commit = MyCommit(id, summary, differs)
                 fout.write(str(commit))
+
     # Translate the commit and issue
-    translator = Translator()
     trans_out_dir = os.path.join(output_dir, "translated_data")
     if not os.path.isdir(trans_out_dir):
         os.mkdir(trans_out_dir)
     trans_issue_file_path = os.path.join(trans_out_dir, "issue.csv")
     trans_commit_file_path = os.path.join(trans_out_dir, "commit.csv")
-    issue_token_file_path = os.path.join(output_dir, "clean_token_data", "issue.csv")
-    commit_token_file_paht = os.path.join(output_dir, "clean_token_data", "commit.csv")
+    # issue_token_file_path = os.path.join(output_dir, "clean_token_data", "issue.csv")
+    # commit_token_file_path = os.path.join(output_dir, "clean_token_data", "commit.csv")
 
-    print("Translating issue...")
-    translator = Translator()
-    partition_size = 14000
-    with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_token_file_path, encoding='utf8') as fin:
-        for i, line in enumerate(fin):
-            if i == 0:
-                fout.write(line)
-                continue
-            print(i)
-            issue_id, issue_content = line.strip("\n\t\r").split(",")
-            trans_content = translate_long_sentence(issue_content, translator)
-            fout.write("{},{}\n".format(issue_id, trans_content))
+    if translate_project_flag:
+        print("Translating issue...")
+        partition_size = 14000
+        with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_file_path, encoding='utf8') as fin:
+            for i, line in enumerate(fin):
+                if i == 0:
+                    fout.write(line)
+                    continue
+                print(i)
+                issue_id, issue_content = line.strip("\n\t\r").split(",")
+                translated_issue_content = translate_intermingual_sentence(issue_content)
+                fout.write("{},{}\n".format(issue_id, translated_issue_content))
 
-    print("Translate commit...")
-    with open(trans_commit_file_path, 'w', encoding='utf8') as fout, open(commit_token_file_paht,
-                                                                          encoding='utf8') as fin:
-        for i, line in enumerate(fin):
-            if i == 0:
-                fout.write(line)
-                continue
-            print(i)
-            commit_id, commit_summary, commit_content = line.strip("\n\t\r").split(",")
-            fout.write("{},{},{}\n".format(commit_id, translate_long_sentence(commit_summary, translator),
-                                           translate_long_sentence(commit_content, translator)))
+        print("Translate commit...")
+        with open(trans_commit_file_path, 'w', encoding='utf8') as fout, open(commit_file_path,
+                                                                              encoding='utf8') as fin:
+            for i, line in enumerate(fin):
+                if i == 0:
+                    fout.write(line)
+                    continue
+                print(i)
+                commit_id, commit_summary, commit_content = line.strip("\n\t\r").split(",")
+                translated_commit_summary = translate_intermingual_sentence(commit_summary)
+                translated_commit_content = translate_intermingual_sentence(commit_content)
+                fout.write("{},{},{}\n".format(commit_id, translated_commit_summary, translated_commit_content))
 
     # Extract links from the commits
     with open(os.path.join(output_dir, "links.csv"), 'w', encoding='utf8') as fout, \
