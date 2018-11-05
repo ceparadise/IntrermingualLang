@@ -1,6 +1,7 @@
 import re
 
 import many_stop_words
+import math
 import nltk
 
 
@@ -54,12 +55,19 @@ class Preprocessor():
         tokens = []
         doc = self.__clean_doc(doc)
         if language == "zh":  # maybe a mixture of en and zh
-            seg_str = " ".join(self.parser.tokenize(doc))
-            ch_token = self.get_zh(seg_str)
-            en_token = self.get_en(doc)
+            partition_size = 90000
             res = []
-            res.extend(ch_token)
-            res.extend(en_token)
+            # if doc is too long split it up
+            for i in range(math.ceil(len(doc) / partition_size)):
+                try:
+                    doc_parts = doc[i * partition_size: (i + 1) * partition_size]
+                    seg_str = " ".join(self.parser.tokenize(doc_parts))
+                    ch_token = self.get_zh(seg_str)
+                    en_token = self.get_en(doc_parts)
+                    res.extend(ch_token)
+                    res.extend(en_token)
+                except Exception as e:
+                    print("excpt when process {}".format(doc_parts))
         else:
             res = nltk.word_tokenize(doc)
         for wd in res:

@@ -145,7 +145,73 @@ class MavenReader:
         return Dataset(link_sets)
 
 
+class GtiProjectReader:
+    def __init__(self, repo_path):
+        self.repo_path = repo_path
+
+    def limit_artifacts_in_links(self, dataset: Dataset):
+        modified_link_sets = []
+        for linkset_id in dataset.gold_link_sets:
+            link_set: LinkSet = dataset.gold_link_sets[linkset_id]
+            source_dict: dict = link_set.artiPair.source_artif
+            target_dict: dict = link_set.artiPair.target_artif
+            links = link_set.links
+
+            gold_artif_set = set()
+            for (s, t) in links:
+                gold_artif_set.add(s)
+                gold_artif_set.add(t)
+
+            limited_source_dict = dict()
+            for s_art in source_dict.keys():
+                if s_art in gold_artif_set:
+                    limited_source_dict[s_art] = source_dict[s_art]
+            limited_target_dict = dict()
+            for t_art in target_dict.keys():
+                if t_art in gold_artif_set:
+                    limited_target_dict[t_art] = target_dict[t_art]
+            modified_artif_pair = ArtifactPair(limited_source_dict, link_set.artiPair.source_name, limited_target_dict,
+                                               link_set.artiPair.target_name)
+            modified_link_sets.append(LinkSet(modified_artif_pair, links))
+        return Dataset(modified_link_sets)
+
+    def readData(self, use_translated_data=False):
+        issues = dict()
+        commits = dict()
+        if use_translated_data:
+            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "issue.csv")
+            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "commit.csv")
+        else:
+            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "issue.csv")
+            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "commit.csv")
+        link_path = os.path.join(GIT_PROJECTS, self.repo_path, "links.csv")
+        with open(issue_path, encoding='utf8') as fin:
+            for i, line in enumerate(fin):
+                if i == 0:
+                    continue
+                id, content = line.split(",")
+                issues[id] = content
+        with open(commit_path, encoding='utf8') as fin:
+            for i, line in enumerate(fin):
+                if i == 0:
+                    continue
+                id, summary, content = line.split(",")
+                commits[id] = summary + content
+
+        artif_pair = ArtifactPair(issues, "issues", commits, "commits")
+        links = []
+        with open(link_path) as fin:
+            for i, line in enumerate(fin):
+                if i == 0:
+                    continue
+                issue_id, commit_id = line.split(",")
+                issue_id = issue_id.strip("\n\t\r")
+                commit_id = commit_id.strip("\n\t\r")
+                links.append((issue_id, commit_id))
+        link_set = LinkSet(artif_pair, links)
+        return Dataset([link_set])
+
+
 if __name__ == "__main__":
     mr = MavenReader()
     data = mr.readData()
-
