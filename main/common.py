@@ -18,7 +18,6 @@ CHINESE_CHAR_PATTERN = re.compile("[\u4e00-\u9fff]+")
 
 translator = translate.Client()
 
-
 def translate_sentences(en_sentence, lang_code):
     sleep(1)
     trans_sentence = translator.translate(en_sentence, dest=lang_code)["translatedText"]

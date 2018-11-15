@@ -49,7 +49,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", help="password")
     parser.add_argument("-d", help="download path")
     parser.add_argument("-r", help="repo path in github")
-    parser.add_argument("-t", type=bool, help="boolean value determine whether do translation")
+    parser.add_argument("-t", action="store_true", help="boolean value determine whether do translation")
     args = parser.parse_args()
     git = Github(args.u, args.p)
     git.get_user()
@@ -67,6 +67,7 @@ if __name__ == "__main__":
 
     issue_file_path = os.path.join(output_dir, "issue.csv")
     if not os.path.isfile(issue_file_path):
+        print("creating issue.csv")
         with open(issue_file_path, "w", encoding='utf8') as fout:
             fout.write("issue_id,issue_content\n")
             for issue in issues:
@@ -89,9 +90,11 @@ if __name__ == "__main__":
 
     commit_file_path = os.path.join(output_dir, "commit.csv")
     if not os.path.isfile(commit_file_path):
+        print("creating commit.csv...")
         with open(commit_file_path, 'w', encoding="utf8") as fout:
             fout.write("commit_id,commit_summary, commit_diff")
-            for commit in local_repo.iter_commits():
+            for i, commit in enumerate(local_repo.iter_commits()):
+                print("commit #{}".format(i))
                 id = commit.hexsha
                 summary = commit.summary
                 parent = commit.parents[0] if commit.parents else EMPTY_TREE_SHA
@@ -113,7 +116,7 @@ if __name__ == "__main__":
     # issue_token_file_path = os.path.join(output_dir, "clean_token_data", "issue.csv")
     # commit_token_file_path = os.path.join(output_dir, "clean_token_data", "commit.csv")
 
-    if translate_project_flag:
+    if translate_project_flag is True:
         print("Translating issue...")
         partition_size = 14000
         with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_file_path, encoding='utf8') as fin:

@@ -1,6 +1,8 @@
+import os
 import pickle
 import math
 
+from common import DATA_DIR
 from reborn.Preprocessor import Preprocessor
 
 
@@ -252,6 +254,7 @@ class MAP_cal:
             g_index = self.__get_average_index(g, rank)
             precision = self.precision(rank, gold, g_index)
             sum += precision
+        print(sum)
         return round(sum / len(gold), self.round_digit_num)
 
     def mean_average_precision(self, rank_gold_pairs):
@@ -265,3 +268,40 @@ class MAP_cal:
 
     def run(self):
         return self.mean_average_precision(self.rank_gold_pairs)
+
+
+class Map_from_file:
+    """
+    Calculate Map from result file
+    """
+
+    def __init__(self, gold_file: str, result_file: str):
+        self.gold_file = gold_file
+        self.result_file = result_file
+        self.rank = []
+        self.gold = []
+        with open(gold_file) as g_fin:
+            for i, line in enumerate(g_fin):
+                if i == 0:
+                    continue
+                source, target = line.strip("\n\t\r").split(",")
+                source = source.strip("\n\t\r ")
+                target = target.strip("\n\t\r ")
+                self.gold.append((source, target))
+        with open(result_file) as l_fin:
+            for i, line in enumerate(l_fin):
+                parts = [x.replace("\'", "").strip() for x in line.strip("\n\t\r\"\(\)").split(",")]
+                self.rank.append((parts[0], parts[1], float(parts[2].strip())))
+
+    def run(self):
+        return MAP_cal(self.rank, self.gold, do_sort=False,round_digit_num=8).run()
+
+
+if __name__ == "__main__":
+    en_zh_res = "G:\Projects\InterLingualTrace\main\\reborn\experiments\Experiment2\\results\\alibaba\canal\\vsm-zh-en\\vsm_issues-commits_link_score.txt"
+    link_file = "G:\Projects\InterLingualTrace\main\\reborn\github_project_crawl\git_projects\\alibaba\canal\links.csv"
+    translated = "G:\Projects\InterLingualTrace\main\\reborn\experiments\Experiment2\\results\\alibaba\canal\\vsm-translate\\vsm_issues-commits_link_score.txt"
+    file_map_en_zh = Map_from_file(link_file, en_zh_res)
+    print(file_map_en_zh.run())
+    file_map_en_translated = Map_from_file(link_file, translated, )
+    print(file_map_en_translated.run())

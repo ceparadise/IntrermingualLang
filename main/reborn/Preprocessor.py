@@ -67,7 +67,9 @@ class Preprocessor():
                     res.extend(ch_token)
                     res.extend(en_token)
                 except Exception as e:
-                    print("excpt when process {}".format(doc_parts))
+                    print(e)
+                    print("exception when process {}".format(doc_parts))
+
         else:
             res = nltk.word_tokenize(doc)
         for wd in res:

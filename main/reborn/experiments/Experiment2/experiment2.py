@@ -40,42 +40,81 @@ class Experiment2:
         :return:
         """
         output_dir = os.path.join(self.data_dir, "clean_token_data")
+        translated_dir = os.path.join(self.data_dir, "translated_data")
+        translated_token_dir = os.path.join(translated_dir, "clean_translated_tokens")
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
+            print("Processing Issues...")
+            with open(os.path.join(self.data_dir, "issue.csv"), encoding='utf8') as fin, \
+                    open(os.path.join(output_dir, 'issue.csv'), 'w', encoding='utf8') as fout:
+                for i, line in enumerate(fin):
+                    if i == 0:
+                        fout.write(line)
+                        continue
+                    id, content = line.split(",")
+                    # Remove a few patterns
+                    content = re.sub("\[[^\]]+\]", " ", content)
+
+                    issue_tokens = self.preprocessor.get_tokens(content, "zh")
+                    content_tks = " ".join(issue_tokens)
+                    fout.write("{},{}\n".format(id, content_tks))
+            print("Processing Commit...")
+            with open(os.path.join(self.data_dir, "commit.csv", ), encoding='utf8') as fin, \
+                    open(os.path.join(output_dir, "commit.csv"), 'w', encoding='utf8') as fout:
+                for i, line in enumerate(fin):
+                    if i == 0:
+                        fout.write(line)
+                        continue
+                    id, summary, content = line.split(",")
+
+                    # Remove a few patterns
+                    pass
+
+                    summary_tokens = self.preprocessor.get_tokens(summary, 'zh')
+                    content_tks = self.preprocessor.get_tokens(content, "zh")
+                    fout.write("{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks)))
         else:
             print("Dir {} alread exist, skip creating".format(output_dir))
-            return
 
-        print("Processing issues...")
-        with open(os.path.join(self.data_dir, "issue.csv"), encoding='utf8') as fin, \
-                open(os.path.join(output_dir, 'issue.csv'), 'w', encoding='utf8') as fout:
-            for i, line in enumerate(fin):
-                if i == 0:
-                    fout.write(line)
-                    continue
-                id, content = line.split(",")
+        if not os.path.isdir(translated_token_dir) and self.use_translated_data is True:
+            os.mkdir(translated_token_dir)
+            print("Preprocess Translated Issues...")
+            with open(os.path.join(translated_dir, "issue.csv"), encoding='utf8') as fin, \
+                    open(os.path.join(translated_token_dir, "issue.csv"), "w", encoding='utf8') as fout:
+                for i, line in enumerate(fin):
+                    if i == 0:
+                        fout.write(line)
+                        continue
+                    parts = line.split(",")  # Google translation introduce columa which break csv format
+                    id = parts[0]
+                    content = " ".join(parts[1:])
+                    # Remove a few patterns
+                    content = re.sub("\[[^\]]+\]", " ", content)
 
-                # Remove a few patterns
-                content = re.sub("\[[^\]]+\]", " ", content)
+                    issue_tokens = self.preprocessor.get_tokens(content, "en")
+                    content_tks = " ".join(issue_tokens)
+                    fout.write("{},{}\n".format(id, content_tks))
 
-                issue_tokens = self.preprocessor.get_tokens(content, "zh")
-                content_tks = " ".join(issue_tokens)
-                fout.write("{},{}\n".format(id, content_tks))
-        print("Processing commit...")
-        with open(os.path.join(self.data_dir, "commit.csv", ), encoding='utf8') as fin, \
-                open(os.path.join(output_dir, "commit.csv"), 'w', encoding='utf8') as fout:
-            for i, line in enumerate(fin):
-                if i == 0:
-                    fout.write(line)
-                    continue
-                id, summary, content = line.split(",")
+            print("Processing Translated Commit...")
+            with open(os.path.join(translated_dir, "commit.csv"), encoding='utf8') as fin, \
+                    open(os.path.join(translated_token_dir, "commit.csv"), "w", encoding='utf8') as fout:
+                for i, line in enumerate(fin):
+                    if i == 0:
+                        fout.write(line)
+                        continue
+                    parts = line.split(",")
+                    id = parts[0]
+                    summary = parts[1]
+                    content = " ".join(parts[2:])
 
-                # Remove a few patterns
-                pass
+                    # Remove a few patterns
+                    pass
 
-                summary_tokens = self.preprocessor.get_tokens(summary, 'zh')
-                content_tks = self.preprocessor.get_tokens(content, "zh")
-                fout.write("{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks)))
+                    summary_tokens = self.preprocessor.get_tokens(summary, 'en')
+                    content_tks = self.preprocessor.get_tokens(content, "en")
+                    fout.write("{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks)))
+        else:
+            print("Dir {} already exist, skip creating".format(translated_token_dir))
 
     def run_model(self, model, dataset: Dataset):
         results = dict()
@@ -136,7 +175,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Experiment 2")
     parser.add_argument("--git_repo_path", help="the repo path of the dataset e.g alibaba/canal")
     parser.add_argument("--model", help="Model used for experiment")
-    parser.add_argument("--use_translated_data", type=bool)
+    parser.add_argument("--use_translated_data", action="store_true")
     args = parser.parse_args()
     exp2 = Experiment2(args.git_repo_path, args.model, args.use_translated_data)
     exp2.run()

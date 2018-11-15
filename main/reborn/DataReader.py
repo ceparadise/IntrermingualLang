@@ -178,9 +178,11 @@ class GtiProjectReader:
     def readData(self, use_translated_data=False):
         issues = dict()
         commits = dict()
-        if use_translated_data:
-            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "issue.csv")
-            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "commit.csv")
+        if use_translated_data is True:
+            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
+                                      "issue.csv")
+            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
+                                       "commit.csv")
         else:
             issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "issue.csv")
             commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "commit.csv")
