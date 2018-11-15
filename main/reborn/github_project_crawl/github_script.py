@@ -20,27 +20,30 @@ from common import translate_long_sentence, translate_tokens, sentence_contains_
 
 
 class MyIssue:
-    def __init__(self, issue_id, content):
+    def __init__(self, issue_id, content, create_time, close_time):
         self.issue_id = issue_id
         self.content = content
+        self.create_time = create_time
+        self.close_time = close_time
 
     def __str__(self):
         content_str = "\n".join(self.content)
         content_str = re.sub("[,\r\n]+", " ", content_str)
-        return "{},{}\n".format(self.issue_id, content_str)
+        return "{},{},{}\n".format(self.issue_id, content_str, self.close_time)
 
 
 class MyCommit:
-    def __init__(self, commit_id, summary, diffs):
+    def __init__(self, commit_id, summary, diffs, commit_time):
         self.commit_id = commit_id
         self.summary = summary
         self.diffs = diffs
+        self.commit_time = commit_time
 
     def __str__(self):
         summary = re.sub("[,\r\n]+", " ", self.summary)
         diffs = " ".join(self.diffs)
         diffs = re.sub("[,\r\n]+", " ", diffs)
-        return "{},{},{}\n".format(self.commit_id, summary, diffs)
+        return "{},{},{},{}\n".format(self.commit_id, summary, diffs, self.commit_time)
 
 
 if __name__ == "__main__":
@@ -69,16 +72,18 @@ if __name__ == "__main__":
     if not os.path.isfile(issue_file_path):
         print("creating issue.csv")
         with open(issue_file_path, "w", encoding='utf8') as fout:
-            fout.write("issue_id,issue_content\n")
+            fout.write("issue_id,issue_content,closed_at\n")
             for issue in issues:
                 issue_number = issue.number
                 print(issue_number)
                 content = []
                 content.append(issue.title)
                 content.append(issue.body)
+                issue_close_time = issue.closed_at
+                issue_create_time = issue.created_at
                 for comment in issue.get_comments():
                     content.append(comment.body)
-                myissue = MyIssue(issue_number, content)
+                myissue = MyIssue(issue_number, content, issue_create_time, issue_close_time)
                 fout.write(str(myissue))
 
     repo_url = "git@github.com:{}.git".format(args.r)
@@ -92,11 +97,12 @@ if __name__ == "__main__":
     if not os.path.isfile(commit_file_path):
         print("creating commit.csv...")
         with open(commit_file_path, 'w', encoding="utf8") as fout:
-            fout.write("commit_id,commit_summary, commit_diff")
+            fout.write("commit_id,commit_summary, commit_diff,commit_time\n")
             for i, commit in enumerate(local_repo.iter_commits()):
                 print("commit #{}".format(i))
                 id = commit.hexsha
                 summary = commit.summary
+                create_time = commit.committed_datetime
                 parent = commit.parents[0] if commit.parents else EMPTY_TREE_SHA
                 differs = set()
                 for diff in commit.diff(parent, create_patch=True):
@@ -104,7 +110,7 @@ if __name__ == "__main__":
                     for diff_line in diff_lines:
                         if diff_line.startswith("+") or diff_line.startswith("-") and '@' not in diff_line:
                             differs.add(diff_line)
-                commit = MyCommit(id, summary, differs)
+                commit = MyCommit(id, summary, differs, create_time)
                 fout.write(str(commit))
 
     # Translate the commit and issue

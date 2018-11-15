@@ -51,13 +51,13 @@ class Experiment2:
                     if i == 0:
                         fout.write(line)
                         continue
-                    id, content = line.split(",")
+                    id, content, issue_close_time = line.split(",")
                     # Remove a few patterns
                     content = re.sub("\[[^\]]+\]", " ", content)
-
+                    issue_close_time = issue_close_time.strip("\n\t\r")
                     issue_tokens = self.preprocessor.get_tokens(content, "zh")
                     content_tks = " ".join(issue_tokens)
-                    fout.write("{},{}\n".format(id, content_tks))
+                    fout.write("{},{},{}\n".format(id, content_tks, issue_close_time))
             print("Processing Commit...")
             with open(os.path.join(self.data_dir, "commit.csv", ), encoding='utf8') as fin, \
                     open(os.path.join(output_dir, "commit.csv"), 'w', encoding='utf8') as fout:
@@ -65,14 +65,15 @@ class Experiment2:
                     if i == 0:
                         fout.write(line)
                         continue
-                    id, summary, content = line.split(",")
+                    id, summary, content, commit_time = line.split(",")
 
                     # Remove a few patterns
                     pass
 
                     summary_tokens = self.preprocessor.get_tokens(summary, 'zh')
                     content_tks = self.preprocessor.get_tokens(content, "zh")
-                    fout.write("{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks)))
+                    commit_time = commit_time.strip("\n\t\r")
+                    fout.write("{},{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks), commit_time))
         else:
             print("Dir {} alread exist, skip creating".format(output_dir))
 
@@ -87,13 +88,14 @@ class Experiment2:
                         continue
                     parts = line.split(",")  # Google translation introduce columa which break csv format
                     id = parts[0]
-                    content = " ".join(parts[1:])
+                    content = " ".join(parts[1:-1])
+                    issue_close_time = parts[-1]
                     # Remove a few patterns
                     content = re.sub("\[[^\]]+\]", " ", content)
 
                     issue_tokens = self.preprocessor.get_tokens(content, "en")
                     content_tks = " ".join(issue_tokens)
-                    fout.write("{},{}\n".format(id, content_tks))
+                    fout.write("{},{}\n".format(id, content_tks, issue_close_time))
 
             print("Processing Translated Commit...")
             with open(os.path.join(translated_dir, "commit.csv"), encoding='utf8') as fin, \
@@ -105,14 +107,15 @@ class Experiment2:
                     parts = line.split(",")
                     id = parts[0]
                     summary = parts[1]
-                    content = " ".join(parts[2:])
+                    content = " ".join(parts[2:-1])
+                    commit_time = parts[-1]
 
                     # Remove a few patterns
                     pass
 
                     summary_tokens = self.preprocessor.get_tokens(summary, 'en')
                     content_tks = self.preprocessor.get_tokens(content, "en")
-                    fout.write("{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks)))
+                    fout.write("{},{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks), commit_time))
         else:
             print("Dir {} already exist, skip creating".format(translated_token_dir))
 

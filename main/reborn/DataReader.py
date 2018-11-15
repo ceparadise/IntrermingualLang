@@ -2,6 +2,7 @@ from common import *
 import xml.etree.ElementTree as ET
 
 from reborn.Datasets import ArtifactPair, LinkSet, Dataset
+from datetime import datetime
 
 
 class CM1Reader:
@@ -155,6 +156,8 @@ class GtiProjectReader:
             link_set: LinkSet = dataset.gold_link_sets[linkset_id]
             source_dict: dict = link_set.artiPair.source_artif
             target_dict: dict = link_set.artiPair.target_artif
+            source_extra = link_set.artiPair.source_artif_extra_info
+            target_extra = link_set.artiPair.target_artif_extra_info
             links = link_set.links
 
             gold_artif_set = set()
@@ -172,8 +175,21 @@ class GtiProjectReader:
                     limited_target_dict[t_art] = target_dict[t_art]
             modified_artif_pair = ArtifactPair(limited_source_dict, link_set.artiPair.source_name, limited_target_dict,
                                                link_set.artiPair.target_name)
+            # Keep the extra information
+            modified_artif_pair.source_artif_extra_info = source_extra
+            modified_artif_pair.target_artif_extra_info = target_extra
             modified_link_sets.append(LinkSet(modified_artif_pair, links))
         return Dataset(modified_link_sets)
+
+    def link_comply_with_time_constrain(self, issue_close_time_str, commit_time_str) -> bool:
+        if issue_close_time_str == 'None' or issue_close_time_str is None:  # If issue is still open, we assume it connect with no commit
+            return False
+        commit_time_str = commit_time_str.split("+")[0]
+        issue_close = datetime.strptime(issue_close_time_str, '%Y-%m-%d %H:%M:%S')  # 2018-10-16 01:48:56
+        commit_create = datetime.strptime(commit_time_str, '%Y-%m-%d %H:%M:%S')  # 2018-10-26 20:06:02+08:00
+        if (issue_close.day < commit_create.day):
+            return False
+        return True
 
     def readData(self, use_translated_data=False):
         issues = dict()
@@ -187,20 +203,27 @@ class GtiProjectReader:
             issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "issue.csv")
             commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "commit.csv")
         link_path = os.path.join(GIT_PROJECTS, self.repo_path, "links.csv")
+
+        issue_close_time_dict = dict()
+        commit_time_dict = dict()
         with open(issue_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
-                id, content = line.split(",")
+                id, content, close_time = line.strip("\n\t\r").split(",")
                 issues[id] = content
+                issue_close_time_dict[id] = close_time
         with open(commit_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
-                id, summary, content = line.split(",")
+                id, summary, content, commit_time = line.strip("\n\t\r").split(",")
                 commits[id] = summary + content
+                commit_time_dict[id] = commit_time
 
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
+        artif_pair.source_artif_extra_info["issue_close_time_dict"] = issue_close_time_dict
+        artif_pair.target_artif_extra_info["commit_time"] = commit_time_dict
         links = []
         with open(link_path) as fin:
             for i, line in enumerate(fin):
@@ -209,7 +232,10 @@ class GtiProjectReader:
                 issue_id, commit_id = line.split(",")
                 issue_id = issue_id.strip("\n\t\r")
                 commit_id = commit_id.strip("\n\t\r")
-                links.append((issue_id, commit_id))
+                # Filter the links by applying the time constrain
+                link = (issue_id, commit_id)
+                if self.link_comply_with_time_constrain(issue_close_time_dict[issue_id], commit_time_dict[commit_id]):
+                    links.append(link)
         link_set = LinkSet(artif_pair, links)
         return Dataset([link_set])
 

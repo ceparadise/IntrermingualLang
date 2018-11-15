@@ -103,6 +103,8 @@ class ArtifactPair:
         self.target_name = target_name
         self.source_artif = source_artif
         self.target_artif = target_artif
+        self.source_artif_extra_info = dict()
+        self.target_artif_extra_info = dict()
 
     def get_pair_id(self):
         return self.source_name + "-" + self.target_name
@@ -294,7 +296,7 @@ class Map_from_file:
                 self.rank.append((parts[0], parts[1], float(parts[2].strip())))
 
     def run(self):
-        return MAP_cal(self.rank, self.gold, do_sort=False,round_digit_num=8).run()
+        return MAP_cal(self.rank, self.gold, do_sort=False, round_digit_num=8).run()
 
 
 if __name__ == "__main__":
