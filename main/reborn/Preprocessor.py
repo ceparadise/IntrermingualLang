@@ -20,6 +20,32 @@ class Preprocessor():
         class   finally     long    strictfp**  volatile
         const*  float   native  super   while
         """.split()])
+        self.customized_stop_words = set(
+            "druid version alibaba add update pull copyright "
+            "select where when where count over branch "
+            "alter todo merge request johnhuang cn master fixed bug canal"
+            "马云 什么 现在 急着 直接 指点 可能 时候 "
+            "如果 这边 怎么 那些 这些 有助于 好像 没啥 干脆 "
+            "因此 可以 是否 哪里 可否 最近 貌似 很多 出现 这个"
+            " 但是 还没 这时候 出现 大佬 解答 一下 假设 并且 "
+            "一直 但是 郁闷 希望 尽快 没有 由于 学生 来说 有点 "
+            "哈哈哈 温绍 周五 下午 写道 一个啥 问题 求助 信息么"
+            " 想法 感谢 自己 判断 为什么 义乌 是的 怎么了"
+            " 为什么 之后 就是 别人 看到 的话 谢谢 关于 今天"
+            " 发现 问题 请问 一旦 这时 能否 大家 快呀 请教 如何"
+            " 期待 支持 变得 诡异 起来 使用 导致 比如 一般 需要  "
+            "原来 可是 并不 这样 尊敬 大师 您好 学习者 目前 如何"
+            " 避免 合并 作者 在一起 这样 一些 其他 很多 绝大部分"
+            " 来源于 下面 给做 里面 估计 玩意 误导 我了 不应该 奇怪"
+            " 所有 真是 秒回啊 然后 无可 理喻 想问 什么样 另外 帮忙"
+            " 看下 看看 以便 然而 求教 各位 如下 以前 为啥 这么 "
+            "有影响 林夕 还是 时不时 于是 仍然 十分 想要 以上 不知道 "
+            "不需要 上午 不了 孙健 个人 认为 对于 比如说 然后 之前 "
+            "因为 后来 温少 此时 感觉 名字 好酷 中文 翻译 德鲁伊 "
+            "听到 感觉 里面 英雄 德鲁伊 哈哈 不过 应该 因为 炉石 传说 "
+            "里面 难道 因为 项目 创始人 非常 喜欢 卡牌 职业 表示 非常 "
+            "好奇 得到 官方 回复 当时 老板 喜欢 名字 好吧 因为 开源 "
+            "项目 如此 非常 抽出 宝贵 时间 回答 含量 或者是 像是 一些 怎么办 非常 已经 而非 不然".split())
 
     def get_stemmer(self, lang_code):
         "danish dutch english finnish french german hungarian italian norwegian porter portuguese romanian russian spanish swedish"
@@ -54,16 +80,21 @@ class Preprocessor():
     def get_tokens(self, doc, language="en"):
         tokens = []
         doc = self.__clean_doc(doc)
+        res = []
+        MIN_ENG_TOKEN_LEN = 3
+        MIN_ZH_TOKEN_LEN = 1
         if language == "zh":  # maybe a mixture of en and zh
             partition_size = 90000
-            res = []
             # if doc is too long split it up
             for i in range(math.ceil(len(doc) / partition_size)):
                 try:
                     doc_parts = doc[i * partition_size: (i + 1) * partition_size]
                     seg_str = " ".join(self.parser.tokenize(doc_parts))
                     ch_token = self.get_zh(seg_str)
+                    ch_token = [x for x in ch_token if
+                                len(x) > 1]  # include Chinese words with 2 or 3 characters
                     en_token = self.get_en(doc_parts)
+                    en_token = [x for x in en_token if len(x) > MIN_ENG_TOKEN_LEN]
                     res.extend(ch_token)
                     res.extend(en_token)
                 except Exception as e:
@@ -71,12 +102,20 @@ class Preprocessor():
                     print("exception when process {}".format(doc_parts))
 
         else:
-            res = nltk.word_tokenize(doc)
+            nltk_tks = nltk.word_tokenize(doc)
+            for tk in nltk_tks:
+                smaller_tokens = tk.split("_")  # NLTK will reserve underscore
+                for small_token in smaller_tokens:
+                    if len(small_token) > MIN_ENG_TOKEN_LEN:
+                        res.append(small_token)
+
         for wd in res:
             tokens.extend(self.split_camal_case(wd))
         tokens = [x.lower() for x in tokens]
         tokens = self.remove_java_keyword(tokens)
-        tokens = self.remove_stop_word(tokens, language=language)
+        tokens = self.remove_stop_word(tokens, language="zh")
+        tokens = self.remove_stop_word(tokens, language="en")
+        tokens = self.remove_stop_word(tokens, stop_words=self.customized_stop_words)
         return tokens
 
     def get_stemmed_tokens(self, doc_str, language="en"):
@@ -88,8 +127,9 @@ class Preprocessor():
         tokens = [fo_stemmer.stem(x) for x in tokens]
         return tokens
 
-    def remove_stop_word(self, token_list, language="en"):
-        stop_words = many_stop_words.get_stop_words(language)
+    def remove_stop_word(self, token_list, language="en", stop_words=None):
+        if stop_words == None:
+            stop_words = many_stop_words.get_stop_words(language)
         return [x for x in token_list if x not in stop_words]
 
     def split_camal_case(self, phrase):

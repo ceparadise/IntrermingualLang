@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # append_time(commit_path, commit_time_dict)
     # append_time(issue_path, issue_time_dict)
 
-    translated_clean_token_data_dir = os.path.join(data_dir, "translated_data", "clean_translated_tokens")
+    translated_clean_token_data_dir = os.path.join(data_dir, "translated_data")
     translated_commit_path = os.path.join(translated_clean_token_data_dir, "commit.csv")
     translated_issue_path = os.path.join(translated_clean_token_data_dir, "issue.csv")
     append_time(translated_commit_path, commit_time_dict)

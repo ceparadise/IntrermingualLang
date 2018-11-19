@@ -86,16 +86,16 @@ class Experiment2:
                     if i == 0:
                         fout.write(line)
                         continue
-                    parts = line.split(",")  # Google translation introduce columa which break csv format
+                    parts = line.strip("\n\t\r").split(
+                        ",")  # Google translation introduce columa which break csv format
                     id = parts[0]
                     content = " ".join(parts[1:-1])
                     issue_close_time = parts[-1]
                     # Remove a few patterns
                     content = re.sub("\[[^\]]+\]", " ", content)
-
                     issue_tokens = self.preprocessor.get_tokens(content, "en")
                     content_tks = " ".join(issue_tokens)
-                    fout.write("{},{}\n".format(id, content_tks, issue_close_time))
+                    fout.write("{},{},{}\n".format(id, content_tks, issue_close_time))
 
             print("Processing Translated Commit...")
             with open(os.path.join(translated_dir, "commit.csv"), encoding='utf8') as fin, \
@@ -104,7 +104,7 @@ class Experiment2:
                     if i == 0:
                         fout.write(line)
                         continue
-                    parts = line.split(",")
+                    parts = line.strip("\n\t\r").split(",")
                     id = parts[0]
                     summary = parts[1]
                     content = " ".join(parts[2:-1])
@@ -119,6 +119,15 @@ class Experiment2:
         else:
             print("Dir {} already exist, skip creating".format(translated_token_dir))
 
+    # def run_model(self, model, dataset: Dataset):
+    #     results = dict()
+    #     for link_set_id in dataset.gold_link_sets:
+    #         link_set: LinkSet = dataset.gold_link_sets[link_set_id]
+    #         #gen_links = self.get_links(model, link_set.artiPair)
+    #         gen_links = self.get_links()
+    #         results[link_set_id] = gen_links
+    #     return results
+
     def run_model(self, model, dataset: Dataset):
         results = dict()
         for link_set_id in dataset.gold_link_sets:
@@ -132,10 +141,36 @@ class Experiment2:
     def get_links(self, trace_model, source_artifact, target_artifact):
         return trace_model.get_link_scores(source_artifact, target_artifact)
 
+        # def get_links(self, trace_model, artifactPair: ArtifactPair):
+        #     def link_comply_with_time_constrain(issue_close_time_str, commit_time_str) -> bool:
+        #         if issue_close_time_str == 'None' or issue_close_time_str is None:  # If issue is still open, we assume it connect with no commit
+        #             return False
+        #         issue_close = datetime.strptime(issue_close_time_str.split()[0], '%Y-%m-%d')  # 2018-10-16 01:48:56
+        #         commit_create = datetime.strptime(commit_time_str.split()[0], '%Y-%m-%d')  # 2018-10-26 20:06:02+08:00
+        #         if (issue_close < commit_create):
+        #             return False
+        #         return True
+
+        source_artifacts = artifactPair.source_artif
+        target_artifacts = artifactPair.target_artif
+        issue_close_time = artifactPair.source_artif_extra_info["issue_close_time_dict"]
+        commit_time = artifactPair.target_artif_extra_info["commit_time"]
+        candidates = []
+        for s_id in source_artifacts:
+            for t_id in target_artifacts:
+                s_content = source_artifacts[s_id]
+                t_content = target_artifacts[t_id]
+                candidate = ((s_id, s_content), (t_id, t_content))
+                candidates.append(candidate)
+        # candidates = [x for x in candidates if
+        #               link_comply_with_time_constrain(issue_close_time[x[0][0]], commit_time[x[1][0]])]
+        return trace_model.get_link_scores_with_processed_artifacts(candidates)
+
     def run(self):
         reader = GtiProjectReader(self.repo_path, )
         dataSet = reader.readData(use_translated_data=self.use_translated_data)
         dataSet = reader.limit_artifacts_in_links(dataSet)
+        print(dataSet)
         model = self.get_model(self.model_type, "en", dataSet.get_docs())
         results = self.run_model(model, dataSet)
         for link_set_id in dataSet.gold_link_sets:
@@ -178,7 +213,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Experiment 2")
     parser.add_argument("--git_repo_path", help="the repo path of the dataset e.g alibaba/canal")
     parser.add_argument("--model", help="Model used for experiment")
-    parser.add_argument("--use_translated_data", action="store_true")
+    parser.add_argument("-t", action="store_true", help="use translated dataset")
     args = parser.parse_args()
-    exp2 = Experiment2(args.git_repo_path, args.model, args.use_translated_data)
+    exp2 = Experiment2(args.git_repo_path, args.model, args.t)
     exp2.run()

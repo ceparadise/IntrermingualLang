@@ -7,3 +7,7 @@ Ideas:
 2. Build w2v vectors on both English and Chinese then map the vector space with vecmap. Training vec map with the dictionary data
 3. Create a replacement list for both source and target target with WordNet or dictionary. 
 Discuss with Jane when the previous experiment get good result to see if this step is still necessary.
+
+Summary:
+1. Translation not necessary improve the result because the vocabulary used by the translator may not
+match the dataset.

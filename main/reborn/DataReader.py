@@ -182,49 +182,66 @@ class GtiProjectReader:
         return Dataset(modified_link_sets)
 
     def link_comply_with_time_constrain(self, issue_close_time_str, commit_time_str) -> bool:
+        """
+        This rule will only impact 100 gold links
+        :param issue_close_time_str:
+        :param commit_time_str:
+        :return:
+        """
         if issue_close_time_str == 'None' or issue_close_time_str is None:  # If issue is still open, we assume it connect with no commit
             return False
-        commit_time_str = commit_time_str.split("+")[0]
-        issue_close = datetime.strptime(issue_close_time_str, '%Y-%m-%d %H:%M:%S')  # 2018-10-16 01:48:56
-        commit_create = datetime.strptime(commit_time_str, '%Y-%m-%d %H:%M:%S')  # 2018-10-26 20:06:02+08:00
-        if (issue_close.day < commit_create.day):
+        issue_close = datetime.strptime(issue_close_time_str.split()[0], '%Y-%m-%d')  # 2018-10-16 01:48:56
+        commit_create = datetime.strptime(commit_time_str.split()[0], '%Y-%m-%d')  # 2018-10-26 20:06:02+08:00
+        if (issue_close < commit_create):
             return False
         return True
 
-    def readData(self, use_translated_data=False):
+    def __readData(self, issue_path, commit_path, link_path):
+        def all_english(content: str) -> bool:
+            def get_en(doc):
+                pattern = re.compile("[a-zA-Z]+")
+                res = pattern.findall(doc)
+                return res
+
+            return len(get_en(content)) == len(content.split())
+
         issues = dict()
         commits = dict()
-        if use_translated_data is True:
-            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
-                                      "issue.csv")
-            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
-                                       "commit.csv")
-        else:
-            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "issue.csv")
-            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "commit.csv")
-        link_path = os.path.join(GIT_PROJECTS, self.repo_path, "links.csv")
-
         issue_close_time_dict = dict()
         commit_time_dict = dict()
+        MIN_DOC_SIZE = 15
+        filtered_issued = 0
+        filtered_commit = 0
         with open(issue_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
                 id, content, close_time = line.strip("\n\t\r").split(",")
+                if len(content.split()) < MIN_DOC_SIZE:
+                    filtered_issued += 1
+                    continue
                 issues[id] = content
                 issue_close_time_dict[id] = close_time
+        print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE))
         with open(commit_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
                 id, summary, content, commit_time = line.strip("\n\t\r").split(",")
-                commits[id] = summary + content
+                commit_content = summary + content
+                if len(commit_content.split()) < MIN_DOC_SIZE:
+                    filtered_commit += 1
+                    continue
+                commits[id] = commit_content
                 commit_time_dict[id] = commit_time
-
+        print("{} commit are filtered minimal lenght {}...".format(filtered_commit, MIN_DOC_SIZE))
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
         artif_pair.source_artif_extra_info["issue_close_time_dict"] = issue_close_time_dict
         artif_pair.target_artif_extra_info["commit_time"] = commit_time_dict
         links = []
+
+        all_english_cnt = 0
+
         with open(link_path) as fin:
             for i, line in enumerate(fin):
                 if i == 0:
@@ -232,12 +249,37 @@ class GtiProjectReader:
                 issue_id, commit_id = line.split(",")
                 issue_id = issue_id.strip("\n\t\r")
                 commit_id = commit_id.strip("\n\t\r")
-                # Filter the links by applying the time constrain
+                if issue_id not in issues or commit_id not in commits:
+                    continue
+
+                # if all_english(issues[issue_id]) or all_english(commits[commit_id]):
+                #     all_english_cnt += 1
+                #     continue
+                self.link_comply_with_time_constrain(issue_close_time_dict[issue_id], commit_time_dict[commit_id])
                 link = (issue_id, commit_id)
-                if self.link_comply_with_time_constrain(issue_close_time_dict[issue_id], commit_time_dict[commit_id]):
-                    links.append(link)
+                links.append(link)
+        print("all english filter removed {} links".format(all_english_cnt))
+        print("Link size:{}".format(len(links)))
         link_set = LinkSet(artif_pair, links)
         return Dataset([link_set])
+
+    def readData(self, use_translated_data=False) -> Dataset:
+        issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "issue.csv")
+        commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "commit.csv")
+        link_path = os.path.join(GIT_PROJECTS, self.repo_path, "links.csv")
+        origin_dataset = self.__readData(issue_path, commit_path, link_path)
+        if use_translated_data:
+            issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
+                                      "issue.csv")
+            commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
+                                       "commit.csv")
+            trans_dataset = self.__readData(issue_path, commit_path, link_path)
+            for link_set_id in trans_dataset.gold_link_sets:
+                trans_dataset.gold_link_sets[link_set_id].links = origin_dataset.gold_link_sets[
+                    link_set_id].links  # map the translated gold linkset back to origin datset, any filtering on origin dataset will reflect on trans dataset
+            return trans_dataset
+        else:
+            return origin_dataset
 
 
 if __name__ == "__main__":

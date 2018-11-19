@@ -20,6 +20,9 @@ class Dataset:
         self.round_digit_num = round_digit_num
 
     def get_impacted_dataSet(self, replace_list):
+        """
+        Keep the artifacts and links which have tokens been replaced.
+        """
         impacted_link_sets = []
         for link_set_id in self.gold_link_sets.keys():
             link_set = self.gold_link_sets[link_set_id]
@@ -83,6 +86,18 @@ class Dataset:
     def load(self, path):
         with open(path) as fin:
             self.gold_link_sets = pickle.load(fin)
+
+    def __str__(self):
+        res = []
+        for linkset_id in self.gold_link_sets:
+            linkset: LinkSet = self.gold_link_sets[linkset_id]
+            link_size = len(linkset.links)
+            source_size = len(linkset.artiPair.source_artif)
+            target_size = len(linkset.artiPair.target_artif)
+            stat = "Linkset Id:{} LinkSize:{}, SourceSize:{}, TargetSize{}".format(linkset_id, link_size,
+                                                                                   source_size, target_size)
+            res.append(stat)
+        return "\n".join(res)
 
 
 class ArtifactPair:

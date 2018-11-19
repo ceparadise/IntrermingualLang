@@ -24,7 +24,32 @@ class Model:
     def get_model_name(self):
         raise NotImplementedError
 
+    def get_link_scores_with_processed_artifacts(self, candidates):
+        """
+        Take the artifacts as a list of tokens. candidates are in format of [(s_id,s_content),(t_id,t_content)]
+        :return:
+        """
+        res = []
+        for candidate in candidates:
+            source_artifact = candidate[0]
+            s_id = source_artifact[0]
+            s_content = source_artifact[1]
+
+            target_artifact = candidate[1]
+            t_id = target_artifact[0]
+            t_content = target_artifact[1]
+
+            score = self._get_doc_similarity(s_content.split(), t_content.split())
+            res.append((s_id, t_id, score))
+        return res
+
     def get_link_scores(self, source_artifacts, target_artifacts):
+        """
+        Create links for raw dataset
+        :param source_artifacts:
+        :param target_artifacts:
+        :return:
+        """
         links = []
         self.processed_artifacts = dict()
         for s_id in source_artifacts:

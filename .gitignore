@@ -7,3 +7,6 @@ main/interlang_dataset_maker/output
 main/interlang_dataset_maker/output
 .idea/*
 **.pyc
+
+main/reborn/github_project_crawl/git_projects/
+
