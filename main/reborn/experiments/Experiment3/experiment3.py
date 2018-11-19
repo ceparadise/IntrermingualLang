@@ -38,6 +38,8 @@ class Experiment3:
 
     def run(self):
         impacted_dataSet = self.dataSet.get_impacted_dataSet(self.replace_dict)
+        replaced_dataSet = self.dataSet.get_replaced_dataSet(self.replace_dict)
+        origin_model = self.get_model(self.model_type, "en", self.dataSet.get_docs())
 
 
 if __name__ == "__main__":

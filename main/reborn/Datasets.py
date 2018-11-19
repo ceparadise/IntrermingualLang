@@ -145,29 +145,45 @@ class LinkSet:
     def get_pair_id(self):
         return self.artiPair.get_pair_id()
 
-    def gen_replaced_linkSet(self, replace_dict):
-        replaced_artifacts_dict = dict()
-        for arti_id in self.artiPair.source_artif:
-            replaced_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id], replace_dict)
-        replaced_arti_pair = ArtifactPair(replaced_artifacts_dict, self.artiPair.source_name,
-                                          self.artiPair.target_artif,
-                                          self.artiPair.target_name)
+    def gen_replaced_linkSet(self, replace_dict, replace_source=True, replace_target=False):
+        replaced_source_artifacts_dict = self.artiPair.source_artif
+        replaced_target_artifact_dict = self.artiPair.target_artif
+        if replace_source:
+            for arti_id in self.artiPair.source_artif:
+                replaced_source_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id],
+                                                                              replace_dict)
+        if replace_target:
+            for arti_id in self.artiPair.target_artif:
+                replaced_target_artifact_dict[arti_id] = self.replace_tokens(self.artiPair.target_artif[arti_id],
+                                                                             replace_dict)
+        replaced_arti_pair = ArtifactPair(replaced_source_artifacts_dict, self.artiPair.source_name,
+                                          replaced_target_artifact_dict,self.artiPair.target_name)
         return LinkSet(replaced_arti_pair, self.links)
 
-    def gen_impacted_linkSet(self, replace_dict):
+    def gen_impacted_linkSet(self, replace_dict, replace_source=True, replace_target=False):
         """
-        Generate a dateaset that only contains impacted artifacts and links. This dataset is used for evaluation only.
-        The model should run on a dataset which do the replacement but kept all links and artifacts.
-        :param replace_dict:
+        Prune the artifacts and links to keep the those contain replacement.
+        :param replace_dict: A dictionary of en-zh
+        :param replace_source: replace the english tokens in source artifacts
+        :param replace_target:  replace the english tokens in target artifacts
         :return:
         """
-        impacted_artifacts_dict = dict()
-        for arti_id in self.get_impacted_artifacts(replace_dict):
-            impacted_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id], replace_dict)
-        impacted_arti_pair = ArtifactPair(impacted_artifacts_dict, self.artiPair.source_name,
-                                          self.artiPair.target_artif,
-                                          self.artiPair.target_name)
-        impacted_links = self.get_impacted_links(replace_dict)
+        impacted_source_artifacts_dict = self.artiPair.source_artif
+        impacted_target_artifacts_dict = self.artiPair.target_artif
+        if replace_source:
+            for arti_id in self.get_impacted_artifacts(self.artiPair.source_artif,
+                                                       replace_dict):  # reserved only the impacted artifacts
+                impacted_source_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id],
+                                                                              replace_dict)
+        if replace_target:
+            for arti_id in self.get_impacted_artifacts(self.artiPair.target_artif, replace_dict):  # Similar here
+                impacted_target_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.target_artif[arti_id],
+                                                                              replace_dict)
+
+        impacted_arti_pair = ArtifactPair(impacted_source_artifacts_dict, self.artiPair.source_name,
+                                          impacted_target_artifacts_dict, self.artiPair.target_name)
+        impacted_links = self.get_impacted_links(impacted_source_artifacts_dict,
+                                                 impacted_target_artifacts_dict)  # Reserve the impacted links.Either source or target are impacted
         return LinkSet(impacted_arti_pair, impacted_links)
 
     def replace_tokens(self, content, replace_dict):
@@ -182,29 +198,36 @@ class LinkSet:
                 replaced_content.append(token)
         return " ".join(replaced_content)
 
-    def get_impacted_artifacts(self, replace_dict):
+    def get_impacted_artifacts(self, origin_artifacts, replace_dict):
+        """
+        Find the artifacts in oring_artifacts which contains token in replace_dict keys
+        :param origin_artifacts:
+        :param replace_dict:
+        :return:
+        """
         impacted = set()
         replace_dict = set(replace_dict.keys())
-        for artif in self.artiPair.source_artif:
-            content = self.artiPair.source_artif[artif]
+        for artif in origin_artifacts:
+            content = origin_artifacts[artif]
             tokens = set(self.preprocessor.get_tokens(content))
             if len(tokens & replace_dict) > 0:
                 impacted.add(artif)
         return impacted
 
-    def get_impacted_links(self, replace_wd_list):
-        impacted_artifacts = self.get_impacted_artifacts(replace_wd_list)
+    def get_impacted_links(self, impacted_source, impacted_target):
+        impacted_artifacts = []
+        impacted_artifacts.extend(impacted_source)
+        impacted_artifacts.extend(impacted_target)
+        impacted_artifacts = set(impacted_artifacts)
         impacted_links = []
-        impacted_artifact_info = "{} source artifacts out of {} artifacts are impacted ...".format(
-            len(impacted_artifacts),
-            len(self.artiPair.source_artif))
-
         for link in self.links:
             if link[0] in impacted_artifacts or link[1] in impacted_artifacts:
                 impacted_links.append(link)
         impacted_link_info = str(
             len(impacted_links)) + " links are impacted by the replacement, total links num=" + str(
             len(self.links))
+        impacted_artifact_info = "impacted source size={}, impacted target size = {}".format(len(impacted_source),
+                                                                                             len(impacted_target))
         self.replacement_info = impacted_artifact_info + "\n" + impacted_link_info
         print(self.replacement_info)
         return impacted_links
