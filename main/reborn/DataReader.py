@@ -252,9 +252,9 @@ class GtiProjectReader:
                 if issue_id not in issues or commit_id not in commits:
                     continue
 
-                # if all_english(issues[issue_id]) or all_english(commits[commit_id]):
-                #     all_english_cnt += 1
-                #     continue
+                if all_english(issues[issue_id]) or all_english(commits[commit_id]):
+                    all_english_cnt += 1
+                    continue
                 self.link_comply_with_time_constrain(issue_close_time_dict[issue_id], commit_time_dict[commit_id])
                 link = (issue_id, commit_id)
                 links.append(link)
