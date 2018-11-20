@@ -3,6 +3,7 @@ import argparse
 import os
 import re
 
+from GVSM import GVSM
 from LDA import LDA
 from VSM import VSM
 from reborn.DataReader import GtiProjectReader
@@ -31,6 +32,9 @@ class Experiment2:
         elif model_type == "lda":
             model = LDA(fo_lang_code=fo_lang_code)
             model.build_model(docs, num_topics=60, passes=100)
+        elif model_type == "gvsm":
+            model = GVSM(fo_lang_code=fo_lang_code)
+            model.build_model(docs)
         return model
 
     def preprocessed_dataset(self):

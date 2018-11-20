@@ -1,4 +1,5 @@
 from gensim import corpora, models, matutils
+from gensim.models import TfidfModel
 
 from Preprocessor import Preprocessor
 from model import Model
@@ -7,7 +8,7 @@ from model import Model
 class VSM(Model):
     def __init__(self, fo_lang_code):
         super().__init__(fo_lang_code)
-        self.tfidf_model = None
+        self.tfidf_model: TfidfModel = None
 
     def build_model(self, docs):
         print("Building VSM model...")
@@ -39,6 +40,7 @@ class VSM(Model):
             idf = idfs.get(termid)
             res.append((word, idf))
         return res
+
 
 if __name__ == "__main__":
     docs = [

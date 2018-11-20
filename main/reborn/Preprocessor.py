@@ -7,6 +7,8 @@ import nltk
 
 class Preprocessor():
     def __init__(self):
+        self.zh_pattern = re.compile("[\u4e00-\u9fff]+")
+        self.en_pattenr = re.compile("[a-zA-Z]+")
         self.parser = nltk.CoreNLPParser()
         self.java_keywords = set([w.strip('*') for w in """
         abstract    continue    for     new     switch
@@ -61,13 +63,11 @@ class Preprocessor():
             return None
 
     def get_zh(self, doc):
-        pattern = re.compile("[\u4e00-\u9fff]+")
-        res = pattern.findall(doc)
+        res = self.zh_pattern.findall(doc)
         return res
 
     def get_en(self, doc):
-        pattern = re.compile("[a-zA-Z]+")
-        res = pattern.findall(doc)
+        res = self.en_pattern.findall(doc)
         return res
 
     def __clean_doc(self, doc_str):
@@ -78,36 +78,31 @@ class Preprocessor():
         return [x for x in tokens if x not in self.java_keywords]
 
     def get_tokens(self, doc, language="en"):
+        def limit_token_min_length(tokens, zh_min=2, en_min=4):
+            res = []
+            for token in tokens:
+                if self.en_pattenr.match(token) and len(token) >= en_min:
+                    res.append(token)
+                elif self.zh_pattern.match(token) and len(token) >= zh_min:
+                    res.append(token)
+            return res
+
         tokens = []
         doc = self.__clean_doc(doc)
         res = []
-        MIN_ENG_TOKEN_LEN = 3
-        MIN_ZH_TOKEN_LEN = 1
         if language == "zh":  # maybe a mixture of en and zh
             partition_size = 90000
             # if doc is too long split it up
             for i in range(math.ceil(len(doc) / partition_size)):
                 try:
                     doc_parts = doc[i * partition_size: (i + 1) * partition_size]
-                    seg_str = " ".join(self.parser.tokenize(doc_parts))
-                    ch_token = self.get_zh(seg_str)
-                    ch_token = [x for x in ch_token if
-                                len(x) > 1]  # include Chinese words with 2 or 3 characters
-                    en_token = self.get_en(doc_parts)
-                    en_token = [x for x in en_token if len(x) > MIN_ENG_TOKEN_LEN]
-                    res.extend(ch_token)
-                    res.extend(en_token)
+                    res = self.parser.tokenize(doc_parts)
+                    res = [x for x in res]
                 except Exception as e:
                     print(e)
                     print("exception when process {}".format(doc_parts))
-
         else:
-            nltk_tks = nltk.word_tokenize(doc)
-            for tk in nltk_tks:
-                smaller_tokens = tk.split("_")  # NLTK will reserve underscore
-                for small_token in smaller_tokens:
-                    if len(small_token) > MIN_ENG_TOKEN_LEN:
-                        res.append(small_token)
+            res = nltk.word_tokenize(doc)
 
         for wd in res:
             tokens.extend(self.split_camal_case(wd))
@@ -116,6 +111,7 @@ class Preprocessor():
         tokens = self.remove_stop_word(tokens, language="zh")
         tokens = self.remove_stop_word(tokens, language="en")
         tokens = self.remove_stop_word(tokens, stop_words=self.customized_stop_words)
+        tokens = limit_token_min_length(tokens)
         return tokens
 
     def get_stemmed_tokens(self, doc_str, language="en"):
