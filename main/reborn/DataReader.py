@@ -156,8 +156,6 @@ class GtiProjectReader:
             link_set: LinkSet = dataset.gold_link_sets[linkset_id]
             source_dict: dict = link_set.artiPair.source_artif
             target_dict: dict = link_set.artiPair.target_artif
-            source_extra = link_set.artiPair.source_artif_extra_info
-            target_extra = link_set.artiPair.target_artif_extra_info
             links = link_set.links
 
             gold_artif_set = set()
@@ -176,8 +174,6 @@ class GtiProjectReader:
             modified_artif_pair = ArtifactPair(limited_source_dict, link_set.artiPair.source_name, limited_target_dict,
                                                link_set.artiPair.target_name)
             # Keep the extra information
-            modified_artif_pair.source_artif_extra_info = source_extra
-            modified_artif_pair.target_artif_extra_info = target_extra
             modified_link_sets.append(LinkSet(modified_artif_pair, links))
         return Dataset(modified_link_sets)
 
@@ -196,7 +192,7 @@ class GtiProjectReader:
             return False
         return True
 
-    def __readData(self, issue_path, commit_path, link_path):
+    def __readData(self, issue_path, commit_path, link_path, do_filter=True):
         def all_english(content: str) -> bool:
             def get_en(doc):
                 pattern = re.compile("[a-zA-Z]+")
@@ -217,11 +213,12 @@ class GtiProjectReader:
                 if i == 0:
                     continue
                 id, content, close_time = line.strip("\n\t\r").split(",")
-                if len(content.split()) < MIN_DOC_SIZE:
+                if (len(content.split()) < MIN_DOC_SIZE or all_english(content)) and do_filter:
                     filtered_issued += 1
                     continue
                 issues[id] = content
                 issue_close_time_dict[id] = close_time
+
         print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE))
         with open(commit_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
@@ -229,37 +226,29 @@ class GtiProjectReader:
                     continue
                 id, summary, content, commit_time = line.strip("\n\t\r").split(",")
                 commit_content = summary + content
-                if len(commit_content.split()) < MIN_DOC_SIZE:
+                if (len(commit_content.split()) < MIN_DOC_SIZE or all_english(content)) and do_filter:
                     filtered_commit += 1
                     continue
                 commits[id] = commit_content
                 commit_time_dict[id] = commit_time
         print("{} commit are filtered minimal lenght {}...".format(filtered_commit, MIN_DOC_SIZE))
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
-        artif_pair.source_artif_extra_info["issue_close_time_dict"] = issue_close_time_dict
-        artif_pair.target_artif_extra_info["commit_time"] = commit_time_dict
+
         links = []
-
-        all_english_cnt = 0
-
+        origin_link_cnt = 0
         with open(link_path) as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
+                origin_link_cnt = i
                 issue_id, commit_id = line.split(",")
                 issue_id = issue_id.strip("\n\t\r")
                 commit_id = commit_id.strip("\n\t\r")
-                if issue_id not in issues or commit_id not in commits:
+                if (issue_id not in issues or commit_id not in commits) and do_filter:
                     continue
-
-                if all_english(issues[issue_id]) or all_english(commits[commit_id]):
-                    all_english_cnt += 1
-                    continue
-                self.link_comply_with_time_constrain(issue_close_time_dict[issue_id], commit_time_dict[commit_id])
                 link = (issue_id, commit_id)
                 links.append(link)
-        print("all english filter removed {} links".format(all_english_cnt))
-        print("Link size:{}".format(len(links)))
+        print("Link size:{}/{}".format(len(links), origin_link_cnt))
         link_set = LinkSet(artif_pair, links)
         return Dataset([link_set])
 
@@ -273,10 +262,25 @@ class GtiProjectReader:
                                       "issue.csv")
             commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
                                        "commit.csv")
-            trans_dataset = self.__readData(issue_path, commit_path, link_path)
+            trans_dataset = self.__readData(issue_path, commit_path, link_path, do_filter=False)
+            # map the translated gold linkset back to origin datset, any filtering on origin dataset will reflect on trans dataset
             for link_set_id in trans_dataset.gold_link_sets:
-                trans_dataset.gold_link_sets[link_set_id].links = origin_dataset.gold_link_sets[
-                    link_set_id].links  # map the translated gold linkset back to origin datset, any filtering on origin dataset will reflect on trans dataset
+                origin_link_set: LinkSet = origin_dataset.gold_link_sets[link_set_id]
+                trans_link_set: LinkSet = trans_dataset.gold_link_sets[link_set_id]
+
+                trans_link_set.links = origin_link_set.links
+                remove_elements = []
+                for s_id in trans_link_set.artiPair.source_artif:
+                    if s_id not in origin_link_set.artiPair.source_artif:
+                        remove_elements.append(s_id)
+                for s_id in remove_elements:
+                    del trans_link_set.artiPair.source_artif[s_id]
+                remove_elements = []
+                for t_id in trans_link_set.artiPair.target_artif:
+                    if t_id not in origin_link_set.artiPair.target_artif:
+                        remove_elements.append(t_id)
+                for t_id in remove_elements:
+                    del trans_link_set.artiPair.target_artif[t_id]
             return trans_dataset
         else:
             return origin_dataset

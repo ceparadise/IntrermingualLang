@@ -100,6 +100,12 @@ class Model:
         self.start_server.stderr.close()
         self.start_server.stdout.close()
 
+    def dot(self, A, B):
+        return sum(a * b for a, b in zip(A, B))
+
+    def cosine_similarity(self, a, b):
+        return self.dot(a, b) / ((self.dot(a, a) ** .5) * (self.dot(b, b) ** .5))
+
 
 if __name__ == "__main__":
     pass

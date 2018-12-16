@@ -1,0 +1,11 @@
+
+origin MAP= 0.183
+origin P,C,F
+[(0.0433, 1.0, 0.0831), (0.1471, 0.1923, 0.1667), (0.2, 0.1923, 0.1961), (0.2353, 0.1538, 0.186), (0.3333, 0.1154, 0.1714), (0.5, 0.1154, 0.1875), (0.75, 0.1154, 0.2), (1.0, 0.0385, 0.0741), (1.0, 0.0385, 0.0741), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
+impacted_MAP= 0.098
+impacted P,C,F
+[(0.0433, 1.0, 0.0831), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
++++++Details+++++
+{'link': ('20', '38'), 'zh': ['数据', '相关', '验证', '卡片', '激活', '界面', '打码', '失败', '税', '代码', '登录', '成功', '病人', '功能', '提供', '实施', '访问', '步骤', '操作', '确认', '输入', '医院', '消息'], 'en': ['perform', 'active', 'input', 'validating', 'login', 'view', 'verify', 'failed', 'data', 'access', 'message', 'mask', 'operator', 'patient', 'step', 'relating', 'function', 'card', 'tax', 'provide', 'code', 'validation', 'functions', 'success', 'confirm', 'hospital'], 'origin_score': 0.0, 'impacted_score': 0.031493216358087502}
+{'link': ('25', '45'), 'zh': ['验证', '卡片', '界面', '打码', '失败', '代码', '登录', '成功', '病人', '功能', '日志', '孔', '实施', '访问', '步骤', '操作', '确认', '输入', '医院', '消息'], 'en': ['perform', 'input', 'login', 'view', 'verify', 'failed', 'access', 'message', 'mask', 'log', 'patient', 'step', 'function', 'pin', 'card', 'operation', 'code', 'validation', 'functions', 'success', 'confirm', 'hospital'], 'origin_score': 0.0, 'impacted_score': 0.011056244302791294}
+{'link': ('25', '46'), 'zh': ['验证', '卡片', '界面', '打码', '失败', '代码', '登录', '成功', '病人', '功能', '日志', '孔', '实施', '访问', '步骤', '操作', '确认', '输入', '医院', '消息'], 'en': ['perform', 'input', 'login', 'view', 'verify', 'failed', 'access', 'message', 'mask', 'log', 'patient', 'step', 'function', 'pin', 'card', 'operation', 'code', 'validation', 'functions', 'success', 'confirm', 'hospital'], 'origin_score': 0.0, 'impacted_score': 0.011055826500201158}

@@ -1,21 +1,45 @@
 import math
-import os
+import os, io
 from gensim import corpora, models, matutils
 from gensim.models import KeyedVectors, Word2Vec
 from common import DATA_DIR
 from Preprocessor import Preprocessor
 from model import Model
+from hanziconv import HanziConv
+
+GENESIM_W2V = "gensim_w2v"
+CROSSLINGUAL_WORDEMBEDDING = "cross_lingual_word_embedding"
 
 
 class GVSM(Model):
-    def __init__(self, fo_lang_code):
+    def __init__(self, fo_lang_code, term_similarity_type):
         super().__init__(fo_lang_code)
         self.tfidf_model = None
         self.word_vec_root = os.path.join(DATA_DIR, "wordVectors")
         self.wv_file_path = os.path.join(self.word_vec_root, "default.wv")
         self.wv: KeyedVectors = None
-        if os.path.isfile(self.wv_file_path):
+        self.cl_wv = None
+        self.term_similarity_type = term_similarity_type
+        if os.path.isfile(self.wv_file_path) and term_similarity_type == GENESIM_W2V:
             self.wv: KeyedVectors = KeyedVectors.load(self.wv_file_path, mmap='r')
+        self.term_similarity_cache = dict()
+
+    def load_vectors(self, fname):
+        """
+        Return word embedding vectors as map
+        :return:
+        """
+        data = {}
+        with open(fname, 'r', encoding='utf-8') as fin:
+            n, d = map(int, fin.readline().split())
+            print("vector #:{} vector dimension:{}".format(n, d))
+            for line in fin:
+                tokens = line.rstrip().split()
+                term = tokens[0]
+                if self.fo_lang_code == 'en' or self.fo_lang_code == "zh":
+                    term = HanziConv.toSimplified(term)  # conver to simpified Chinese
+                data[term] = [float(x) for x in tokens[1:]]
+        return data
 
     def build_model(self, docs):
         print("Building GVSM model...")
@@ -29,36 +53,76 @@ class GVSM(Model):
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
         self.tfidf_model = models.TfidfModel(corpus, id2word=dictionary)
 
-        if self.wv is None:
-            print("Building WordVectors...")
+        if self.wv is None and self.term_similarity_type == GENESIM_W2V:
+            print("Building Gensim WordVectors on current dataset...")
             self.wv = Word2Vec(docs_tokens)
             self.wv.wv.save(os.path.join(self.word_vec_root, "default.wv"))
-        print("Finish building VSM model")
+
+        if self.cl_wv is None and self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING:
+            print("Building bilingual word embedding ...")
+            vec_file_path = os.path.join(self.word_vec_root, "wiki.zh.align.vec")
+            self.cl_wv = self.load_vectors(vec_file_path)
+        print("Finish building GVSM model")
+
+    def __get_term_similarity(self, token1, token2):
+        term_similarity = 0
+        term_pair = (token1, token2)
+        if (token1, token2) in self.term_similarity_cache:
+            return self.term_similarity_cache[term_pair]
+        else:
+            if self.term_similarity_type == GENESIM_W2V:
+                if token1 in self.wv.vocab and token2 in self.wv.vocab:
+                    term_similarity = self.wv.similarity(token1, token2)
+            elif self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING:
+                if token1 in self.cl_wv and token2 in self.cl_wv:
+                    vec1 = self.cl_wv[token1]
+                    vec2 = self.cl_wv[token2]
+                    if len(vec1) == 0 or len(vec2) == 0:
+                        print(vec1)
+                        print(vec2)
+                    term_similarity = self.cosine_similarity(vec1, vec2)
+            self.term_similarity_cache[term_pair] = term_similarity
+        return term_similarity
 
     def _get_doc_similarity(self, doc1_tk, doc2_tk):
-        def cal_square_total(weight_vec):
-            square_total = 0
-            for (id, weight) in weight_vec:
-                square_total += weight * weight
-            return square_total
+        def remove_low_weight(x: dict, threshold=0.001):
+            return {key: value for key, value in x.items() if x[key] > threshold}
 
         id2token: dict = self.tfidf_model.id2word  # wd id to tokens as a dictionary
 
         doc1_vec = self.tfidf_model[self.tfidf_model.id2word.doc2bow(doc1_tk)]
         doc2_vec = self.tfidf_model[self.tfidf_model.id2word.doc2bow(doc2_tk)]
-        doc1_square_sum = cal_square_total(doc1_vec)
-        doc2_square_sum = cal_square_total(doc2_vec)
+
+        doc1_dict = dict(doc1_vec)
+        doc2_dict = dict(doc2_vec)
+
+        doc1_dict = remove_low_weight(doc1_dict)
+        doc2_dict = remove_low_weight(doc2_dict)
+
+        token_ids = set()
+        token_ids.update(doc2_dict)
+        token_ids.update(doc1_dict)
+        token_ids = list(token_ids)
         sim_score = 0
-        for (doc1_token_id, doc1_token_weight) in doc1_vec:
-            for (doc2_token_id, doc2_token_weight) in doc2_vec:
-                doc1_token = id2token[doc1_token_id]
-                doc2_token = id2token[doc2_token_id]
-                if doc1_token in self.wv.vocab and doc2_token in self.wv.vocab:
-                    term_similarity = self.wv.similarity(doc1_token, doc2_token)
-                else:
-                    term_similarity = 0
-                sim_score += doc1_token_weight * doc2_token_weight * term_similarity
-            score = sim_score / (math.sqrt(doc1_square_sum * doc2_square_sum))
+        doc1_square_sum = 0
+        doc2_square_sum = 0
+        for i in range(len(token_ids)):
+            id_i = token_ids[i]
+            tk_i = id2token[id_i]
+            tfidf_i_doc1 = doc1_dict.get(id_i, 0)
+            tfidf_i_doc2 = doc2_dict.get(id_i, 0)
+            for j in range(i + 1, len(token_ids)):
+                id_j = token_ids[j]
+                tk_j = id2token[id_j]
+                tfidf_j_doc1 = doc1_dict.get(id_j, 0)
+                tfidf_j_doc2 = doc2_dict.get(id_j, 0)
+                term_similarity = self.__get_term_similarity(tk_i, tk_j)
+                doc1_weight = (tfidf_i_doc1 + tfidf_j_doc1) * term_similarity
+                doc2_weight = (tfidf_i_doc2 + tfidf_j_doc2) * term_similarity
+                sim_score += doc1_weight * doc2_weight
+                doc1_square_sum += doc1_weight ** 2
+                doc2_square_sum += doc2_weight ** 2
+        score = sim_score / (doc1_square_sum ** 0.5 + doc2_square_sum ** 0.5)
         return score
 
     def get_model_name(self):

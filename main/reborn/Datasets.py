@@ -27,8 +27,7 @@ class Dataset:
         impacted_link_sets = []
         for link_set_id in self.gold_link_sets.keys():
             link_set = self.gold_link_sets[link_set_id]
-            impacted_link_set = link_set.gen_impacted_linkSet(replace_list, replace_source_percent,
-                                                              replace_target_percent)  # difference here
+            impacted_link_set = link_set.gen_impacted_linkSet(replace_list)  # difference here
             impacted_link_sets.append(impacted_link_set)
         return Dataset(impacted_link_sets)
 
@@ -41,8 +40,8 @@ class Dataset:
         replaced_link_sets = []
         for link_set_id in self.gold_link_sets.keys():
             link_set = self.gold_link_sets[link_set_id]
-            replaced_link_set = link_set.gen_replaced_linkSet(replace_list, replace_source_percent=1.0,
-                                                              replace_target_percent=0.0)  # difference here
+            replaced_link_set = link_set.gen_replaced_linkSet(replace_list, replace_source_percent=0.0,
+                                                              replace_target_percent=1.0)  # difference here
             replaced_link_sets.append(replaced_link_set)
         return Dataset(replaced_link_sets)
 
@@ -149,8 +148,8 @@ class LinkSet:
         return self.artiPair.get_pair_id()
 
     def gen_replaced_linkSet(self, replace_dict, replace_source_percent=1.0, replace_target_percent=0.0):
-        replaced_source_artifacts_dict = self.artiPair.source_artif
-        replaced_target_artifact_dict = self.artiPair.target_artif
+        replaced_source_artifacts_dict = dict(self.artiPair.source_artif)
+        replaced_target_artifact_dict = dict(self.artiPair.target_artif)
         if replace_source_percent > 0:
             for arti_id in self.artiPair.source_artif:
                 replaced_source_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id],
@@ -163,25 +162,25 @@ class LinkSet:
                                           replaced_target_artifact_dict, self.artiPair.target_name)
         return LinkSet(replaced_arti_pair, self.links)
 
-    def gen_impacted_linkSet(self, replace_dict, replace_source_percent=1.0, replace_target_percent=0.0):
+    def gen_impacted_linkSet(self, replace_dict):
         """
-        Prune the artifacts and links to keep the those contain replacement.
+        Prune the artifacts and links to keep the artifacts and links contain replacement.
+        But the replacement is not applied to the document.
+
         :param replace_dict: A dictionary of en-zh
         :param replace_source: replace the english tokens in source artifacts
         :param replace_target:  replace the english tokens in target artifacts
         :return:
         """
-        impacted_source_artifacts_dict = self.artiPair.source_artif
-        impacted_target_artifacts_dict = self.artiPair.target_artif
-        if replace_source_percent > 0:
-            for arti_id in self.get_impacted_artifacts(self.artiPair.source_artif,
-                                                       replace_dict):  # reserved only the impacted artifacts
-                impacted_source_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id],
-                                                                              replace_dict, replace_source_percent)
-        if replace_target_percent > 0:
-            for arti_id in self.get_impacted_artifacts(self.artiPair.target_artif, replace_dict):  # Similar here
-                impacted_target_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.target_artif[arti_id],
-                                                                              replace_dict, replace_target_percent)
+        impacted_source_artifacts_dict = dict(self.artiPair.source_artif)
+        impacted_target_artifacts_dict = dict(self.artiPair.target_artif)
+
+        for arti_id in self.get_impacted_artifacts(self.artiPair.source_artif,
+                                                   replace_dict):  # reserved only the impacted artifacts
+            impacted_source_artifacts_dict[arti_id] = self.artiPair.source_artif[arti_id]
+
+        for arti_id in self.get_impacted_artifacts(self.artiPair.target_artif, replace_dict):  # Similar here
+            impacted_target_artifacts_dict[arti_id] = self.artiPair.target_artif[arti_id]
 
         impacted_arti_pair = ArtifactPair(impacted_source_artifacts_dict, self.artiPair.source_name,
                                           impacted_target_artifacts_dict, self.artiPair.target_name)
@@ -200,7 +199,7 @@ class LinkSet:
                     fo_word = random.sample(fo_words, 1)[0]
                 else:
                     fo_word = fo_words
-                if random.randint(0, 100) / 100.0 > replace_probability:
+                if random.randint(0, 100) / 100.0 <= replace_probability:
                     replaced_content.append(fo_word)
                 else:
                     replaced_content.append(token)
