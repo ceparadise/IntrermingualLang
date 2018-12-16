@@ -84,7 +84,7 @@ class Experiment3:
         for linkset_id in impacted_results:
             print("Processing link set {}".format(linkset_id))
             impacted_result = sorted(impacted_results[linkset_id], key=lambda k: k[2], reverse=True)
-            impacted_map = MAP_cal(impacted_results, impacted_dataSet.gold_link_sets[
+            impacted_map = MAP_cal(impacted_result, impacted_dataSet.gold_link_sets[
                 linkset_id].links, do_sort=False).run()
             threshold = 0
             scores = []
@@ -102,12 +102,12 @@ class Experiment3:
             output_file_path = os.path.join(write_dir, file_name)
             link_score_path = os.path.join(write_dir, link_score_file)
 
-            print("origin MAP=", map)
+            print("origin MAP=", impacted_map)
             print("Origin P,C,F")
             print(scores)
 
             with open(output_file_path, 'w', encoding='utf8') as fout:
-                self.write_result(fout, scores, map)
+                self.write_result(fout, scores, impacted_map)
             with open(link_score_path, 'w', encoding='utf8') as fout:
                 for link in impacted_result:
                     fout.write("{}\n".format(str(link)))
