@@ -174,8 +174,9 @@ class Experiment2:
             threshold = 0
             scores = []
             while threshold <= 100:
-                batch_size = int(threshold / 100 * len(result))
-                filter_links_above_threshold = result[:batch_size]
+                # batch_size = int(threshold / 100 * len(result))
+                # filter_links_above_threshold = result[:batch_size]
+                filter_links_above_threshold = [x for x in result if x[2] >= threshold / 100]
                 eval_score = dataSet.evaluate_link_set(link_set_id, filter_links_above_threshold)
                 scores.append(eval_score)
                 threshold += self.link_threshold_interval

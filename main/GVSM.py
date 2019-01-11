@@ -7,8 +7,8 @@ from Preprocessor import Preprocessor
 from model import Model
 from hanziconv import HanziConv
 
-GENESIM_W2V = "gensim_w2v"
-CROSSLINGUAL_WORDEMBEDDING = "cross_lingual_word_embedding"
+GENESIM_W2V = "gensim_wv"
+CROSSLINGUAL_WORDEMBEDDING = "cl_wv"
 
 
 class GVSM(Model):
@@ -85,7 +85,7 @@ class GVSM(Model):
         return term_similarity
 
     def _get_doc_similarity(self, doc1_tk, doc2_tk):
-        def remove_low_weight(x: dict, threshold=0.001):
+        def remove_low_weight(x: dict, threshold=0.005):
             return {key: value for key, value in x.items() if x[key] > threshold}
 
         id2token: dict = self.tfidf_model.id2word  # wd id to tokens as a dictionary
@@ -96,33 +96,33 @@ class GVSM(Model):
         doc1_dict = dict(doc1_vec)
         doc2_dict = dict(doc2_vec)
 
-        doc1_dict = remove_low_weight(doc1_dict)
-        doc2_dict = remove_low_weight(doc2_dict)
-
-        token_ids = set()
-        token_ids.update(doc2_dict)
-        token_ids.update(doc1_dict)
-        token_ids = list(token_ids)
         sim_score = 0
         doc1_square_sum = 0
         doc2_square_sum = 0
-        for i in range(len(token_ids)):
-            id_i = token_ids[i]
+
+        doc1_new_vec = []
+        doc2_new_vec = []
+        for id_i in doc1_dict:
             tk_i = id2token[id_i]
             tfidf_i_doc1 = doc1_dict.get(id_i, 0)
             tfidf_i_doc2 = doc2_dict.get(id_i, 0)
-            for j in range(i + 1, len(token_ids)):
-                id_j = token_ids[j]
+            for id_j in doc2_dict:
                 tk_j = id2token[id_j]
                 tfidf_j_doc1 = doc1_dict.get(id_j, 0)
                 tfidf_j_doc2 = doc2_dict.get(id_j, 0)
                 term_similarity = self.__get_term_similarity(tk_i, tk_j)
+                # doc1_weight = (tfidf_i_doc1 + tfidf_j_doc1) * term_similarity
+                # doc2_weight = (tfidf_i_doc2 + tfidf_j_doc2) * term_similarity
                 doc1_weight = (tfidf_i_doc1 + tfidf_j_doc1) * term_similarity
                 doc2_weight = (tfidf_i_doc2 + tfidf_j_doc2) * term_similarity
-                sim_score += doc1_weight * doc2_weight
-                doc1_square_sum += doc1_weight ** 2
-                doc2_square_sum += doc2_weight ** 2
-        score = sim_score / (doc1_square_sum ** 0.5 + doc2_square_sum ** 0.5)
+                if doc1_weight > 0:
+                    doc1_new_vec.append((id_i, doc1_weight))
+                if doc2_weight > 0:
+                    doc2_new_vec.append((id_j, doc2_weight))
+                # sim_score += doc1_weight * doc2_weight
+                # doc1_square_sum += doc1_weight ** 2
+                # doc2_square_sum += doc2_weight ** 2
+        score = matutils.cossim(doc1_new_vec, doc2_new_vec)
         return score
 
     def get_model_name(self):

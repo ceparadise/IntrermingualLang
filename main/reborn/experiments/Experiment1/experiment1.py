@@ -91,9 +91,11 @@ class Experiment1:
                 replaced_scores = []
                 impacted_scores = []
                 while threshold <= 100:
-                    slice = int(len(impacted_result) * (100 - threshold) / 100)
-                    impacted_result_above_threshold = impacted_result[:slice]
-                    replaced_result_above_threshold = replaced_result[:slice]
+                    # slice = int(len(impacted_result) * (100 - threshold) / 100)
+                    # impacted_result_above_threshold = impacted_result[:slice]
+                    # replaced_result_above_threshold = replaced_result[:slice]
+                    impacted_result_above_threshold = [x for x in impacted_result if x[2] >= threshold / 100]
+                    replaced_result_above_threshold = [x for x in impacted_result if x[2] >= threshold / 100]
 
                     impacted_eval_score = impacted_dataSet.evaluate_link_set(linkset_id,
                                                                              impacted_result_above_threshold)

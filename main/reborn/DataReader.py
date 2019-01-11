@@ -175,6 +175,11 @@ class GtiProjectReader:
                                                link_set.artiPair.target_name)
             # Keep the extra information
             modified_link_sets.append(LinkSet(modified_artif_pair, links))
+            issue_num = len(modified_artif_pair.source_artif)
+            commit_num = len(modified_artif_pair.target_artif)
+            print("{} issues and {} commits remains after limiting artifacts to links...".format(issue_num, commit_num))
+            candidate_num = issue_num * commit_num
+            print("Baseline accuracy is {}/{} = {}".format(len(links), candidate_num, len(links) / candidate_num))
         return Dataset(modified_link_sets)
 
     def link_comply_with_time_constrain(self, issue_close_time_str, commit_time_str) -> bool:
@@ -219,7 +224,8 @@ class GtiProjectReader:
                 issues[id] = content
                 issue_close_time_dict[id] = close_time
 
-        print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE))
+        print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE,
+                                                                        len(issues)))
         with open(commit_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
@@ -231,7 +237,8 @@ class GtiProjectReader:
                     continue
                 commits[id] = commit_content
                 commit_time_dict[id] = commit_time
-        print("{} commit are filtered minimal lenght {}...".format(filtered_commit, MIN_DOC_SIZE))
+        print(
+            "{} commit are filtered minimal lenght {}".format(filtered_commit, MIN_DOC_SIZE, len(commits)))
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
 
         links = []
