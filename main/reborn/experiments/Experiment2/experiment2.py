@@ -12,7 +12,17 @@ from reborn.Preprocessor import Preprocessor
 
 
 class Experiment2:
-    def __init__(self, repo_path, model_type, use_translated_data, term_similarity_type, link_threshold_interval=5):
+    def __init__(self, repo_path, model_type, use_translated_data, term_similarity_type, link_threshold_interval=5,
+                 output_sub_dir=""):
+        """
+
+        :param repo_path: the repo path in github
+        :param model_type: vsm, gvsm, lda
+        :param use_translated_data: whether use translated data or not
+        :param term_similarity_type: for gvsm only.
+        :param link_threshold_interval: The sample rate for threshold
+        :param output_sub_dir: the sub directory for results under Experiment2/result/. Group the experiment by the time running the script
+        """
         self.git_projects_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..',
                                              'github_project_crawl',
                                              "git_projects")
@@ -24,6 +34,7 @@ class Experiment2:
         self.preprocessed_dataset()  # Create clean tokens if not exist
         self.link_threshold_interval = link_threshold_interval
         self.term_similarity_type = term_similarity_type
+        self.output_sub_dir = output_sub_dir
 
     def get_model(self, model_type, fo_lang_code, docs):
         model = None
@@ -163,7 +174,7 @@ class Experiment2:
     def run(self):
         reader = GtiProjectReader(self.repo_path)
         dataSet = reader.readData(use_translated_data=self.use_translated_data)
-        dataSet = reader.limit_artifacts_in_links(dataSet)
+        dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet)
         print(dataSet)
         model = self.get_model(self.model_type, "en", dataSet.get_docs())
         results = self.run_model(model, dataSet)
@@ -181,7 +192,13 @@ class Experiment2:
                 scores.append(eval_score)
                 threshold += self.link_threshold_interval
 
-            write_dir = os.path.join("results", self.repo_path, self.model_type)
+            if self.use_translated_data:
+                trans_postfix = "origin"
+            else:
+                trans_postfix = "trans"
+            write_dir = os.path.join("results", self.output_sub_dir, self.repo_path,
+                                     "_".join([self.model_type, trans_postfix]))
+
             file_name = "{}_{}.txt".format(self.model_type, link_set_id)
             link_score_file = "{}_{}_link_score.txt".format(self.model_type, link_set_id)
             if not os.path.isdir(write_dir):
@@ -194,6 +211,7 @@ class Experiment2:
             print(scores)
 
             with open(output_file_path, 'w', encoding='utf8') as fout:
+                fout.write(dataset_info + "\n")
                 self.write_result(fout, scores, map)
             with open(link_score_path, 'w', encoding='utf8') as fout:
                 for link in result:

@@ -68,7 +68,6 @@ def translate_intermingual_sentence(sentence: str) -> str:
     :param sentence:
     :return:
     """
-
     sentence_segments_by_space = sentence.split()
     translated_sentence = []
     for sentence_segment in sentence_segments_by_space:

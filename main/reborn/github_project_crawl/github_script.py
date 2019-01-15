@@ -1,19 +1,61 @@
+import math
 import os
 
 # pip install PyGithub. Lib operates on remote github to get issues
-import math
-from time import sleep
 
 from github import Github
 import re
-import github.Issue
 
 import argparse
 
 # pip install GitPython. Lib operates on local repo to get commits
 import git as local_git
+from google.cloud import translate
 
-from common import translate_long_sentence, translate_tokens, sentence_contains_chinese, translate_intermingual_sentence
+CHINESE_CHAR_PATTERN = re.compile("[\u4e00-\u9fff]+")
+translator = translate.Client()
+
+
+def sentence_contains_chinese(sentence: str) -> bool:
+    return CHINESE_CHAR_PATTERN.search(sentence) is not None
+
+
+def translate_long_sentence(sentence, partition_size=14000):
+    """
+    Translate a long sentence into English.
+    :param sentence:
+    :param partition_size:
+    :return:
+    """
+    trans_content = []
+    for par in range(math.ceil(len(sentence) / partition_size)):
+        part = sentence[par * partition_size: (par + 1) * partition_size]
+        try:
+            trans_part = translator.translate(part)["translatedText"]
+        except Exception as e:
+            print("Exception when translating sentence {}, exception is {}".format(part, e))
+            trans_part = part
+        trans_content.append(trans_part)
+    return " ".join(trans_content)
+
+
+def translate_intermingual_sentence(sentence: str) -> str:
+    """
+    Find out the Chinese sentences in a long string, translate those parts and return a pure english version sentence
+    of the input
+    :param sentence:
+    :return:
+    """
+    sentence_segments_by_space = sentence.split()
+    translated_sentence = []
+    for sentence_segment in sentence_segments_by_space:
+        if sentence_contains_chinese(sentence_segment):
+            sentence_segment = re.sub("[^\w]+", " ", sentence_segment)
+            trans_segment = translate_long_sentence(sentence_segment)
+        else:
+            trans_segment = sentence_segment
+        translated_sentence.append(trans_segment)
+    return " ".join(translated_sentence)
 
 
 class MyIssue:
@@ -24,10 +66,8 @@ class MyIssue:
         self.close_time = close_time
 
     def __str__(self):
-        if self.content is None:
-            content_str = ""
-        else:
-            content_str = "\n".join(self.content)
+        self.content = [x for x in self.content if x is not None]
+        content_str = "\n".join(self.content)
         content_str = re.sub("[,\r\n]+", " ", content_str)
         return "{},{},{}\n".format(self.issue_id, content_str, self.close_time)
 
@@ -145,7 +185,8 @@ if __name__ == "__main__":
         print("Translating issue...")
         partition_size = 14000
         if not os.path.isfile(trans_issue_file_path):
-            with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_file_path, encoding='utf8') as fin:
+            with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_file_path,
+                                                                                 encoding='utf8') as fin:
                 for i, line in enumerate(fin):
                     if i == 0:
                         fout.write(line)

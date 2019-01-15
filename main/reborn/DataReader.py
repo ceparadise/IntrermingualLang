@@ -152,6 +152,7 @@ class GtiProjectReader:
 
     def limit_artifacts_in_links(self, dataset: Dataset):
         modified_link_sets = []
+        data_set_infos = []
         for linkset_id in dataset.gold_link_sets:
             link_set: LinkSet = dataset.gold_link_sets[linkset_id]
             source_dict: dict = link_set.artiPair.source_artif
@@ -177,10 +178,15 @@ class GtiProjectReader:
             modified_link_sets.append(LinkSet(modified_artif_pair, links))
             issue_num = len(modified_artif_pair.source_artif)
             commit_num = len(modified_artif_pair.target_artif)
-            print("{} issues and {} commits remains after limiting artifacts to links...".format(issue_num, commit_num))
+            issue_commit_info = "{} issues and {} commits remains after limiting artifacts to links...".format(issue_num, commit_num)
+            data_set_infos.append(issue_commit_info)
+            print(issue_commit_info)
             candidate_num = issue_num * commit_num
-            print("Baseline accuracy is {}/{} = {}".format(len(links), candidate_num, len(links) / candidate_num))
-        return Dataset(modified_link_sets)
+            base_accuracy = 0
+            if candidate_num>0:
+                base_accuracy = len(links) / candidate_num
+            print("Baseline accuracy is {}/{} = {}".format(len(links), candidate_num, base_accuracy))
+        return Dataset(modified_link_sets), "\n".join(data_set_infos)
 
     def link_comply_with_time_constrain(self, issue_close_time_str, commit_time_str) -> bool:
         """
@@ -259,11 +265,18 @@ class GtiProjectReader:
         link_set = LinkSet(artif_pair, links)
         return Dataset([link_set])
 
-    def readData(self, use_translated_data=False) -> Dataset:
+    def readData(self, use_translated_data=False, do_filter_on_raw=True) -> Dataset:
+        """
+
+        :param use_translated_data: use the translated dataset or origin dataset
+        :param do_filter_on_raw: whether applying filtering condition on origin dataset. The filtering operation will be
+         mirrored to the translated dataset.
+        :return:
+        """
         issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "issue.csv")
         commit_path = os.path.join(GIT_PROJECTS, self.repo_path, "clean_token_data", "commit.csv")
         link_path = os.path.join(GIT_PROJECTS, self.repo_path, "links.csv")
-        origin_dataset = self.__readData(issue_path, commit_path, link_path)
+        origin_dataset = self.__readData(issue_path, commit_path, link_path, do_filter_on_raw)
         if use_translated_data:
             issue_path = os.path.join(GIT_PROJECTS, self.repo_path, "translated_data", "clean_translated_tokens",
                                       "issue.csv")
