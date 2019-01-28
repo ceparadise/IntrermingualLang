@@ -13,7 +13,7 @@ from reborn.Preprocessor import Preprocessor
 
 class Experiment2:
     def __init__(self, repo_path, model_type, use_translated_data, term_similarity_type, link_threshold_interval=5,
-                 output_sub_dir=""):
+                 output_sub_dir="", print_result=False):
         """
 
         :param repo_path: the repo path in github
@@ -192,7 +192,7 @@ class Experiment2:
                 scores.append(eval_score)
                 threshold += self.link_threshold_interval
 
-            if self.use_translated_data:
+            if not self.use_translated_data:
                 trans_postfix = "origin"
             else:
                 trans_postfix = "trans"

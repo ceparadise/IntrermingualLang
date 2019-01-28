@@ -151,6 +151,11 @@ class GtiProjectReader:
         self.repo_path = repo_path
 
     def limit_artifacts_in_links(self, dataset: Dataset):
+        """
+        Remove the artifacts which did not appear in the golden links
+        :param dataset:
+        :return:
+        """
         modified_link_sets = []
         data_set_infos = []
         for linkset_id in dataset.gold_link_sets:
@@ -178,14 +183,15 @@ class GtiProjectReader:
             modified_link_sets.append(LinkSet(modified_artif_pair, links))
             issue_num = len(modified_artif_pair.source_artif)
             commit_num = len(modified_artif_pair.target_artif)
-            issue_commit_info = "{} issues and {} commits remains after limiting artifacts to links...".format(issue_num, commit_num)
+            issue_commit_info = "{} issues and {} commits remains after limiting artifacts to links...".format(
+                issue_num, commit_num)
             data_set_infos.append(issue_commit_info)
-            print(issue_commit_info)
+            # print(issue_commit_info)
             candidate_num = issue_num * commit_num
             base_accuracy = 0
-            if candidate_num>0:
+            if candidate_num > 0:
                 base_accuracy = len(links) / candidate_num
-            print("Baseline accuracy is {}/{} = {}".format(len(links), candidate_num, base_accuracy))
+            # print("Baseline accuracy is {}/{} = {}".format(len(links), candidate_num, base_accuracy))
         return Dataset(modified_link_sets), "\n".join(data_set_infos)
 
     def link_comply_with_time_constrain(self, issue_close_time_str, commit_time_str) -> bool:
@@ -224,27 +230,26 @@ class GtiProjectReader:
                 if i == 0:
                     continue
                 id, content, close_time = line.strip("\n\t\r").split(",")
-                if (len(content.split()) < MIN_DOC_SIZE or all_english(content)) and do_filter:
+                if (len(content.split()) < MIN_DOC_SIZE) and do_filter:
                     filtered_issued += 1
                     continue
                 issues[id] = content
                 issue_close_time_dict[id] = close_time
 
-        print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE,
-                                                                        len(issues)))
+        # print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE,
+        #                                                                 len(issues)))
         with open(commit_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
                 id, summary, content, commit_time = line.strip("\n\t\r").split(",")
                 commit_content = summary + content
-                if (len(commit_content.split()) < MIN_DOC_SIZE or all_english(content)) and do_filter:
+                if (len(commit_content.split()) < MIN_DOC_SIZE) and do_filter:
                     filtered_commit += 1
                     continue
                 commits[id] = commit_content
                 commit_time_dict[id] = commit_time
-        print(
-            "{} commit are filtered minimal lenght {}".format(filtered_commit, MIN_DOC_SIZE, len(commits)))
+        # print("{} commit are filtered minimal lenght {}".format(filtered_commit, MIN_DOC_SIZE, len(commits)))
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
 
         links = []
@@ -257,11 +262,16 @@ class GtiProjectReader:
                 issue_id, commit_id = line.split(",")
                 issue_id = issue_id.strip("\n\t\r")
                 commit_id = commit_id.strip("\n\t\r")
-                if (issue_id not in issues or commit_id not in commits) and do_filter:
-                    continue
+                if do_filter:
+                    if issue_id not in issues or commit_id not in commits:
+                        continue
+                    issue_content = issues[issue_id]
+                    commit_content = commits[commit_id]
+                    if all_english(issue_content) and all_english(commit_content):
+                        continue
                 link = (issue_id, commit_id)
                 links.append(link)
-        print("Link size:{}/{}".format(len(links), origin_link_cnt))
+        # print("Link size:{}/{}".format(len(links), origin_link_cnt))
         link_set = LinkSet(artif_pair, links)
         return Dataset([link_set])
 

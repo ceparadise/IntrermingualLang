@@ -46,12 +46,12 @@ class LDA(Model):
 
 if __name__ == "__main__":
     docs = [
-        ['this', 'is', 'a', 'test'],
-        ['test', 'assure', 'quality'],
-        ['test', 'is', 'important'],
+        'this is a test',
+        'test assure quality',
+        'test is important',
 
     ]
-    lda = LDA()
+    lda = LDA(fo_lang_code="en")
     new_doc1 = ["software", 'quality', 'rely', 'test']
     new_doc2 = ["quality", "is", "important"]
     new_doc3 = ["i", "have", "a", "pretty", "dog"]

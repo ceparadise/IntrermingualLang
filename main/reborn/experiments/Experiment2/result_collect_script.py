@@ -42,6 +42,7 @@ if __name__ == "__main__":
                 continue
             project_dirs_name = os.listdir(group_path)
             for project_dir_name in project_dirs_name:
+                print(project_dir_name)
                 project_dir_path = os.path.join(group_path, project_dir_name)
 
                 project_csv_title_line.append(project_dir_name)
@@ -53,6 +54,7 @@ if __name__ == "__main__":
 
                 result_dirs_name = os.listdir(project_dir_path)
                 for result_dir_name in result_dirs_name:
+                    print("    -" + result_dir_name)
                     result_dir_path = os.path.join(project_dir_path, result_dir_name)
                     files = os.listdir(result_dir_path)
                     for file_name in files:
@@ -60,8 +62,8 @@ if __name__ == "__main__":
                             file_path = os.path.join(result_dir_path, file_name)
                             with open(file_path, 'r', encoding='utf8') as fin:
                                 lines = fin.readlines()
-                                map = lines[1].strip("MAP=")
-                                prf_line = lines[3]
+                                map = lines[1].strip("MAP=").strip("\n\t\r ")
+                                prf_line = lines[3].strip("\n\t\r ")
                                 best_f1, best_f2 = get_best_result(prf_line)
                                 data.setdefault(result_dir_name, [])
                                 data[result_dir_name].append(best_f1)
