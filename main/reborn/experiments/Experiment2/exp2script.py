@@ -1,4 +1,8 @@
 import datetime
+import sys, os
+base_dir = os.path.dirname(os.path.realpath(__file__));
+sys.path.append(os.path.join(base_dir, "../../../reborn"))
+sys.path.append(os.path.join(base_dir, "../../../../main"))
 
 from experiments.Experiment2.experiment2 import Experiment2
 
@@ -11,7 +15,7 @@ if __name__ == "__main__":
                 ]
     projects.extend(
         ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    #models = ["vsm", "gvsm", "lda"]
+    # models = ["vsm", "gvsm", "lda"]
     models = ["gvsm"]
     use_translate_flags = [True, False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -19,7 +23,5 @@ if __name__ == "__main__":
         print("Processing project {}".format(project))
         for model in models:
             for use_translate_flag in use_translate_flags:
-
                 exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time)
                 exp.run()
-

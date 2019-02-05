@@ -11,3 +11,4 @@ main/interlang_dataset_maker/output
 main/reborn/github_project_crawl/git_projects/
 data/wordVectors/wiki.zh.align.vec
 data/wordVectors/wiki.en.align.vec
+*.zip

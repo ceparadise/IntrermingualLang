@@ -1,4 +1,3 @@
-import math
 import os, io
 from gensim import corpora, models, matutils
 from gensim.models import KeyedVectors, Word2Vec
