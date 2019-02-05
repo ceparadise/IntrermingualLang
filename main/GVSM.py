@@ -9,6 +9,7 @@ from hanziconv import HanziConv
 
 GENESIM_W2V = "gensim_wv"
 CROSSLINGUAL_WORDEMBEDDING = "cl_wv"
+CROSSLINGUAL_WORDEMBEDDING_EN = "cl_wv_en"
 
 
 class GVSM(Model):
@@ -38,7 +39,10 @@ class GVSM(Model):
                 term = tokens[0]
                 if self.fo_lang_code == 'en' or self.fo_lang_code == "zh":
                     term = HanziConv.toSimplified(term)  # conver to simpified Chinese
-                data[term] = [float(x) for x in tokens[1:]]
+                try:
+                    data[term] = [float(x) for x in tokens[1:]]
+                except Exception as e:
+                    pass
         return data
 
     def build_model(self, docs):
@@ -58,10 +62,15 @@ class GVSM(Model):
             self.wv = Word2Vec(docs_tokens)
             self.wv.wv.save(os.path.join(self.word_vec_root, "default.wv"))
 
-        if self.cl_wv is None and self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING:
-            print("Building bilingual word embedding ...")
-            vec_file_path = os.path.join(self.word_vec_root, "wiki.zh.align.vec")
-            self.cl_wv = self.load_vectors(vec_file_path)
+        if self.cl_wv is None:
+            if self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING:
+                print("Building bilingual word embedding ...")
+                vec_file_path = os.path.join(self.word_vec_root, "wiki.zh.align.vec")
+                self.cl_wv = self.load_vectors(vec_file_path)
+            elif self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING_EN:
+                print("Building aligned english word embedding ...")
+                vec_file_path = os.path.join(self.word_vec_root, "wiki.en.align.vec")
+                self.cl_wv = self.load_vectors(vec_file_path)
         print("Finish building GVSM model")
 
     def __get_term_similarity(self, token1, token2):
@@ -73,7 +82,7 @@ class GVSM(Model):
             if self.term_similarity_type == GENESIM_W2V:
                 if token1 in self.wv.vocab and token2 in self.wv.vocab:
                     term_similarity = self.wv.similarity(token1, token2)
-            elif self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING:
+            elif self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING or self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING_EN:
                 if token1 in self.cl_wv and token2 in self.cl_wv:
                     vec1 = self.cl_wv[token1]
                     vec2 = self.cl_wv[token2]

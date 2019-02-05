@@ -229,7 +229,7 @@ if __name__ == "__main__":
     parser.add_argument("--model", help="Model used for experiment")
     parser.add_argument("-t", action="store_true", help="use translated dataset")
     parser.add_argument("--term_similarity",
-                        help="type of term similarity. including gensim_w2v,cross_lingual_word_embedding")
+                        help="type of term similarity. including gensim_w2v,cross_lingual_word_embedding,")
     args = parser.parse_args()
     exp2 = Experiment2(args.git_repo_path, args.model, args.t, args.term_similarity)
     exp2.run()
