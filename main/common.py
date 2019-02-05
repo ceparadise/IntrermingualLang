@@ -16,7 +16,11 @@ GIT_PROJECTS = os.path.join(DATA_DIR, "..", "main", "reborn", "github_project_cr
 
 CHINESE_CHAR_PATTERN = re.compile("[\u4e00-\u9fff]+")
 
-translator = translate.Client()
+try:
+    translator = translate.Client()
+except Exception as e:
+    print(e)
+
 
 def translate_sentences(en_sentence, lang_code):
     sleep(1)
