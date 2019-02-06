@@ -9,9 +9,9 @@ from experiments.Experiment2.experiment2 import Experiment2
 if __name__ == "__main__":
     projects = ["baidu/san", "Tencent/bk-cmdb",
                 "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-                "Tencent/westore", "Tencent/weui", "Tencent/xLua",
-                "NetEase/Emmagee", "meituan/EasyReact", "meituan/lyrebird", "meituan/WMRouter",
-                "XiaoMi/pegasus", "XiaoMi/mace"
+                "Tencent/weui", "Tencent/xLua",
+                "NetEase/Emmagee", "meituan/EasyReact",
+                "XiaoMi/pegasus"
                 ]
     projects.extend(
         ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
