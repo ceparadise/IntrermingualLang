@@ -4,22 +4,21 @@ import sys, os
 import common
 from experiments.Experiment3.experiment3 import Experiment3
 
-base_dir = os.path.dirname(os.path.realpath(__file__));
+base_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(base_dir, "../../../reborn"))
 sys.path.append(os.path.join(base_dir, "../../../../main"))
 
 from experiments.Experiment2.experiment2 import Experiment2
 
 if __name__ == "__main__":
-    # projects = ["baidu/san", "Tencent/bk-cmdb",
-    #             "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-    #             "Tencent/weui", "Tencent/xLua",
-    #             "NetEase/Emmagee", "meituan/EasyReact",
-    #             "XiaoMi/pegasus"
-    #             ]
-    # projects.extend(
-    #     ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    projects = ["alibaba/canal"]
+    projects = ["baidu/san", "Tencent/bk-cmdb",
+                "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                "Tencent/weui", "Tencent/xLua",
+                "NetEase/Emmagee", "meituan/EasyReact",
+                "XiaoMi/pegasus"
+                ]
+    projects.extend(
+        ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
     models = ["vsm", "gvsm", "lda"]
     use_translate_flags = [False, True]
     # languages = common.language_list
