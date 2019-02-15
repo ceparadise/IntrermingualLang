@@ -1,14 +1,12 @@
 import datetime
 import sys, os
 
-import common
-from experiments.Experiment3.experiment3 import Experiment3
-
 base_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(base_dir, "../../../reborn"))
 sys.path.append(os.path.join(base_dir, "../../../../main"))
 
-from experiments.Experiment2.experiment2 import Experiment2
+import common
+from experiments.Experiment3.experiment3 import Experiment3
 
 if __name__ == "__main__":
     projects = ["baidu/san", "Tencent/bk-cmdb",
