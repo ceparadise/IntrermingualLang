@@ -8,7 +8,8 @@ import nltk
 class Preprocessor():
     def __init__(self):
         self.zh_pattern = re.compile("[\u4e00-\u9fff]+")
-        self.en_pattenr = re.compile("[a-zA-Z]+")
+        self.en_pattern = re.compile("[a-zA-Z]+")
+        self.fr_pattern = re.compile("[a-zA-ZÀ-ÿ]")
         self.parser = nltk.CoreNLPParser()
         self.java_keywords = set([w.strip('*') for w in """
         abstract    continue    for     new     switch
@@ -81,7 +82,7 @@ class Preprocessor():
         def limit_token_min_length(tokens, zh_min=2, en_min=4):
             res = []
             for token in tokens:
-                if self.en_pattenr.match(token) and len(token) >= en_min:
+                if self.en_pattern.match(token) and len(token) >= en_min:
                     res.append(token)
                 elif self.zh_pattern.match(token) and len(token) >= zh_min:
                     res.append(token)
@@ -108,7 +109,7 @@ class Preprocessor():
             tokens.extend(self.split_camal_case(wd))
         tokens = [x.lower() for x in tokens]
         tokens = self.remove_java_keyword(tokens)
-        tokens = self.remove_stop_word(tokens, language="zh")
+        tokens = self.remove_stop_word(tokens, language= language)
         tokens = self.remove_stop_word(tokens, language="en")
         tokens = self.remove_stop_word(tokens, stop_words=self.customized_stop_words)
         tokens = limit_token_min_length(tokens)

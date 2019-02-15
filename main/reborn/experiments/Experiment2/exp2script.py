@@ -1,5 +1,6 @@
 import datetime
 import sys, os
+
 base_dir = os.path.dirname(os.path.realpath(__file__));
 sys.path.append(os.path.join(base_dir, "../../../reborn"))
 sys.path.append(os.path.join(base_dir, "../../../../main"))
@@ -17,7 +18,8 @@ if __name__ == "__main__":
         ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
     # models = ["vsm", "gvsm", "lda"]
     models = ["gvsm"]
-    use_translate_flags = [True, False]
+    # use_translate_flags = [True, False]
+    use_translate_flags = [True]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     for project in projects:
         print("Processing project {}".format(project))

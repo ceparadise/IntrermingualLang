@@ -16,6 +16,9 @@ GIT_PROJECTS = os.path.join(DATA_DIR, "..", "main", "reborn", "github_project_cr
 
 CHINESE_CHAR_PATTERN = re.compile("[\u4e00-\u9fff]+")
 
+# franch german turkish swedish Slovak Russian Hungarian italian
+language_list = ["fr", "de", "tr", "sv", "sk", "ru", "hu", "it"]
+
 try:
     translator = translate.Client()
 except Exception as e:
@@ -24,12 +27,12 @@ except Exception as e:
 
 def translate_sentences(en_sentence, lang_code):
     sleep(1)
-    trans_sentence = translator.translate(en_sentence, dest=lang_code)["translatedText"]
+    trans_sentence = translator.translate(en_sentence, target_language=lang_code)["translatedText"]
     sleep(1)
     return trans_sentence
 
 
-def translate_long_sentence(sentence, partition_size=14000):
+def translate_long_sentence(sentence, lang="en", partition_size=14000):
     """
     Translate a long sentence into English.
     :param sentence:
@@ -40,8 +43,9 @@ def translate_long_sentence(sentence, partition_size=14000):
     for par in range(math.ceil(len(sentence) / partition_size)):
         part = sentence[par * partition_size: (par + 1) * partition_size]
         try:
-            trans_part = translator.translate(part)["translatedText"]
+            trans_part = translator.translate(part, target_language=lang)["translatedText"]
         except Exception as e:
+            sleep(3)
             print("Exception when translating sentence {}, exception is {}".format(part, e))
             trans_part = part
         trans_content.append(trans_part)
@@ -65,7 +69,7 @@ def sentence_contains_chinese(sentence: str) -> bool:
     return CHINESE_CHAR_PATTERN.search(sentence) is not None
 
 
-def translate_intermingual_sentence(sentence: str) -> str:
+def translate_intermingual_sentence(sentence: str, lang="en") -> str:
     """
     Find out the Chinese sentences in a long string, translate those parts and return a pure english version sentence
     of the input
@@ -77,7 +81,7 @@ def translate_intermingual_sentence(sentence: str) -> str:
     for sentence_segment in sentence_segments_by_space:
         if sentence_contains_chinese(sentence_segment):
             sentence_segment = re.sub("[^\w]+", " ", sentence_segment)
-            trans_segment = translate_long_sentence(sentence_segment)
+            trans_segment = translate_long_sentence(sentence_segment, lang=lang)
         else:
             trans_segment = sentence_segment
         translated_sentence.append(trans_segment)

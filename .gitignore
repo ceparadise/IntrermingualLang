@@ -9,6 +9,7 @@ main/interlang_dataset_maker/output
 **.pyc
 
 main/reborn/github_project_crawl/git_projects/
-data/wordVectors/wiki.zh.align.vec
-data/wordVectors/wiki.en.align.vec
+main/reborn/experiments/Experiment3/data/*
+main/reborn/experiments/Experiment3/cache/*
+data/wordVectors/wiki.*.align.vec
 *.zip
