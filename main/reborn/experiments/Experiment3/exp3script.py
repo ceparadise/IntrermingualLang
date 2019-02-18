@@ -20,8 +20,7 @@ if __name__ == "__main__":
                      ])
     models = ["vsm", "gvsm", "lda"]
     use_translate_flags = [False, True]
-    # languages = common.language_list
-    languages = ["fr"]
+    languages = common.language_list
     time = datetime.datetime.now().strftime(
         "%Y%m%d-%H%M%S")  # TODO modify the output dir to make result group by langauge
     for language in languages:
