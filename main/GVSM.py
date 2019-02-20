@@ -7,9 +7,7 @@ from model import Model
 from hanziconv import HanziConv
 
 GENESIM_W2V = "gensim_wv"
-CROSSLINGUAL_WORDEMBEDDING_ZH = "cl_wv_zh"
-CROSSLINGUAL_WORDEMBEDDING_EN = "cl_wv_en"
-CROSSLINGUAL_WORDEMBEDDING_FR = "cl_wv_fr"
+CROSSLINGUAL_WORDEMBEDDING = "cl_w"
 
 
 class GVSM(Model):
@@ -63,19 +61,10 @@ class GVSM(Model):
             self.wv.wv.save(os.path.join(self.word_vec_root, "default.wv"))
 
         if self.cl_wv is None:
-            if self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING_ZH:
-                print("Building Chinese word embedding ...")
-                vec_file_path = os.path.join(self.word_vec_root, "wiki.zh.align.vec")
+            if self.term_similarity_type.startswith(CROSSLINGUAL_WORDEMBEDDING):
+                print("Building {} word embedding ...".format(self.fo_lang_code))
+                vec_file_path = os.path.join(self.word_vec_root, "wiki.{}.align.vec".format(self.fo_lang_code))
                 self.cl_wv = self.load_vectors(vec_file_path)
-            elif self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING_EN:
-                print("Building aligned English word embedding ...")
-                vec_file_path = os.path.join(self.word_vec_root, "wiki.en.align.vec")
-                self.cl_wv = self.load_vectors(vec_file_path)
-            elif self.term_similarity_type == CROSSLINGUAL_WORDEMBEDDING_FR:
-                print("Building aligned French word embedding ...")
-                vec_file_path = os.path.join(self.word_vec_root, "wiki.fr.align.vec")
-                self.cl_wv = self.load_vectors(vec_file_path)
-
         print("Finish building GVSM model")
 
     def __get_term_similarity(self, token1, token2):
