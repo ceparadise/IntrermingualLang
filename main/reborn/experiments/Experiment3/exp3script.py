@@ -1,5 +1,6 @@
 import datetime
 import sys, os
+import argparse
 
 base_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(base_dir, "../../../reborn"))
@@ -9,6 +10,9 @@ import common
 from experiments.Experiment3.experiment3 import Experiment3
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', "--languages", nargs='+', help="languages to run", default=common.language_list)
+    args = parser.parse_args()
     projects = []
     projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
@@ -20,7 +24,7 @@ if __name__ == "__main__":
                      ])
     models = ["vsm", "gvsm", "lda"]
     use_translate_flags = [False, True]
-    languages = common.language_list
+    languages = args.languages
     time = datetime.datetime.now().strftime(
         "%Y%m%d-%H%M%S")  # TODO modify the output dir to make result group by langauge
     for language in languages:
