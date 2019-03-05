@@ -18,7 +18,7 @@ CHINESE_CHAR_PATTERN = re.compile("[\u4e00-\u9fff]+")
 
 # franch german turkish swedish Slovak Russian Hungarian italian
 # language_list = ["fr", "de", "tr", "sv", "sk", "ru", "hu", "it"]
-language_list = ["de", "tr", "sv", "sk", "ru", "hu", "it"]
+language_list = ["fr","de", "tr", "sv", "sk", "ru", "hu", "it"]
 
 try:
     translator = translate.Client()

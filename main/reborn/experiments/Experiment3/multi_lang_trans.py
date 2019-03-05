@@ -98,7 +98,7 @@ def translate_zh_intermingual_sentence(sentence: str, lang) -> tuple:
 
 
 if __name__ == "__main__":
-    #target_lang_list = ["fr"]
+    #target_lang_list = ["ru"]
     target_lang_list = common.language_list
     for target_lang in target_lang_list:
         cache_path = "cache/" + target_lang + ".txt"
@@ -112,9 +112,12 @@ if __name__ == "__main__":
             for project_name in os.listdir(group_dir_path):
                 print("Translating {} into {}".format(project_name, target_lang))
                 # Read only the
+                if  "nacos" in project_name:
+                    pass
                 reader = GtiProjectReader(os.path.join(group_name, project_name))
                 dataSet = reader.readData(use_translated_data=False)
                 dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet)
+
                 artif_pair: ArtifactPair = list(dataSet.gold_link_sets.values())[0].artiPair
                 source_artif = artif_pair.source_artif
                 target_artif = artif_pair.target_artif
@@ -129,21 +132,23 @@ if __name__ == "__main__":
                 translation_dir = os.path.join("data", target_lang, group_name, project_name)
                 if not os.path.isdir(translation_dir):
                     os.makedirs(translation_dir)
-                    fo_trans_commit_path = os.path.join(translation_dir, "commit.csv")
-                    fo_trans_issue_path = os.path.join(translation_dir, "issue.csv")
 
-                    en_trans_dir = os.path.join(translation_dir, "en_trans")
-                    if not os.path.isdir(en_trans_dir):
-                        os.mkdir(en_trans_dir)
+                fo_trans_commit_path = os.path.join(translation_dir, "commit.csv")
+                fo_trans_issue_path = os.path.join(translation_dir, "issue.csv")
 
-                    en_trans_commit_path = os.path.join(en_trans_dir, "commit.csv")
-                    en_trans_issue_path = os.path.join(en_trans_dir, "issue.csv")
+                en_trans_dir = os.path.join(translation_dir, "en_trans")
+                if not os.path.isdir(en_trans_dir):
+                    os.mkdir(en_trans_dir)
 
+                en_trans_commit_path = os.path.join(en_trans_dir, "commit.csv")
+                en_trans_issue_path = os.path.join(en_trans_dir, "issue.csv")
+                if not os.path.isfile(fo_trans_commit_path) or not os.path.isfile(en_trans_commit_path):
                     trans_artifact(raw_commit_file_path, fo_trans_commit_path, en_trans_commit_path, target_lang,
                                    target_ids)
+                if not os.path.isfile(fo_trans_issue_path) or not os.path.isfile(en_trans_issue_path):
                     trans_artifact(raw_issue_file_path, fo_trans_issue_path, en_trans_issue_path, target_lang,
                                    source_ids)
-                    copyfile(raw_link_file_path, os.path.join(translation_dir, "links.csv"))
+                copyfile(raw_link_file_path, os.path.join(translation_dir, "links.csv"))
         save_cache(cache_path, trans_cache)
 
     print("finished")

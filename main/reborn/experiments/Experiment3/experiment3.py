@@ -2,7 +2,7 @@ import argparse
 import os
 import re
 
-from DataReader import GtiProjectReader
+from DataReader import Exp3DataReader
 from Datasets import MAP_cal, Dataset
 from GVSM import GVSM
 from LDA import LDA
@@ -167,7 +167,7 @@ class Experiment3:
         return trace_model.get_link_scores(source_artifact, target_artifact)
 
     def run(self):
-        reader = GtiProjectReader(self.repo_path)
+        reader = Exp3DataReader(self.git_projects_dir,self.repo_path)
         dataSet = reader.readData(use_translated_data=self.use_translated_data)
         dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet)
         print(dataSet)
