@@ -1,0 +1,14 @@
+#!/bin/csh
+#$ -q long
+#$ -N ILT_SK
+
+module load python/3.6.4
+pip3  install --user gensim
+pip3 install --user hanziconv
+pip3 install --user PyDictionary
+pip3 install --user google-cloud-translate
+pip3 install --user many-stop-words
+
+set root = "/afs/crc.nd.edu/user/y/yliu26/IntermingualLang/main/reborn/experiments/Experiment3"
+cd $root
+python3 exp3script.py -l sk
