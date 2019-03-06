@@ -16,14 +16,13 @@ if __name__ == "__main__":
     projects = []
     projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    # projects.extend(["baidu/san", "Tencent/bk-cmdb",
-    #                  "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_iOS",
-    #                  "Tencent/weui", "Tencent/xLua",
-    #                  "NetEase/Emmagee", "meituan/EasyReact",
-    #                  "XiaoMi/pegasus"
-    #                  ])
-    #models = ["vsm", "gvsm", "lda"]
-    models = ["vsm"]
+    projects.extend(["baidu/san", "Tencent/bk-cmdb",
+                     "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_iOS",
+                     "Tencent/weui", "Tencent/xLua",
+                     "NetEase/Emmagee", "meituan/EasyReact",
+                     "XiaoMi/pegasus"
+                     ])
+    models = ["vsm", "gvsm", "lda"]
     use_translate_flags = [False, True]
     languages = args.languages
     time = datetime.datetime.now().strftime(
