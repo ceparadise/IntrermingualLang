@@ -433,13 +433,8 @@ class Exp3DataReader:
                 issue_id, commit_id = line.split(",")
                 issue_id = issue_id.strip("\n\t\r")
                 commit_id = commit_id.strip("\n\t\r")
-                if do_filter:
-                    if issue_id not in issues or commit_id not in commits:
-                        continue
-                    issue_content = issues[issue_id]
-                    commit_content = commits[commit_id]
-                    if all_english(issue_content) and all_english(commit_content):
-                        continue
+                if issue_id not in issues or commit_id not in commits:
+                    continue
                 link = (issue_id, commit_id)
                 links.append(link)
         # print("Link size:{}/{}".format(len(links), origin_link_cnt))
@@ -457,7 +452,7 @@ class Exp3DataReader:
         issue_path = os.path.join(self.git_dir, self.repo_path, "clean_token_data", "issue.csv")
         commit_path = os.path.join(self.git_dir, self.repo_path, "clean_token_data", "commit.csv")
         link_path = os.path.join(self.git_dir, self.repo_path, "links.csv")
-        origin_dataset = self.__readData(issue_path, commit_path, link_path, do_filter_on_raw)
+        origin_dataset = self.__readData(issue_path, commit_path, link_path, do_filter=False)
         if use_translated_data:
             issue_path = os.path.join(self.git_dir, self.repo_path, "en_trans", "clean_translated_tokens",
                                       "issue.csv")
