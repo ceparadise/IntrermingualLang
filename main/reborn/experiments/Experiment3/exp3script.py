@@ -16,11 +16,11 @@ if __name__ == "__main__":
     projects = []
     projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    projects.extend(["baidu/san", "Tencent/bk-cmdb",
+    projects.extend(["baidu/san",
                      "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_iOS",
                      "Tencent/weui", "Tencent/xLua",
                      "NetEase/Emmagee", "meituan/EasyReact",
-                     "XiaoMi/pegasus"
+                     "XiaoMi/pegasus", "Tencent/bk-cmdb"
                      ])
     models = ["vsm", "gvsm", "lda"]
     # models = ["vsm"]
