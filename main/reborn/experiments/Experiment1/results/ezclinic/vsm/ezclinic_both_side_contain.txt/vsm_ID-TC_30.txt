@@ -1,0 +1,8 @@
+
+Impacted MAP= 0.314
+Impacted P,C,F
+0.4154
+Replaced MAP= 0.097
+Replaced P,C,F
+0
++++++Details+++++

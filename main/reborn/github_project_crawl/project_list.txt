@@ -1,0 +1,9 @@
+# Korean
+konlpy/konlpy
+open-korean-text/open-korean-text
+#Germany
+marlonbernardes/awesome-berlin
+#Franch
+pgrimaud/horaires-ratp-api
+#Japanese
+miiton/Cica

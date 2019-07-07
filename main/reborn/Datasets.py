@@ -189,7 +189,7 @@ class LinkSet:
         return LinkSet(impacted_arti_pair, impacted_links)
 
     def replace_tokens(self, content, replace_dict, replace_probability=1.0):
-        tokens = set(self.preprocessor.get_tokens(content))
+        tokens = list(self.preprocessor.get_tokens(content))
         replaced_content = []
 
         for token in tokens:
@@ -221,6 +221,7 @@ class LinkSet:
             tokens = set(self.preprocessor.get_tokens(content))
             if len(tokens & replace_dict) > 0:
                 impacted.add(artif)
+        print("{}/{} are impacted".format(len(origin_artifacts), len(impacted)))
         return impacted
 
     def get_impacted_links(self, impacted_source, impacted_target):

@@ -16,10 +16,9 @@ if __name__ == "__main__":
                 ]
     projects.extend(
         ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    # models = ["vsm", "gvsm", "lda"]
-    models = ["gvsm"]
-    # use_translate_flags = [True, False]
-    use_translate_flags = [True]
+    models = [ "lsi"]
+    use_translate_flags = [True, False]
+    #use_translate_flags = [False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     for project in projects:
         print("Processing project {}".format(project))

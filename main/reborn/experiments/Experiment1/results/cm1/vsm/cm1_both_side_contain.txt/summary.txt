@@ -1,0 +1,11 @@
+('cm1Source-cm1Target', 0),0.3529,0.323
+('cm1Source-cm1Target', 10),0.33314,0.32500000000000007
+('cm1Source-cm1Target', 20),0.32205999999999996,0.2942
+('cm1Source-cm1Target', 30),0.31155999999999995,0.284
+('cm1Source-cm1Target', 40),0.2987,0.2786
+('cm1Source-cm1Target', 50),0.28287999999999996,0.26860000000000006
+('cm1Source-cm1Target', 60),0.30126,0.2678
+('cm1Source-cm1Target', 70),0.29272,0.2476
+('cm1Source-cm1Target', 80),0.27282,0.238
+('cm1Source-cm1Target', 90),0.27258,0.2172
+('cm1Source-cm1Target', 100),0.25,0.201

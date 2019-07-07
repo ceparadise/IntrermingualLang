@@ -4,6 +4,7 @@ import re
 
 from GVSM import GVSM
 from LDA import LDA
+from LSI import LSI
 from VSM import VSM
 from reborn.DataReader import GtiProjectReader
 from reborn.Datasets import Dataset, MAP_cal
@@ -46,6 +47,9 @@ class Experiment2:
         elif model_type == "gvsm":
             model = GVSM(fo_lang_code=fo_lang_code, term_similarity_type=self.term_similarity_type)
             model.build_model(docs)
+        elif model_type == "lsi":
+            model = LSI(fo_lang_code=fo_lang_code)
+            model.build_model(docs,num_topics=60)
         return model
 
     def preprocessed_dataset(self):

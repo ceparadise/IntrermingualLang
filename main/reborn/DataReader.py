@@ -146,9 +146,64 @@ class MavenReader:
         return Dataset(link_sets)
 
 
+import json
+
+
+class DronologyReader:
+    def __init__(self):
+        pass
+
+    def read_artifacts(self) -> dict:
+        pass
+
+    def readData(self):
+        file_path = os.path.join(DATA_DIR, "dronology", "dronologydataset.json")
+        with open(file_path, encoding='utf8') as fin:
+            content = fin.read();
+        jsonObj = json.loads(content);
+        re_dict = dict()
+        dd_dict = dict()
+        links = []
+
+        for entry in jsonObj["entries"]:
+            id = entry["issueid"]
+            attrib_dict = entry["attributes"]
+            issueType = attrib_dict['issuetype']
+            summary = attrib_dict["summary"].lower()
+            description = attrib_dict["description"].lower()
+            if issueType == "Design Definition":
+                dd_dict[id] = summary + "," + description
+            if issueType == "Requirement":
+                re_dict[id] = summary + "," + description
+                if "children" in entry:
+                    children_dict = entry["children"]
+                    if "refinedby" in children_dict:
+                        refined_by_list = children_dict["refinedby"]
+                        for dd in refined_by_list:
+                            if dd.startswith("DD"):
+                                links.append((id, dd))
+        artif_pair = ArtifactPair(re_dict, "re", dd_dict, "dd")
+        for link in links:
+            if link[0] not in re_dict:
+                print(link[0])
+        for link in links:
+            if link[1] not in dd_dict:
+                print(link[1])
+        return Dataset([LinkSet(artif_pair, links)])
+
+
 class GtiProjectReader:
     def __init__(self, repo_path):
         self.repo_path = repo_path
+
+    def sentence_contains_chinese(sentence: str) -> bool:
+        return CHINESE_CHAR_PATTERN.search(sentence) is not None
+
+    def isIL(self, source_content: str, target_content: str) -> bool:
+        if sentence_contains_chinese(source_content) or sentence_contains_chinese(target_content):
+            return True
+        else:
+            return False
 
     def limit_artifacts_in_links(self, dataset: Dataset):
         """
@@ -165,6 +220,9 @@ class GtiProjectReader:
             links = link_set.links
 
             gold_artif_set = set()
+            links = [x for x in links if (self.isIL(source_dict[x[0]], target_dict[x[1]]))]
+            print(len(links))
+
             for (s, t) in links:
                 gold_artif_set.add(s)
                 gold_artif_set.add(t)
@@ -483,5 +541,6 @@ class Exp3DataReader:
 
 
 if __name__ == "__main__":
-    mr = MavenReader()
+    mr = DronologyReader()
     data = mr.readData()
+    pass

@@ -1,15 +1,18 @@
 import operator
 import os
 import argparse
+import random
+from math import floor
 
 import nltk
+import numpy
 from gensim import corpora, models
 
 from LDA import LDA
 from VSM import VSM
 from common import DATA_DIR
 from experiments.analyzeTools import Analyzer
-from reborn.DataReader import CM1Reader, EzCLinizReader, MavenReader
+from reborn.DataReader import CM1Reader, EzCLinizReader, MavenReader, DronologyReader
 from reborn.Datasets import Dataset, MAP_cal
 from reborn.Preprocessor import Preprocessor
 
@@ -19,7 +22,8 @@ class Experiment1:
     Verify that replacing words in document will reduce the VSM and LDA performance
     """
 
-    def __init__(self, replace_word_interval, model_type, data_set, replace_list_name, link_threshold_interval=5):
+    def __init__(self, replace_word_interval, model_type, data_set, replace_list_name, link_threshold_interval=5,
+                 average_time=1):
         self.exp_name = data_set
         self.selected_replace_words = dict()
 
@@ -30,6 +34,8 @@ class Experiment1:
             reader = EzCLinizReader()
         elif data_set == "maven":
             reader = MavenReader()
+        elif data_set == "dronology":
+            reader = DronologyReader()
 
         self.dataSet = reader.readData()
         self.replace_word_population_percentage = replace_word_interval
@@ -38,6 +44,8 @@ class Experiment1:
         self.model_type = model_type
         self.replace_list_name = replace_list_name
         self.analyzer = Analyzer()
+        self.random_state = numpy.random.RandomState(1)
+        self.average_time = average_time
 
     def get_model(self, model_type, fo_lang_code, docs):
         model = None
@@ -50,90 +58,80 @@ class Experiment1:
         return model
 
     def run(self):
-        full_replace_list = self.read_replace_list(self.replace_list_name)
-        replace_percentage = self.replace_word_population_percentage
+        cnt = 0
+        write_dir = os.path.join("results", self.exp_name, self.model_type, self.replace_list_name)
+        if not os.path.isdir(write_dir):
+            os.makedirs(write_dir)
+        summary = dict()  # ke=(linkset_id, replace_percent) value = scores
+        while cnt < self.average_time:
+            cnt += 1
+            full_replace_list = self.read_replace_list(self.replace_list_name)[:100]
+            replace_percentage = 0
+            while replace_percentage <= 100:
+                # Create a sub set of replace list
+                replace_dict = dict()
+                rep_word_size = int(len(full_replace_list) * (replace_percentage / 100))
+                tmp = random.sample(full_replace_list, rep_word_size)
+                #tmp = full_replace_list[:rep_word_size]
+                for (en_word, fo_word) in tmp:
+                    replace_dict[en_word] = fo_word
 
-        while replace_percentage <= 100:
-            # Create a sub set of replace list
-            replace_dict = dict()
-            rep_word_size = int(len(full_replace_list) * (replace_percentage / 100))
-            tmp = full_replace_list[:rep_word_size]
-            for (en_word, fo_word) in tmp:
-                replace_dict[en_word] = fo_word
+                replaced_dataSet = self.dataSet.get_replaced_dataSet(replace_dict)
+                replaced_model = self.get_model(self.model_type, "en", replaced_dataSet.get_docs())
 
-            impacted_dataSet = self.dataSet.get_impacted_dataSet(replace_dict)
-            replaced_dataSet = self.dataSet.get_replaced_dataSet(replace_dict)
+                replaced_results = self.run_model(replaced_model, replaced_dataSet)
 
-            impacted_model = self.get_model(self.model_type, "en", impacted_dataSet.get_docs())
-            replaced_model = self.get_model(self.model_type, "en", replaced_dataSet.get_docs())
-            # impacted_model is trained with a dataSet that contains foreign language
+                for linkset_id in replaced_results:
+                    if self.exp_name == "ezclinic" and linkset_id!="ID-CC":
+                        continue
+                    print("Running linkSet {}".format(linkset_id))
+                    res_ky = (linkset_id, replace_percentage)
 
-            # replaced_result contains scores for all links, impacted_results contains scores for impacted links only
-            impacted_results = self.run_model(impacted_model, impacted_dataSet)
-            replaced_results = self.run_model(replaced_model, replaced_dataSet)
+                    replaced_result = sorted(replaced_results[linkset_id], key=lambda k: k[2], reverse=True)
+                    replaced_map = MAP_cal(replaced_result, replaced_dataSet.gold_link_sets[
+                        linkset_id].links, do_sort=False).run()
+                    threshold = 0
+                    replaced_scores = []
+                    replaced_best_f1 = 0
+                    while threshold <= 100:
+                        replaced_result_above_threshold = [x for x in replaced_result if x[2] >= threshold / 100]
+                        #replaced_result_above_threshold = replaced_result[0:floor(len(replaced_result) * (threshold / 100))]
+                        replaced_eval_score = replaced_dataSet.evaluate_link_set(linkset_id,
+                                                                                 replaced_result_above_threshold)
+                        if replaced_eval_score[2] > replaced_best_f1:
+                            replaced_best_f1 = replaced_eval_score[2]
 
-            for linkset_id in impacted_results:
-                print("Running linkSet {}".format(linkset_id))
-                impacted_result = sorted(impacted_results[linkset_id], key=lambda k: k[2], reverse=True)
-                replaced_result = sorted(replaced_results[linkset_id], key=lambda k: k[2], reverse=True)
+                        replaced_scores.append(replaced_eval_score)
+                        threshold += self.link_threshold_interval
+                    file_name = "{}_{}_{}.txt".format(self.model_type, linkset_id,
+                                                      replace_percentage)
+                    output_file_path = os.path.join(write_dir, file_name)
 
-                # calculate the MAP score for the impacted gold links on origin rank order
-                impacted_map = MAP_cal(impacted_result, impacted_dataSet.gold_link_sets[
-                    linkset_id].links, do_sort=False).run()
+                    print("Replaced_MAP=", replaced_map)
+                    print("Replaced P,C,F")
+                    print(replaced_scores)
+                    print("best f1 = {}".format(replaced_best_f1))
 
-                # calculate the MAP score for the impacted gold links on the new ranking generated by the impacted_model
-                replaced_map = MAP_cal(replaced_result, replaced_dataSet.gold_link_sets[
-                    linkset_id].links, do_sort=False).run()
+                    res_score =  replaced_best_f1, replaced_map
+                    score_sum = summary.get(res_ky, [0, 0])
+                    for i in range(len(score_sum)):
+                        score_sum[i] += res_score[i]
+                    summary[res_ky] = score_sum
 
-                # filter the origin result to keep only the impacted links. This set is the origin model score on impacted links
+                    with open(output_file_path, 'w', encoding='utf8') as fout:
+                        fout.write(replaced_dataSet.gold_link_sets[linkset_id].replacement_info + "\n")
+                        self.write_result(fout,  replaced_best_f1, replaced_map)
 
-                threshold = 0
-                replaced_scores = []
-                impacted_scores = []
-                while threshold <= 100:
-                    # slice = int(len(impacted_result) * (100 - threshold) / 100)
-                    # impacted_result_above_threshold = impacted_result[:slice]
-                    # replaced_result_above_threshold = replaced_result[:slice]
-                    impacted_result_above_threshold = [x for x in impacted_result if x[2] >= threshold / 100]
-                    replaced_result_above_threshold = [x for x in impacted_result if x[2] >= threshold / 100]
+                replace_percentage += self.replace_word_inverval
 
-                    impacted_eval_score = impacted_dataSet.evaluate_link_set(linkset_id,
-                                                                             impacted_result_above_threshold)
-                    replaced_eval_score = replaced_dataSet.evaluate_link_set(linkset_id,
-                                                                             replaced_result_above_threshold)
-
-                    replaced_scores.append(replaced_eval_score)
-                    impacted_scores.append(impacted_eval_score)
-                    threshold += self.link_threshold_interval
-                file_name = "{}_{}_{}.txt".format(self.model_type, linkset_id,
-                                                  replace_percentage)
-                write_dir = os.path.join("results", self.exp_name, self.model_type, self.replace_list_name)
-                if not os.path.isdir(write_dir):
-                    os.makedirs(write_dir)
-                output_file_path = os.path.join(write_dir, file_name)
-                replace_infomations = self.analyzer.get_changed_ranks(linkset_id, impacted_result, replaced_result,
-                                                                      self.dataSet,
-                                                                      impacted_dataSet)
-
-                print("Impacted MAP=", impacted_map)
-                print("Impacted P,C,F")
-                print(impacted_scores)
-
-                print("Replaced_MAP=", replaced_map)
-                print("Replaced P,C,F")
-                print(replaced_scores)
-
-                print("++++Details++++")
-                print(replace_infomations)
-
-                with open(output_file_path, 'w', encoding='utf8') as fout:
-                    fout.write(replaced_dataSet.gold_link_sets[linkset_id].replacement_info + "\n")
-                    self.write_result(fout, impacted_scores, impacted_map, replaced_scores, replaced_map)
-                    fout.write("+++++Details+++++\n")
-                    for replace_info in replace_infomations:
-                        fout.write("{}\n".format(replace_info))
-
-            replace_percentage += self.replace_word_inverval
+        summary_path = os.path.join(write_dir, "summary.txt")
+        with open(summary_path, "w", encoding='utf8') as fout:
+            for key in summary:
+                fout.write(str(key) + ",")
+                scores = []
+                for score in summary[key]:
+                    scores.append(str(score / self.average_time))
+                fout.write(",".join(scores) + "\n")
 
     def read_replace_list(self, replace_list_name):
         file_path = os.path.join(DATA_DIR, 'word_replace_list', replace_list_name)
@@ -145,7 +143,8 @@ class Experiment1:
                     en_word = parts[0].strip()
                     cnt = parts[1]
                     fo_word = parts[2].strip()
-                    tmp.append((en_word, fo_word))
+                    if len(fo_word) >0:
+                        tmp.append((en_word, fo_word))
             return tmp
 
     def get_links(self, trace_model, source_artifact, target_artifact):
@@ -161,10 +160,10 @@ class Experiment1:
             results[link_set_id] = gen_links
         return results
 
-    def write_result(self, writer, impacted_score, impacted_map, replaced_score, replaced_map):
-        writer.write("Impacted MAP= {}\n".format(impacted_map))
-        writer.write("Impacted P,C,F\n")
-        writer.write(str(impacted_score) + "\n")
+    def write_result(self, writer, replaced_score, replaced_map):
+        # writer.write("Impacted MAP= {}\n".format(impacted_map))
+        # writer.write("Impacted P,C,F\n")
+        # writer.write(str(impacted_score) + "\n")
 
         writer.write("Replaced MAP= {}\n".format(replaced_map))
         writer.write("Replaced P,C,F\n")
@@ -213,10 +212,11 @@ if __name__ == "__main__":
                         help="Increase the usage percentage of replace list that will be used for replacement by this interval ")
     parser.add_argument("--model", help="Model used for experiment")
     parser.add_argument("--data_set", help="The dataset that will be applied")
+    parser.add_argument("--exp_time", help="number of time to run this experiment", default=1, type=int)
     args = parser.parse_args()
 
     exp = Experiment1(args.replace_interval, model_type=args.model, data_set=args.data_set,
-                      replace_list_name=args.replace_list)
+                      replace_list_name=args.replace_list, average_time=args.exp_time)
     if args.create_replace_list:
         exp.create_list(args.create_replace_list)
     else:

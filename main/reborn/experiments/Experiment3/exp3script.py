@@ -13,20 +13,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', "--languages", nargs='+', help="languages to run", default=common.language_list)
     args = parser.parse_args()
-    projects = []
-    projects.extend(
-        ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    projects.extend(["baidu/san",
-                     "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_iOS",
-                     "Tencent/weui", "Tencent/xLua",
-                     "NetEase/Emmagee", "meituan/EasyReact",
-                     "XiaoMi/pegasus", "Tencent/bk-cmdb"
-                     ])
-    models = ["vsm", "gvsm", "lda"]
-    # models = ["vsm"]
+    projects = ["baidu/san"]
+    # projects.extend(
+    #     ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
+    # projects.extend(["baidu/san",
+    #                  "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_iOS",
+    #                  "Tencent/weui", "Tencent/xLua",
+    #                  "NetEase/Emmagee", "meituan/EasyReact",
+    #                  "XiaoMi/pegasus", "Tencent/bk-cmdb"
+    #                  ])
+    #models = ["vsm", "gvsm", "lda"]
+    models = ["vsm"]
     use_translate_flags = [False, True]
-    languages = args.languages
-    # languages = ["fr"]
+    #languages = args.languages
+    languages = ["fr"]
     time = datetime.datetime.now().strftime(
         "%Y%m%d-%H%M%S")  # TODO modify the output dir to make result group by langauge
     for language in languages:

@@ -79,7 +79,7 @@ class Preprocessor():
         return [x for x in tokens if x not in self.java_keywords]
 
     def get_tokens(self, doc, language="en"):
-        def limit_token_min_length(tokens, zh_min=2, en_min=4):
+        def limit_token_min_length(tokens, zh_min=2, en_min=3):
             res = []
             for token in tokens:
                 if self.en_pattern.match(token) and len(token) >= en_min:

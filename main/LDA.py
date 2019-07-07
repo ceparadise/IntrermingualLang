@@ -1,4 +1,5 @@
 import gensim
+import numpy
 from gensim import corpora, matutils
 
 from model import Model
@@ -19,7 +20,7 @@ class LDA(Model):
         dictionary = corpora.Dictionary(docs_tokens)
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
         self.ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word=dictionary,
-                                                        passes=passes, alpha='auto')
+                                                        passes=passes, alpha='auto', random_state=numpy.random.RandomState(1))
 
     def build_model(self, docs, num_topics=40, passes=200):
         self.train(docs, num_topics, passes)
@@ -36,9 +37,8 @@ class LDA(Model):
         """
         dis1 = self.get_topic_distrb(doc1_tk)
         dis2 = self.get_topic_distrb(doc2_tk)
-        #return 1 - matutils.hellinger(dis1, dis2)
+        # return 1 - matutils.hellinger(dis1, dis2)
         return matutils.cossim(dis1, dis2)
-
 
     def get_model_name(self):
         return "LDA"
