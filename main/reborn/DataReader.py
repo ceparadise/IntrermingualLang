@@ -205,7 +205,7 @@ class GtiProjectReader:
         else:
             return False
 
-    def limit_artifacts_in_links(self, dataset: Dataset):
+    def limit_artifacts_in_links(self, dataset: Dataset, origin_dataset: Dataset):
         """
         Remove the artifacts which did not appear in the golden links
         :param dataset:
@@ -220,7 +220,12 @@ class GtiProjectReader:
             links = link_set.links
 
             gold_artif_set = set()
-            links = [x for x in links if (self.isIL(source_dict[x[0]], target_dict[x[1]]))]
+
+            # Fix for the bug when read translated data. Translated data have no Chinese at all
+            origin_source_dict = origin_dataset.gold_link_sets[linkset_id].artiPair.source_artif
+            origin_target_dict = origin_dataset.gold_link_sets[linkset_id].artiPair.target_artif
+            links = [x for x in links if (self.isIL(origin_source_dict[x[0]], origin_target_dict[x[1]]))]
+
             print(len(links))
 
             for (s, t) in links:

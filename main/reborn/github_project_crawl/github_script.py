@@ -13,11 +13,24 @@ import git as local_git
 from google.cloud import translate
 
 CHINESE_CHAR_PATTERN = re.compile("[\u4e00-\u9fff]+")
+KOREAN_CHAR_PATTERN = re.compile("[\u3131-\ucb4c]+")
+JAPANESS_CHAR_PATTERN = re.compile("[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]+")
+EURPO_CHAR_PATTERN = re.compile("[\u00c0-\u017e]+")
+LANG_PATTERN = [CHINESE_CHAR_PATTERN, KOREAN_CHAR_PATTERN, JAPANESS_CHAR_PATTERN]
+
 translator = translate.Client()
 
 
 def sentence_contains_chinese(sentence: str) -> bool:
     return CHINESE_CHAR_PATTERN.search(sentence) is not None
+
+
+def sentence_contains_foreign_lang(sentence: str) -> bool:
+    flag = False
+    for pattern in LANG_PATTERN:
+        if pattern.search(sentence) is not None:
+            flag = True
+    return flag
 
 
 def translate_long_sentence(sentence, partition_size=14000):
@@ -49,7 +62,7 @@ def translate_intermingual_sentence(sentence: str) -> str:
     sentence_segments_by_space = sentence.split()
     translated_sentence = []
     for sentence_segment in sentence_segments_by_space:
-        if sentence_contains_chinese(sentence_segment):
+        if sentence_contains_foreign_lang(sentence_segment):
             sentence_segment = re.sub("[^\w]+", " ", sentence_segment)
             trans_segment = translate_long_sentence(sentence_segment)
         else:
@@ -185,27 +198,47 @@ class RepoCollector:
         if translate_project_flag is True:
             print("Translating issue...")
             partition_size = 14000
-            if not os.path.isfile(trans_issue_file_path):
-                with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_file_path,
-                                                                                     encoding='utf8') as fin:
-                    for i, line in enumerate(fin):
-                        if i == 0:
-                            fout.write(line)
-                            continue
-                        print(i)
+
+            if os.path.isfile(trans_issue_file_path):
+                with open(trans_issue_file_path, 'r', encoding='utf8') as fin:
+                    translatedLines = fin.readlines()
+            else:
+                translatedLines = []
+
+            with open(trans_issue_file_path, 'w', encoding='utf8') as fout, open(issue_file_path,
+                                                                                 encoding='utf8') as fin:
+                for i, line in enumerate(fin):
+                    if i == 0:
+                        fout.write(line)
+                        continue
+                    print(i)
+                    if i < len(translatedLines):
+                        trans_line = translatedLines[i].strip("\n\t\r")
+                        fout.write(trans_line + "\n")
+                    else:
                         issue_id, issue_content, issue_close_time = line.strip("\n\t\r").split(",")
                         translated_issue_content = translate_intermingual_sentence(issue_content)
                         fout.write("{},{},{}\n".format(issue_id, translated_issue_content, issue_close_time))
+
             print("Translate commit...")
 
-            if not os.path.isfile(trans_commit_file_path):
-                with open(trans_commit_file_path, 'w', encoding='utf8') as fout, open(commit_file_path,
-                                                                                      encoding='utf8') as fin:
-                    for i, line in enumerate(fin):
-                        if i == 0:
-                            fout.write(line)
-                            continue
-                        print(i)
+            if os.path.isfile(trans_commit_file_path):
+                with open(trans_commit_file_path, 'r', encoding='utf8') as fin:
+                    translatedLines = fin.readlines()
+            else:
+                    translatedLines = []
+
+            with open(trans_commit_file_path, 'w', encoding='utf8') as fout, open(commit_file_path,
+                                                                                  encoding='utf8') as fin:
+                for i, line in enumerate(fin):
+                    if i == 0:
+                        fout.write(line)
+                        continue
+                    print(i)
+                    if i < len(translatedLines):
+                        trans_line = translatedLines[i].strip("\n\t\r")
+                        fout.write(trans_line + "\n")
+                    else:
                         commit_id, commit_summary, commit_content, commit_time = line.strip("\n\t\r").split(",")
                         translated_commit_summary = translate_intermingual_sentence(commit_summary)
                         translated_commit_content = translate_intermingual_sentence(commit_content)

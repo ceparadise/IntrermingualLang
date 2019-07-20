@@ -19,7 +19,6 @@ class LSI(Model):
             docs_tokens.append(self.preprocessor.get_stemmed_tokens(doc, self.fo_lang_code))
         dictionary = corpora.Dictionary(docs_tokens)
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
-        print(dictionary)
         self.lsi = gensim.models.LsiModel(corpus, num_topics= num_topics,id2word=dictionary)
 
     def build_model(self, docs, num_topics=40):

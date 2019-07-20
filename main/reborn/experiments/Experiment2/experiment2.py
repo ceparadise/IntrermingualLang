@@ -49,7 +49,7 @@ class Experiment2:
             model.build_model(docs)
         elif model_type == "lsi":
             model = LSI(fo_lang_code=fo_lang_code)
-            model.build_model(docs,num_topics=60)
+            model.build_model(docs, num_topics=60)
         return model
 
     def preprocessed_dataset(self):
@@ -177,8 +177,11 @@ class Experiment2:
     def run(self):
         reader = GtiProjectReader(self.repo_path)
         dataSet = reader.readData(use_translated_data=self.use_translated_data)
-        dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet)
+        origin_dataset = reader.readData(False)
+
+        dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet, origin_dataset)
         print(dataSet)
+
         model = self.get_model(self.model_type, "en", dataSet.get_docs())
         results = self.run_model(model, dataSet)
         for link_set_id in dataSet.gold_link_sets:
