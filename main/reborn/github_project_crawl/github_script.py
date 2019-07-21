@@ -241,6 +241,7 @@ class RepoCollector:
                     else:
                         commit_id, commit_summary, commit_content, commit_time = line.strip("\n\t\r").split(",")
                         translated_commit_summary = translate_intermingual_sentence(commit_summary)
+                        commit_content = " ".join(commit_content.split()[:400])
                         translated_commit_content = translate_intermingual_sentence(commit_content)
                         fout.write(
                             "{},{},{},{}\n".format(commit_id, translated_commit_summary, translated_commit_content,

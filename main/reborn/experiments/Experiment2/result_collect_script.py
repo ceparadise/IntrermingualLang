@@ -8,7 +8,7 @@ def F(beta, precision, recall):
     return (beta * beta + 1) * precision * recall / (beta * beta * precision + recall)
 
 
-def get_best_result(line: str):
+def get_best_result(line: str, simplify_format=False):
     best_f1, best_f2 = (0, 0, 0), (0, 0, 0)
     res_list = eval(line)
     for res in res_list:
@@ -20,6 +20,8 @@ def get_best_result(line: str):
             best_f2 = (p, r, f2)
         if f1 > best_f1[2]:
             best_f1 = (p, r, f1)
+    if simplify_format:
+        return best_f1[2],best_f2[2]
     return best_f1, best_f2
 
 

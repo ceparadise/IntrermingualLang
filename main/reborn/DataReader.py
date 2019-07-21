@@ -1,6 +1,7 @@
 from common import *
 import xml.etree.ElementTree as ET
 
+from github_project_crawl.github_script import sentence_contains_foreign_lang
 from reborn.Datasets import ArtifactPair, LinkSet, Dataset
 from datetime import datetime
 
@@ -196,11 +197,8 @@ class GtiProjectReader:
     def __init__(self, repo_path):
         self.repo_path = repo_path
 
-    def sentence_contains_chinese(sentence: str) -> bool:
-        return CHINESE_CHAR_PATTERN.search(sentence) is not None
-
     def isIL(self, source_content: str, target_content: str) -> bool:
-        if sentence_contains_chinese(source_content) or sentence_contains_chinese(target_content):
+        if sentence_contains_foreign_lang(source_content) or sentence_contains_foreign_lang(target_content):
             return True
         else:
             return False

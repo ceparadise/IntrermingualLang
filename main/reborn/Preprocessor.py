@@ -3,6 +3,7 @@ import re
 import many_stop_words
 import math
 import nltk
+from github_project_crawl.github_script import KOREAN_CHAR_PATTERN
 
 
 class Preprocessor():
@@ -102,6 +103,10 @@ class Preprocessor():
                 except Exception as e:
                     print(e)
                     print("exception when process {}".format(doc_parts))
+        elif language == "ja":
+            pass
+        elif language == "ko":
+            self.Kkma
         else:
             res = nltk.word_tokenize(doc)
 
@@ -112,7 +117,7 @@ class Preprocessor():
         tokens = self.remove_stop_word(tokens, language= language)
         tokens = self.remove_stop_word(tokens, language="en")
         tokens = self.remove_stop_word(tokens, stop_words=self.customized_stop_words)
-        tokens = limit_token_min_length(tokens)
+        #tokens = limit_token_min_length(tokens)
         return tokens
 
     def get_stemmed_tokens(self, doc_str, language="en"):

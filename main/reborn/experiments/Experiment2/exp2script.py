@@ -9,18 +9,21 @@ from experiments.Experiment2.experiment2 import Experiment2
 
 if __name__ == "__main__":
     projects = []
-    # projects.extend(["baidu/san", "Tencent/bk-cmdb",
-    #                  "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-    #                  "Tencent/weui", "Tencent/xLua",
-    #                  "NetEase/Emmagee", "meituan/EasyReact",
-    #                  "XiaoMi/pegasus"
-    #                  ])
+    projects.extend(["baidu/san", "Tencent/bk-cmdb",
+                     "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                     "Tencent/weui", "Tencent/xLua",
+                     "NetEase/Emmagee", "meituan/EasyReact",
+                     "XiaoMi/pegasus"
+                     ])
     # projects.extend(
     #     ["alibaba/ARouter", "alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-
-    projects.extend(["alibaba/nacos", "alibaba/rax"])
+    # projects.extend(
+    #     ["konlpy/konlpy", "open-korean-text/open-korean-text", "marlonbernardes/awesome-berlin",
+    #      "pgrimaud/horaires-ratp-api", "miiton/Cica"])
+    # projects.extend(["open-korean-text/open-korean-text"])
     models = ["lsi"]
-    use_translate_flags = [True, False]
+    #"vsm", "gvsm", "lda",lsi
+    use_translate_flags = [ True,False]
     # use_translate_flags = [False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     for project in projects:

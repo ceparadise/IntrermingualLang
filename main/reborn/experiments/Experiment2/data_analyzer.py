@@ -28,10 +28,15 @@ if __name__ == "__main__":
         group_dir = os.path.join(git_project_root, group_name)
         projects = os.listdir(group_dir)
         for project_name in projects:
+            if project_name != "open-korean-text" and project_name!="horaires-ratp-api":
+                continue
             repo_path = os.path.join(group_name, project_name)
             reader = GtiProjectReader(repo_path)
-            dataSet = reader.readData()
-            dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet)
+
+            dataSet = reader.readData(use_translated_data=True)
+            origin_dataset = reader.readData(False)
+            dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet, origin_dataset)
+            print(dataSet)
             project_title.append(project_name)
             for link_set_id in dataSet.gold_link_sets:
                 link_set = dataSet.gold_link_sets[link_set_id]

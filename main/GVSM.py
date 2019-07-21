@@ -69,6 +69,7 @@ class GVSM(Model):
 
     def __get_term_similarity(self, token1, token2):
         term_similarity = 0
+        cache_max_size = 10000
         term_pair = (token1, token2)
         if (token1, token2) in self.term_similarity_cache:
             return self.term_similarity_cache[term_pair]
@@ -80,11 +81,9 @@ class GVSM(Model):
                 if token1 in self.cl_wv and token2 in self.cl_wv:
                     vec1 = self.cl_wv[token1]
                     vec2 = self.cl_wv[token2]
-                    if len(vec1) == 0 or len(vec2) == 0:
-                        print(vec1)
-                        print(vec2)
                     term_similarity = self.cosine_similarity(vec1, vec2)
-            self.term_similarity_cache[term_pair] = term_similarity
+            if len(self.term_similarity_cache) < cache_max_size:
+                self.term_similarity_cache[term_pair] = term_similarity
         return term_similarity
 
     def _get_doc_similarity(self, doc1_tk, doc2_tk):
