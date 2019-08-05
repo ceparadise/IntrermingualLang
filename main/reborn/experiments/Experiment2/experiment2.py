@@ -13,7 +13,7 @@ from reborn.Preprocessor import Preprocessor
 
 class Experiment2:
     def __init__(self, repo_path, model_type, use_translated_data, term_similarity_type, link_threshold_interval=5,
-                 output_sub_dir="", print_result=False):
+                 output_sub_dir="", print_result=False,cl_wv = None):
         """
 
         :param repo_path: the repo path in github
@@ -22,7 +22,9 @@ class Experiment2:
         :param term_similarity_type: for gvsm only.
         :param link_threshold_interval: The sample rate for threshold
         :param output_sub_dir: the sub directory for results under Experiment2/result/. Group the experiment by the time running the script
+        :param cl_wv: assign cl_wv to avoid constructing it within experiments
         """
+        self.cl_wv = cl_wv
         self.git_projects_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..',
                                              'github_project_crawl',
                                              "git_projects")
@@ -46,6 +48,7 @@ class Experiment2:
             model.build_model(docs, num_topics=60, passes=100)
         elif model_type == "gvsm":
             model = GVSM(fo_lang_code=fo_lang_code, term_similarity_type=self.term_similarity_type)
+            model.cl_wv = self.cl_wv
             model.build_model(docs)
         elif model_type == "lsi":
             model = LSI(fo_lang_code=fo_lang_code)
@@ -94,7 +97,7 @@ class Experiment2:
                     commit_time = commit_time.strip("\n\t\r")
                     fout.write("{},{},{},{}\n".format(id, " ".join(summary_tokens), " ".join(content_tks), commit_time))
         else:
-            print("Dir {} alread exist, skip creating".format(output_dir))
+            print("Dir {} alraedy exist, skip creating".format(output_dir))
 
         if not os.path.isdir(translated_token_dir) and self.use_translated_data is True:
             os.mkdir(translated_token_dir)
@@ -153,12 +156,19 @@ class Experiment2:
             link_set = dataset.gold_link_sets[link_set_id]
             source_aritf = link_set.artiPair.source_artif
             target_artif = link_set.artiPair.target_artif
-            gen_links = self.get_links(model, source_aritf, target_artif)
+            source_extra_info = link_set.artiPair.source_artif_extra_info
+            target_extra_info = link_set.artiPair.target_artif_extra_info
+            gen_links = self.get_links(model, source_aritf, target_artif, source_extra_info, target_extra_info)
             results[link_set_id] = gen_links
         return results
 
-    def get_links(self, trace_model, source_artifact, target_artifact):
-        return trace_model.get_link_scores(source_artifact, target_artifact)
+    def get_links(self, trace_model, source_artifact, target_artifact, source_extra_info,
+                  target_extra_info):
+        issue_create_time_dict = source_extra_info["create"]
+        issue_close_time_dict = source_extra_info["close"]
+        commit_time_dict = target_extra_info["create"]
+        return trace_model.get_link_scores(source_artifact, target_artifact, issue_create_time_dict,
+                                           issue_close_time_dict, commit_time_dict)
         # source_artifacts = artifactPair.source_artif
         # target_artifacts = artifactPair.target_artif
         # issue_close_time = artifactPair.source_artif_extra_info["issue_close_time_dict"]
@@ -183,6 +193,7 @@ class Experiment2:
         print(dataSet)
 
         model = self.get_model(self.model_type, "en", dataSet.get_docs())
+
         results = self.run_model(model, dataSet)
         for link_set_id in dataSet.gold_link_sets:
             print("Processing link set {}".format(link_set_id))

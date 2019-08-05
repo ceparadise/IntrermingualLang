@@ -71,11 +71,24 @@ class ResultCollector():
                                             data[result_dir_name].append(map)
                     fout.write(",".join(project_csv_title_line) + "\n")
                     fout.write(",".join(measure_csv_title_line) + "\n")
+
                     for model_name in data.keys():
                         data_line = data[model_name]
+
+                        avg_f1 = average([float(x[2]) for i, x in enumerate(data_line) if i % 3 == 0])
+                        avg_f2 = average([float(x[2]) for i, x in enumerate(data_line) if i % 3 == 1])
+                        avg_map = average([float(x) for i, x in enumerate(data_line)if i % 3 == 2])
+
                         data_line = ["\"" + str(x) + "\"" for x in data_line]
                         data_line.insert(0, model_name)
+                        data_line.append(str(avg_f1))
+                        data_line.append(str(avg_f2))
+                        data_line.append(str(avg_map))
                         fout.write(",".join(data_line) + "\n")
+
+
+def average(list_num):
+    return sum(list_num) / len(list_num)
 
 
 if __name__ == "__main__":

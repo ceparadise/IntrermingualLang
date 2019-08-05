@@ -240,6 +240,8 @@ class GtiProjectReader:
                     limited_target_dict[t_art] = target_dict[t_art]
             modified_artif_pair = ArtifactPair(limited_source_dict, link_set.artiPair.source_name, limited_target_dict,
                                                link_set.artiPair.target_name)
+            modified_artif_pair.source_artif_extra_info = link_set.artiPair.source_artif_extra_info
+            modified_artif_pair.target_artif_extra_info = link_set.artiPair.target_artif_extra_info
             # Keep the extra information
             modified_link_sets.append(LinkSet(modified_artif_pair, links))
             issue_num = len(modified_artif_pair.source_artif)
@@ -282,6 +284,7 @@ class GtiProjectReader:
         issues = dict()
         commits = dict()
         issue_close_time_dict = dict()
+        issue_create_time_dict = dict()
         commit_time_dict = dict()
         MIN_DOC_SIZE = 15
         filtered_issued = 0
@@ -290,12 +293,13 @@ class GtiProjectReader:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
-                id, content, close_time = line.strip("\n\t\r").split(",")
+                id, content, close_time, create_time = line.strip("\n\t\r").split(",")
                 if (len(content.split()) < MIN_DOC_SIZE) and do_filter:
                     filtered_issued += 1
                     continue
                 issues[id] = content
                 issue_close_time_dict[id] = close_time
+                issue_create_time_dict[id] = create_time
 
         # print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE,
         #                                                                 len(issues)))
@@ -303,15 +307,22 @@ class GtiProjectReader:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
-                id, summary, content, commit_time = line.strip("\n\t\r").split(",")
+                id, summary, content, commit_time_info = line.strip("\n\t\r").split(",")
                 commit_content = summary + content
                 if (len(commit_content.split()) < MIN_DOC_SIZE) and do_filter:
                     filtered_commit += 1
                     continue
                 commits[id] = commit_content
-                commit_time_dict[id] = commit_time
+                commit_time_dict[id] = commit_time_info
         # print("{} commit are filtered minimal lenght {}".format(filtered_commit, MIN_DOC_SIZE, len(commits)))
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
+        issue_time_info = {}
+        commit_time_info = {}
+        issue_time_info["create"] = issue_create_time_dict
+        issue_time_info["close"] = issue_close_time_dict
+        commit_time_info["create"] = commit_time_dict
+        artif_pair.source_artif_extra_info = issue_time_info
+        artif_pair.target_artif_extra_info = commit_time_info
 
         links = []
         origin_link_cnt = 0

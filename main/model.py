@@ -5,6 +5,7 @@ from nltk.parse.corenlp import CoreNLPParser
 from nltk.stem.snowball import SnowballStemmer
 from nltk import word_tokenize
 from subprocess import Popen, PIPE
+from datetime import datetime
 
 from reborn.Preprocessor import Preprocessor
 
@@ -43,7 +44,25 @@ class Model:
             res.append((s_id, t_id, score))
         return res
 
-    def get_link_scores(self, source_artifacts, target_artifacts):
+    def link_comply_with_time_constrain(self, issue_create_time_str, issue_close_time_str, commit_time_str) -> bool:
+        """
+        This rule will only impact 100 gold links
+        :param issue_close_time_str:
+        :param commit_time_str:
+        :return:
+        """
+        if issue_close_time_str == 'None' or issue_close_time_str is None:
+            return True
+        issue_close = datetime.strptime(issue_close_time_str.split()[0], '%Y-%m-%d')  # 2018-10-16 01:48:56
+        issue_create = datetime.strptime(issue_create_time_str.split()[0], '%Y-%m-%d')
+        commit_create = datetime.strptime(commit_time_str.split()[0], '%Y-%m-%d')  # 2018-10-26 20:06:02+08:00
+
+        if (issue_close < commit_create or issue_create > commit_create):
+            return False
+        return True
+
+    def get_link_scores(self, source_artifacts, target_artifacts, issue_create_dict, issue_close_dict,
+                        commit_time_dict):
         """
         Create links for raw dataset
         :param source_artifacts:
@@ -63,6 +82,11 @@ class Model:
 
         for s_id in source_artifacts:
             for t_id in target_artifacts:
+                issue_create_time = issue_create_dict[s_id]
+                issue_close_time = issue_close_dict[s_id]
+                commit_time = commit_time_dict[t_id]
+                if not self.link_comply_with_time_constrain(issue_create_time, issue_close_time, commit_time):
+                    continue
                 s_tokens = self.processed_artifacts[s_id]
                 t_tokens = self.processed_artifacts[t_id]
                 score = self._get_doc_similarity(s_tokens, t_tokens)

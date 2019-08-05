@@ -82,7 +82,7 @@ class MyIssue:
         self.content = [x for x in self.content if x is not None]
         content_str = "\n".join(self.content)
         content_str = re.sub("[,\r\n]+", " ", content_str)
-        return "{},{},{}\n".format(self.issue_id, content_str, self.close_time)
+        return "{},{},{},{}\n".format(self.issue_id, content_str, self.close_time, self.create_time)
 
 
 class MyCommit:
@@ -123,22 +123,49 @@ class RepoCollector:
         issues = repo.get_issues(state="all")
 
         issue_file_path = os.path.join(output_dir, "issue.csv")
-        if not os.path.isfile(issue_file_path):
-            print("creating issue.csv")
-            with open(issue_file_path, "w", encoding='utf8') as fout:
-                fout.write("issue_id,issue_content,closed_at\n")
-                for issue in issues:
-                    issue_number = issue.number
-                    print(issue_number)
-                    content = []
-                    content.append(issue.title)
-                    content.append(issue.body)
-                    issue_close_time = issue.closed_at
-                    issue_create_time = issue.created_at
-                    for comment in issue.get_comments():
-                        content.append(comment.body)
-                    myissue = MyIssue(issue_number, content, issue_create_time, issue_close_time)
-                    fout.write(str(myissue))
+
+        ### TMP fix for data set -- remove it after 2019-8-4###
+        tarns_csv_file = os.path.join(output_dir, "translated_data", "issue.csv")
+        with open(tarns_csv_file, encoding='utf8') as fin:
+            max_id = int(fin.readlines()[1].split(",")[0])
+
+        print("creating issue.csv")
+        with open(issue_file_path, "w", encoding='utf8') as fout:
+            fout.write("issue_id,issue_content,closed_at,created_at\n")
+            for issue in issues:
+                issue_number = issue.number
+                if issue_number>max_id:
+                    continue
+                print(issue_number)
+                content = []
+                content.append(issue.title)
+                content.append(issue.body)
+                issue_close_time = issue.closed_at
+                issue_create_time = issue.created_at
+                for comment in issue.get_comments():
+                    content.append(comment.body)
+                myissue = MyIssue(issue_number, content, issue_create_time, issue_close_time)
+                fout.write(str(myissue))
+        ### TMP fix for data set -- remove it after 2019-8-4###
+
+        # if not os.path.isfile(issue_file_path):
+        #     print("creating issue.csv")
+        #     with open(issue_file_path, "w", encoding='utf8') as fout:
+        #         fout.write("issue_id,issue_content,closed_at,created_at\n")
+        #         for issue in issues:
+        #             issue_number = issue.number
+        #             if issue_number>max_id:
+        #                 continue
+        #             print(issue_number)
+        #             content = []
+        #             content.append(issue.title)
+        #             content.append(issue.body)
+        #             issue_close_time = issue.closed_at
+        #             issue_create_time = issue.created_at
+        #             for comment in issue.get_comments():
+        #                 content.append(comment.body)
+        #             myissue = MyIssue(issue_number, content, issue_create_time, issue_close_time)
+        #             fout.write(str(myissue))
 
         repo_url = "git@github.com:{}.git".format(self.repo_path)
         repo_name = repo_url.split("/")[1]
