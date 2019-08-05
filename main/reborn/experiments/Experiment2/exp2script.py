@@ -2,15 +2,11 @@ import datetime
 import sys, os
 
 from hanziconv import HanziConv
-
-from common import DATA_DIR
-
 base_dir = os.path.dirname(os.path.realpath(__file__));
 sys.path.append(os.path.join(base_dir, "../../../reborn"))
 sys.path.append(os.path.join(base_dir, "../../../../main"))
-
 from experiments.Experiment2.experiment2 import Experiment2
-
+from common import DATA_DIR
 
 def load_vectors(fname):
     """
