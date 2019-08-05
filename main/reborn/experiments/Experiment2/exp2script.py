@@ -42,8 +42,13 @@ def get_cl_wv_en():
 
 if __name__ == "__main__":
     projects = []
-    projects.extend(["baidu/san", "Tencent/bk-cmdb",
-                     "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+    # projects.extend(["baidu/san", "Tencent/bk-cmdb",
+    #                  "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+    #                  "Tencent/weui", "Tencent/xLua",
+    #                  "NetEase/Emmagee", "meituan/EasyReact",
+    #                  "XiaoMi/pegasus"
+    #                  ])
+    projects.extend(["Tencent/QMUI_IOS",
                      "Tencent/weui", "Tencent/xLua",
                      "NetEase/Emmagee", "meituan/EasyReact",
                      "XiaoMi/pegasus"
