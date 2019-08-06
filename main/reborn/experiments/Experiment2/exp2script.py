@@ -48,9 +48,7 @@ if __name__ == "__main__":
     #                  "NetEase/Emmagee", "meituan/EasyReact",
     #                  "XiaoMi/pegasus"
     #                  ])
-    projects.extend(["Tencent/QMUI_IOS",
-                     "Tencent/weui", "Tencent/xLua",
-                     "NetEase/Emmagee", "meituan/EasyReact",
+    projects.extend([
                      "XiaoMi/pegasus"
                      ])
     projects.extend(
