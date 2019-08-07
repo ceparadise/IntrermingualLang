@@ -18,6 +18,9 @@ JAPANESS_CHAR_PATTERN = re.compile("[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf9
 EURPO_CHAR_PATTERN = re.compile("[\u00c0-\u017e]+")
 LANG_PATTERN = [CHINESE_CHAR_PATTERN, KOREAN_CHAR_PATTERN, JAPANESS_CHAR_PATTERN]
 
+
+NONE_ENGLISH_PATTERN = re.compile("[^a-zA-Z0-9\s]+")
+
 translator = translate.Client()
 
 
@@ -27,9 +30,8 @@ def sentence_contains_chinese(sentence: str) -> bool:
 
 def sentence_contains_foreign_lang(sentence: str) -> bool:
     flag = False
-    for pattern in LANG_PATTERN:
-        if pattern.search(sentence) is not None:
-            flag = True
+    if NONE_ENGLISH_PATTERN.search(sentence) is not None:
+        flag = True
     return flag
 
 

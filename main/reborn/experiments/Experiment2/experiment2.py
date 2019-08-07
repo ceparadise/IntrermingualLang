@@ -188,7 +188,6 @@ class Experiment2:
         reader = GtiProjectReader(self.repo_path)
         dataSet = reader.readData(use_translated_data=self.use_translated_data)
         origin_dataset = reader.readData(False)
-
         dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet, origin_dataset)
         print(dataSet)
 

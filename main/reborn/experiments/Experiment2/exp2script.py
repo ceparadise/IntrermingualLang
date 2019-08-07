@@ -48,22 +48,19 @@ if __name__ == "__main__":
     #                  "NetEase/Emmagee", "meituan/EasyReact",
     #                  "XiaoMi/pegasus"
     #                  ])
-    projects.extend([
-                     "XiaoMi/pegasus"
-                     ])
-    projects.extend(
-        ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
+    # projects.extend(
+    #     ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
 
     projects.extend(
-        ["konlpy/konlpy", "open-korean-text/open-korean-text", "marlonbernardes/awesome-berlin",
+        ["marlonbernardes/awesome-berlin","konlpy/konlpy", "open-korean-text/open-korean-text",
          "pgrimaud/horaires-ratp-api", "miiton/Cica"])
-    projects.extend(["open-korean-text/open-korean-text"])
-    models = ["gvsm","vsm","lda","lsi"]
+    models = ["vsm","gvsm","lda","lsi"]
     # "vsm", "gvsm", "lda",lsi
     use_translate_flags = [True, False]
     # use_translate_flags = [False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    cl_wv = get_cl_wv_en()
+    cl_wv = None
+    #cl_wv = get_cl_wv_en()
     for project in projects:
         print("Processing project {}".format(project))
         for model in models:
