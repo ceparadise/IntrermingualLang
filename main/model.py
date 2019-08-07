@@ -73,11 +73,13 @@ class Model:
         self.processed_artifacts = dict()
         for s_id in source_artifacts:
             content = source_artifacts[s_id]
-            tokens = self.preprocessor.get_tokens(content, self.fo_lang_code)
+            # tokens = self.preprocessor.get_tokens(content, self.fo_lang_code)
+            tokens = content.split()
             self.processed_artifacts[s_id] = tokens
         for t_id in target_artifacts:
             content = target_artifacts[t_id]
-            tokens = self.preprocessor.get_tokens(content, self.fo_lang_code)
+            # tokens = self.preprocessor.get_tokens(content, self.fo_lang_code)
+            tokens = content.split()
             self.processed_artifacts[t_id] = tokens
 
         for s_id in source_artifacts:
