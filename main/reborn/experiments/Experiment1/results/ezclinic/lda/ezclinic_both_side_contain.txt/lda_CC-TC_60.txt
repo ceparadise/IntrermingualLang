@@ -1,0 +1,16 @@
+
+Impacted MAP= 0.069
+Impacted P,C,F
+0.1293
+Replaced MAP= 0.116
+Replaced P,C,F
+0.0383
++++++Details+++++
+{'link': ('159', '83'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.018091455982209199}
+{'link': ('159', '85'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.020234113118334902}
+{'link': ('159', '87'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.041369935301717217}
+{'link': ('159', '88'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.017337195695682615}
+{'link': ('159', '90'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.01992282096143258}
+{'link': ('159', '95'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.013528354100076814}
+{'link': ('159', '97'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.020166722048297354}
+{'link': ('159', '99'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.025571568854030231}

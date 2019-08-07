@@ -1,5 +1,9 @@
+import os
 import pickle
+import math
+import random
 
+from common import DATA_DIR
 from reborn.Preprocessor import Preprocessor
 
 
@@ -16,7 +20,10 @@ class Dataset:
 
         self.round_digit_num = round_digit_num
 
-    def get_impacted_dataSet(self, replace_list):
+    def get_impacted_dataSet(self, replace_list, replace_source_percent=1.0, replace_target_percent=0.0):
+        """
+        Keep the artifacts and links which have tokens been replaced.
+        """
         impacted_link_sets = []
         for link_set_id in self.gold_link_sets.keys():
             link_set = self.gold_link_sets[link_set_id]
@@ -24,11 +31,17 @@ class Dataset:
             impacted_link_sets.append(impacted_link_set)
         return Dataset(impacted_link_sets)
 
-    def get_replaced_dataSet(self, replace_list):
+    def get_replaced_dataSet(self, replace_list, replace_source_percent=1.0, replace_target_percent=0.0):
+        """
+        Replace part of the english tokens with the given replace list. The data size is equal to origin dataset
+        :param replace_list:
+        :return:
+        """
         replaced_link_sets = []
         for link_set_id in self.gold_link_sets.keys():
             link_set = self.gold_link_sets[link_set_id]
-            replaced_link_set = link_set.gen_replaced_linkSet(replace_list)  # difference here
+            replaced_link_set = link_set.gen_replaced_linkSet(replace_list, replace_source_percent=0.0,
+                                                              replace_target_percent=1.0)  # difference here
             replaced_link_sets.append(replaced_link_set)
         return Dataset(replaced_link_sets)
 
@@ -76,6 +89,18 @@ class Dataset:
         with open(path) as fin:
             self.gold_link_sets = pickle.load(fin)
 
+    def __str__(self):
+        res = []
+        for linkset_id in self.gold_link_sets:
+            linkset: LinkSet = self.gold_link_sets[linkset_id]
+            link_size = len(linkset.links)
+            source_size = len(linkset.artiPair.source_artif)
+            target_size = len(linkset.artiPair.target_artif)
+            stat = "Linkset Id:{} LinkSize:{}, SourceSize:{}, TargetSize{}".format(linkset_id, link_size,
+                                                                                   source_size, target_size)
+            res.append(stat)
+        return "\n".join(res)
+
 
 class ArtifactPair:
     """
@@ -95,6 +120,8 @@ class ArtifactPair:
         self.target_name = target_name
         self.source_artif = source_artif
         self.target_artif = target_artif
+        self.source_artif_extra_info = dict()
+        self.target_artif_extra_info = dict()
 
     def get_pair_id(self):
         return self.source_name + "-" + self.target_name
@@ -120,67 +147,97 @@ class LinkSet:
     def get_pair_id(self):
         return self.artiPair.get_pair_id()
 
-    def gen_replaced_linkSet(self, replace_dict):
-        replaced_artifacts_dict = dict()
-        for arti_id in self.artiPair.source_artif:
-            replaced_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id], replace_dict)
-        replaced_arti_pair = ArtifactPair(replaced_artifacts_dict, self.artiPair.source_name,
-                                          self.artiPair.target_artif,
-                                          self.artiPair.target_name)
+    def gen_replaced_linkSet(self, replace_dict, replace_source_percent=1.0, replace_target_percent=0.0):
+        replaced_source_artifacts_dict = dict(self.artiPair.source_artif)
+        replaced_target_artifact_dict = dict(self.artiPair.target_artif)
+        if replace_source_percent > 0:
+            for arti_id in self.artiPair.source_artif:
+                replaced_source_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id],
+                                                                              replace_dict, replace_source_percent)
+        if replace_target_percent > 0:
+            for arti_id in self.artiPair.target_artif:
+                replaced_target_artifact_dict[arti_id] = self.replace_tokens(self.artiPair.target_artif[arti_id],
+                                                                             replace_dict, replace_target_percent)
+        replaced_arti_pair = ArtifactPair(replaced_source_artifacts_dict, self.artiPair.source_name,
+                                          replaced_target_artifact_dict, self.artiPair.target_name)
         return LinkSet(replaced_arti_pair, self.links)
 
     def gen_impacted_linkSet(self, replace_dict):
         """
-        Generate a dateaset that only contains impacted artifacts and links. This dataset is used for evaluation only.
-        The model should run on a dataset which do the replacement but kept all links and artifacts.
-        :param replace_dict:
+        Prune the artifacts and links to keep the artifacts and links contain replacement.
+        But the replacement is not applied to the document.
+
+        :param replace_dict: A dictionary of en-zh
+        :param replace_source: replace the english tokens in source artifacts
+        :param replace_target:  replace the english tokens in target artifacts
         :return:
         """
-        impacted_artifacts_dict = dict()
-        for arti_id in self.get_impacted_artifacts(replace_dict):
-            impacted_artifacts_dict[arti_id] = self.replace_tokens(self.artiPair.source_artif[arti_id], replace_dict)
-        impacted_arti_pair = ArtifactPair(impacted_artifacts_dict, self.artiPair.source_name,
-                                          self.artiPair.target_artif,
-                                          self.artiPair.target_name)
-        impacted_links = self.get_impacted_links(replace_dict)
+        impacted_source_artifacts_dict = dict(self.artiPair.source_artif)
+        impacted_target_artifacts_dict = dict(self.artiPair.target_artif)
+
+        for arti_id in self.get_impacted_artifacts(self.artiPair.source_artif,
+                                                   replace_dict):  # reserved only the impacted artifacts
+            impacted_source_artifacts_dict[arti_id] = self.artiPair.source_artif[arti_id]
+
+        for arti_id in self.get_impacted_artifacts(self.artiPair.target_artif, replace_dict):  # Similar here
+            impacted_target_artifacts_dict[arti_id] = self.artiPair.target_artif[arti_id]
+
+        impacted_arti_pair = ArtifactPair(impacted_source_artifacts_dict, self.artiPair.source_name,
+                                          impacted_target_artifacts_dict, self.artiPair.target_name)
+        impacted_links = self.get_impacted_links(impacted_source_artifacts_dict,
+                                                 impacted_target_artifacts_dict)  # Reserve the impacted links.Either source or target are impacted
         return LinkSet(impacted_arti_pair, impacted_links)
 
-    def replace_tokens(self, content, replace_dict):
-        tokens = set(self.preprocessor.get_tokens(content))
+    def replace_tokens(self, content, replace_dict, replace_probability=1.0):
+        tokens = list(self.preprocessor.get_tokens(content))
         replaced_content = []
-        for rep_word in replace_dict:
-            fo_word = replace_dict[rep_word]
-            for token in tokens:
-                if token == rep_word:
+
+        for token in tokens:
+            if token in replace_dict:
+                fo_words = replace_dict[token]
+                if isinstance(fo_words, (list,)):
+                    fo_word = random.sample(fo_words, 1)[0]
+                else:
+                    fo_word = fo_words
+                if random.randint(0, 100) / 100.0 <= replace_probability:
                     replaced_content.append(fo_word)
                 else:
                     replaced_content.append(token)
-
+            else:
+                replaced_content.append(token)
         return " ".join(replaced_content)
 
-    def get_impacted_artifacts(self, replace_dict):
+    def get_impacted_artifacts(self, origin_artifacts, replace_dict):
+        """
+        Find the artifacts in oring_artifacts which contains token in replace_dict keys
+        :param origin_artifacts:
+        :param replace_dict:
+        :return:
+        """
         impacted = set()
         replace_dict = set(replace_dict.keys())
-        for artif in self.artiPair.source_artif:
-            content = self.artiPair.source_artif[artif]
+        for artif in origin_artifacts:
+            content = origin_artifacts[artif]
             tokens = set(self.preprocessor.get_tokens(content))
             if len(tokens & replace_dict) > 0:
                 impacted.add(artif)
+        print("{}/{} are impacted".format(len(origin_artifacts), len(impacted)))
         return impacted
 
-    def get_impacted_links(self, replace_wd_list):
-        impacted_artifacts = self.get_impacted_artifacts(replace_wd_list)
+    def get_impacted_links(self, impacted_source, impacted_target):
+        impacted_artifacts = []
+        impacted_artifacts.extend(impacted_source)
+        impacted_artifacts.extend(impacted_target)
+        impacted_artifacts = set(impacted_artifacts)
         impacted_links = []
-        impacted_artifact_info = "{} source artifacts out of {} artifacts are impacted ...".format(
-            len(impacted_artifacts),
-            len(self.artiPair.source_artif))
-
         for link in self.links:
             if link[0] in impacted_artifacts or link[1] in impacted_artifacts:
                 impacted_links.append(link)
         impacted_link_info = str(
             len(impacted_links)) + " links are impacted by the replacement, total links num=" + str(
             len(self.links))
+        impacted_artifact_info = "impacted source size={}, impacted target size = {}".format(len(impacted_source),
+                                                                                             len(impacted_target))
         self.replacement_info = impacted_artifact_info + "\n" + impacted_link_info
         print(self.replacement_info)
         return impacted_links
@@ -197,10 +254,10 @@ class LinkSet:
 class MAP_cal:
     def __init__(self, rank, gold, round_digit_num=4, do_sort=True):
         self.round_digit_num = round_digit_num
-        self.rank_gold_pairs = []
+        self.rank_gold_pairs = []  # keep data for multiple experiments if necessary in future
         if do_sort:  # for performance consideration in case the the rank is and large and sorted already
             rank = sorted(rank, key=lambda k: k[2], reverse=True)
-        rank = [(x[0], x[1]) for x in rank]
+        rank = [(x[0], x[1], round(x[2], 5)) for x in rank]
         self.rank_gold_pairs.append((rank, gold))
 
     def recall(self, rank, gold, num):
@@ -214,18 +271,40 @@ class MAP_cal:
     def precision(self, rank, gold, num):
         hit = 0
         for i in range(0, num + 1):
-            if rank[i] in gold:
+            link = (rank[i][0], rank[i][1])
+            if link in gold:
                 hit += 1
         return hit / (num + 1)
+
+    def __get_average_index(self, gold_link, ranks):
+        """
+        If multiple links share same score with the gold, then the index of the gold link should be averaged
+        :return:
+        """
+        gold_index = 0
+        gold_score = 0
+        for i, link in enumerate(ranks):
+            if (link[0], link[1]) == gold_link:
+                gold_index = i
+                gold_score = link[2]
+                break
+        left_index = gold_index
+        right_index = gold_index
+        while left_index >= 0 and ranks[left_index][2] == gold_score:
+            left_index -= 1
+        while right_index < len(ranks) and ranks[right_index][2] == gold_score:
+            right_index += 1
+        return math.floor((left_index + right_index) / 2)
 
     def average_precision(self, rank, gold):
         sum = 0
         if len(gold) == 0:
             return 0
         for g in gold:
-            g_index = rank.index(g)
+            g_index = self.__get_average_index(g, rank)
             precision = self.precision(rank, gold, g_index)
             sum += precision
+        print(sum)
         return round(sum / len(gold), self.round_digit_num)
 
     def mean_average_precision(self, rank_gold_pairs):
@@ -239,3 +318,40 @@ class MAP_cal:
 
     def run(self):
         return self.mean_average_precision(self.rank_gold_pairs)
+
+
+class Map_from_file:
+    """
+    Calculate Map from result file
+    """
+
+    def __init__(self, gold_file: str, result_file: str):
+        self.gold_file = gold_file
+        self.result_file = result_file
+        self.rank = []
+        self.gold = []
+        with open(gold_file) as g_fin:
+            for i, line in enumerate(g_fin):
+                if i == 0:
+                    continue
+                source, target = line.strip("\n\t\r").split(",")
+                source = source.strip("\n\t\r ")
+                target = target.strip("\n\t\r ")
+                self.gold.append((source, target))
+        with open(result_file) as l_fin:
+            for i, line in enumerate(l_fin):
+                parts = [x.replace("\'", "").strip() for x in line.strip("\n\t\r\"\(\)").split(",")]
+                self.rank.append((parts[0], parts[1], float(parts[2].strip())))
+
+    def run(self):
+        return MAP_cal(self.rank, self.gold, do_sort=False, round_digit_num=8).run()
+
+
+if __name__ == "__main__":
+    en_zh_res = "G:\Projects\InterLingualTrace\main\\reborn\experiments\Experiment2\\results\\alibaba\canal\\vsm-zh-en\\vsm_issues-commits_link_score.txt"
+    link_file = "G:\Projects\InterLingualTrace\main\\reborn\github_project_crawl\git_projects\\alibaba\canal\links.csv"
+    translated = "G:\Projects\InterLingualTrace\main\\reborn\experiments\Experiment2\\results\\alibaba\canal\\vsm-translate\\vsm_issues-commits_link_score.txt"
+    file_map_en_zh = Map_from_file(link_file, en_zh_res)
+    print(file_map_en_zh.run())
+    file_map_en_translated = Map_from_file(link_file, translated, )
+    print(file_map_en_translated.run())

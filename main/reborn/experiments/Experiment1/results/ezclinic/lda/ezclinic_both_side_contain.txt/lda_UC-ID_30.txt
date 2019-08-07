@@ -1,0 +1,4 @@
+
+Replaced MAP= 0.24
+Replaced P,C,F
+0.3963

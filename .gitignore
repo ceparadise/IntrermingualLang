@@ -7,3 +7,9 @@ main/interlang_dataset_maker/output
 main/interlang_dataset_maker/output
 .idea/*
 **.pyc
+
+main/reborn/github_project_crawl/git_projects/
+main/reborn/experiments/Experiment3/data/*
+main/reborn/experiments/Experiment3/cache/*
+data/wordVectors/wiki.*.align.vec
+*.zip

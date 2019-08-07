@@ -1,0 +1,9 @@
+#!/bin/csh
+qsub mission_fr.crc
+qsub mission_it.crc
+qsub mission_sk.crc
+qsub mission_tr.crc
+qsub mission_de.crc
+qsub mission_hu.crc
+qsub mission_ru.crc
+qsub mission_sv.crc

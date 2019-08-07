@@ -1,0 +1,10 @@
+
+Impacted MAP= 0.069
+Impacted P,C,F
+0.1293
+Replaced MAP= 0.044
+Replaced P,C,F
+0
++++++Details+++++
+{'link': ('120', '57'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.014359206922422155}
+{'link': ('152', '57'), 'zh': [], 'en': [], 'origin_score': 0.0, 'impacted_score': 0.033625008240222687}

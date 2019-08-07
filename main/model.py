@@ -5,6 +5,7 @@ from nltk.parse.corenlp import CoreNLPParser
 from nltk.stem.snowball import SnowballStemmer
 from nltk import word_tokenize
 from subprocess import Popen, PIPE
+from datetime import datetime
 
 from reborn.Preprocessor import Preprocessor
 
@@ -18,11 +19,79 @@ class Model:
         self.fo_lang_code = fo_lang_code
         self.preprocessor = Preprocessor()
 
-    def get_doc_similarity(self, doc1, doc2):
+    def _get_doc_similarity(self, doc1, doc2):
         raise NotImplementedError
 
     def get_model_name(self):
         raise NotImplementedError
+
+    def get_link_scores_with_processed_artifacts(self, candidates):
+        """
+        Take the artifacts as a list of tokens. candidates are in format of [(s_id,s_content),(t_id,t_content)]
+        :return:
+        """
+        res = []
+        for candidate in candidates:
+            source_artifact = candidate[0]
+            s_id = source_artifact[0]
+            s_content = source_artifact[1]
+
+            target_artifact = candidate[1]
+            t_id = target_artifact[0]
+            t_content = target_artifact[1]
+
+            score = self._get_doc_similarity(s_content.split(), t_content.split())
+            res.append((s_id, t_id, score))
+        return res
+
+    def link_comply_with_time_constrain(self, issue_create_time_str, issue_close_time_str, commit_time_str) -> bool:
+        """
+        This rule will only impact 100 gold links
+        :param issue_close_time_str:
+        :param commit_time_str:
+        :return:
+        """
+        if issue_close_time_str == 'None' or issue_close_time_str is None:
+            return True
+        issue_close = datetime.strptime(issue_close_time_str.split()[0], '%Y-%m-%d')  # 2018-10-16 01:48:56
+        issue_create = datetime.strptime(issue_create_time_str.split()[0], '%Y-%m-%d')
+        commit_create = datetime.strptime(commit_time_str.split()[0], '%Y-%m-%d')  # 2018-10-26 20:06:02+08:00
+
+        if (issue_close < commit_create or issue_create > commit_create):
+            return False
+        return True
+
+    def get_link_scores(self, source_artifacts, target_artifacts, issue_create_dict, issue_close_dict,
+                        commit_time_dict):
+        """
+        Create links for raw dataset
+        :param source_artifacts:
+        :param target_artifacts:
+        :return:
+        """
+        links = []
+        self.processed_artifacts = dict()
+        for s_id in source_artifacts:
+            content = source_artifacts[s_id]
+            tokens = self.preprocessor.get_tokens(content, self.fo_lang_code)
+            self.processed_artifacts[s_id] = tokens
+        for t_id in target_artifacts:
+            content = target_artifacts[t_id]
+            tokens = self.preprocessor.get_tokens(content, self.fo_lang_code)
+            self.processed_artifacts[t_id] = tokens
+
+        for s_id in source_artifacts:
+            for t_id in target_artifacts:
+                issue_create_time = issue_create_dict[s_id]
+                issue_close_time = issue_close_dict[s_id]
+                commit_time = commit_time_dict[t_id]
+                if not self.link_comply_with_time_constrain(issue_create_time, issue_close_time, commit_time):
+                    continue
+                s_tokens = self.processed_artifacts[s_id]
+                t_tokens = self.processed_artifacts[t_id]
+                score = self._get_doc_similarity(s_tokens, t_tokens)
+                links.append((s_id, t_id, score))
+        return links
 
     def split_tokens_by_lang(self, tokens):
         lang_dict = {}
@@ -54,6 +123,12 @@ class Model:
                 break
         self.start_server.stderr.close()
         self.start_server.stdout.close()
+
+    def dot(self, A, B):
+        return sum(a * b for a, b in zip(A, B))
+
+    def cosine_similarity(self, a, b):
+        return self.dot(a, b) / ((self.dot(a, a) ** .5) * (self.dot(b, b) ** .5))
 
 
 if __name__ == "__main__":

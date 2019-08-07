@@ -1,12 +1,14 @@
 from gensim import corpora, models, matutils
+from gensim.models import TfidfModel
 
+from Preprocessor import Preprocessor
 from model import Model
 
 
 class VSM(Model):
     def __init__(self, fo_lang_code):
         super().__init__(fo_lang_code)
-        self.tfidf_model = None
+        self.tfidf_model: TfidfModel = None
 
     def build_model(self, docs):
         print("Building VSM model...")
@@ -21,9 +23,7 @@ class VSM(Model):
         self.tfidf_model = models.TfidfModel(corpus, id2word=dictionary)
         print("Finish building VSM model")
 
-    def get_doc_similarity(self, doc1, doc2):
-        doc1_tk = self.preprocessor.get_stemmed_tokens(doc1, self.fo_lang_code)
-        doc2_tk = self.preprocessor.get_stemmed_tokens(doc2, self.fo_lang_code)
+    def _get_doc_similarity(self, doc1_tk, doc2_tk):
         doc1_vec = self.tfidf_model[self.tfidf_model.id2word.doc2bow(doc1_tk)]
         doc2_vec = self.tfidf_model[self.tfidf_model.id2word.doc2bow(doc2_tk)]
         return matutils.cossim(doc1_vec, doc2_vec)
@@ -48,10 +48,9 @@ if __name__ == "__main__":
         'test assure quality',
         'test is important',
     ]
-    vsm = VSM("fr")
-    new_doc1 = "software quality rely on test"
-    new_doc2 = "quality is important"
-    new_doc3 = "i have a pretty dog"
+    vsm = VSM("en")
     vsm.build_model(docs)
-    print(vsm.get_doc_similarity(new_doc1, new_doc2))
-    print(vsm.get_doc_similarity(new_doc1, new_doc3))
+    preprocessor = Preprocessor()
+    new_doc1 = preprocessor.get_stemmed_tokens("software quality rely on test", "en")
+    new_doc2 = preprocessor.get_stemmed_tokens("quality is important", "en")
+    new_doc3 = preprocessor.get_stemmed_tokens("i have a pretty dog", "en")
