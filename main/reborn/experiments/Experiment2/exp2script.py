@@ -48,8 +48,7 @@ if __name__ == "__main__":
     zh_projects.extend(["baidu/san", "Tencent/bk-cmdb",
                         "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
                         "Tencent/weui", "Tencent/xLua",
-                        "NetEase/Emmagee", "meituan/EasyReact",
-                        "XiaoMi/pegasus"
+                        "NetEase/Emmagee","XiaoMi/pegasus"
                         ])
     zh_projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
@@ -69,7 +68,7 @@ if __name__ == "__main__":
 
     models = ["vsm", "gvsm", "lda", "lsi"]
     # "vsm", "gvsm", "lda",lsi
-    use_translate_flags = [False]
+    use_translate_flags = [True,False]
     # use_translate_flags = [False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     cl_wv = None
