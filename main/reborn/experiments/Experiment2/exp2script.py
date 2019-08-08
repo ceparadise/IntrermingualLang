@@ -48,8 +48,7 @@ if __name__ == "__main__":
     zh_projects.extend(["baidu/san", "Tencent/bk-cmdb",
                         "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
                         "Tencent/weui", "Tencent/xLua",
-                        "NetEase/Emmagee", "meituan/EasyReact",
-                        "XiaoMi/pegasus"
+                        "NetEase/Emmagee", "XiaoMi/pegasus"
                         ])
     zh_projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])

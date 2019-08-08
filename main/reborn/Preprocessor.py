@@ -92,24 +92,24 @@ class Preprocessor():
         tokens = []
         doc = self.__clean_doc(doc)
         res = []
-        if language == "zh":  # maybe a mixture of en and zh
-            partition_size = 90000
-            # if doc is too long split it up
-            for i in range(math.ceil(len(doc) / partition_size)):
-                try:
-                    doc_parts = doc[i * partition_size: (i + 1) * partition_size]
-                    res = self.parser.tokenize(doc_parts)
-                    res = [x for x in res]
-                except Exception as e:
-                    print(e)
-                    print("exception when process {}".format(doc_parts))
-        elif language == "ja":
-            pass
-        elif language == "ko":
-            self.Kkma
-        else:
-            res = nltk.word_tokenize(doc)
-
+        # if language == "zh":  # maybe a mixture of en and zh
+        #     partition_size = 90000
+        #     # if doc is too long split it up
+        #     for i in range(math.ceil(len(doc) / partition_size)):
+        #         try:
+        #             doc_parts = doc[i * partition_size: (i + 1) * partition_size]
+        #             res = self.parser.tokenize(doc_parts)
+        #             res = [x for x in res]
+        #         except Exception as e:
+        #             print(e)
+        #             print("exception when process {}".format(doc_parts))
+        # elif language == "ja":
+        #     pass
+        # elif language == "ko":
+        #     self.Kkma
+        # else:
+        #     res = nltk.word_tokenize(doc)
+        res = nltk.word_tokenize(doc)
         for wd in res:
             tokens.extend(self.split_camal_case(wd))
         tokens = [x.lower() for x in tokens]
