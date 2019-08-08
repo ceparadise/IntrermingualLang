@@ -62,7 +62,7 @@ class Preprocessor():
         elif lang_code == 'it':
             return nltk.SnowballStemmer("italian")
         else:
-            return None
+            return nltk.SnowballStemmer("english")
 
     def get_zh(self, doc):
         res = self.zh_pattern.findall(doc)
