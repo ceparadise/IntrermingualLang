@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     models = ["vsm", "gvsm", "lda", "lsi"]
     # "vsm", "gvsm", "lda",lsi
-    use_translate_flags = [False]
+    use_translate_flags = [True,False]
     # use_translate_flags = [False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     cl_wv = None
