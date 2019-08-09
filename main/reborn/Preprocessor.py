@@ -114,10 +114,10 @@ class Preprocessor():
             tokens.extend(self.split_camal_case(wd))
         tokens = [x.lower() for x in tokens]
         tokens = self.remove_java_keyword(tokens)
-        tokens = self.remove_stop_word(tokens, language= language)
+        tokens = self.remove_stop_word(tokens, language=language)
         tokens = self.remove_stop_word(tokens, language="en")
         tokens = self.remove_stop_word(tokens, stop_words=self.customized_stop_words)
-        #tokens = limit_token_min_length(tokens)
+        # tokens = limit_token_min_length(tokens)
         return tokens
 
     def get_stemmed_tokens(self, doc_str, language="en"):
@@ -131,6 +131,8 @@ class Preprocessor():
 
     def remove_stop_word(self, token_list, language="en", stop_words=None):
         if stop_words == None:
+            if language == "ko":
+                language = "kr"
             stop_words = many_stop_words.get_stop_words(language)
         return [x for x in token_list if x not in stop_words]
 
