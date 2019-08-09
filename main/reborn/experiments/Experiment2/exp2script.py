@@ -56,9 +56,9 @@ if __name__ == "__main__":
     for zpj in zh_projects:
         projects[zpj] = "zh"
 
-    projects.extend(
-        ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "open-korean-text/open-korean-text",
-         "pgrimaud/horaires-ratp-api", "miiton/Cica"])
+    # projects.extend(
+    #     ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "open-korean-text/open-korean-text",
+    #      "pgrimaud/horaires-ratp-api", "miiton/Cica"])
 
     projects["marlonbernardes/awesome-berlin"] = "de"
     projects["konlpy/konlpy"] = "ko"
