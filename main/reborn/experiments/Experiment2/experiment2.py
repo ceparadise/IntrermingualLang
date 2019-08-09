@@ -170,20 +170,6 @@ class Experiment2:
         commit_time_dict = target_extra_info["create"]
         return trace_model.get_link_scores(source_artifact, target_artifact, issue_create_time_dict,
                                            issue_close_time_dict, commit_time_dict)
-        # source_artifacts = artifactPair.source_artif
-        # target_artifacts = artifactPair.target_artif
-        # issue_close_time = artifactPair.source_artif_extra_info["issue_close_time_dict"]
-        # commit_time = artifactPair.target_artif_extra_info["commit_time"]
-        # candidates = []
-        # for s_id in source_artifacts:
-        #     for t_id in target_artifacts:
-        #         s_content = source_artifacts[s_id]
-        #         t_content = target_artifacts[t_id]
-        #         candidate = ((s_id, s_content), (t_id, t_content))
-        #         candidates.append(candidate)
-        # # candidates = [x for x in candidates if
-        # #               link_comply_with_time_constrain(issue_close_time[x[0][0]], commit_time[x[1][0]])]
-        # return trace_model.get_link_scores_with_processed_artifacts(candidates)
 
     def run(self):
         reader = GtiProjectReader(self.repo_path)
@@ -205,7 +191,7 @@ class Experiment2:
             threshold = 0
             scores = []
             while threshold <= 100:
-                filter_links_above_threshold = [x for x in result if x[2] >= threshold / 100]
+                filter_links_above_threshold = [x for x in result if x[2] > threshold / 100]
                 eval_score = dataSet.evaluate_link_set(link_set_id, filter_links_above_threshold)
                 scores.append(eval_score)
                 threshold += self.link_threshold_interval
