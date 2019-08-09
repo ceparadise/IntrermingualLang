@@ -44,23 +44,23 @@ def get_cl_wv_en():
 
 if __name__ == "__main__":
     projects = {}
-    # zh_projects = []
-    # zh_projects.extend(["baidu/san", "Tencent/bk-cmdb",
-    #                     "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-    #                     "Tencent/weui", "Tencent/xLua",
-    #                     "NetEase/Emmagee", "XiaoMi/pegasus"
-    #                     ])
-    # zh_projects.extend(
-    #     ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    #
-    # for zpj in zh_projects:
-    #     projects[zpj] = "zh"
+    zh_projects = []
+    zh_projects.extend(["baidu/san", "Tencent/bk-cmdb",
+                        "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                        "Tencent/weui", "Tencent/xLua",
+                        "NetEase/Emmagee", "XiaoMi/pegasus"
+                        ])
+    zh_projects.extend(
+        ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
 
-    # projects.extend(
-    #     ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "open-korean-text/open-korean-text",
-    #      "pgrimaud/horaires-ratp-api", "miiton/Cica"])
+    for zpj in zh_projects:
+        projects[zpj] = "zh"
 
-    #projects["marlonbernardes/awesome-berlin"] = "de"
+    projects.extend(
+        ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "open-korean-text/open-korean-text",
+         "pgrimaud/horaires-ratp-api", "miiton/Cica"])
+
+    projects["marlonbernardes/awesome-berlin"] = "de"
     projects["konlpy/konlpy"] = "ko"
     projects["open-korean-text/open-korean-text"] ="ko"
     projects["pgrimaud/horaires-ratp-api"] = "fr"
