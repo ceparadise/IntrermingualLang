@@ -44,23 +44,23 @@ def get_cl_wv_en():
 
 if __name__ == "__main__":
     projects = {}
-    # zh_projects = []
-    # zh_projects.extend(["baidu/san", "Tencent/bk-cmdb",
-    #                     "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-    #                     "Tencent/weui", "Tencent/xLua",
-    #                     "NetEase/Emmagee", "XiaoMi/pegasus"
-    #                     ])
-    # zh_projects.extend(
-    #     ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
-    #
-    # for zpj in zh_projects:
-    #     projects[zpj] = "zh"
+    zh_projects = []
+    zh_projects.extend(["baidu/san", "Tencent/bk-cmdb",
+                        "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                        "Tencent/weui", "Tencent/xLua",
+                        "NetEase/Emmagee", "XiaoMi/pegasus"
+                        ])
+    zh_projects.extend(
+        ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
+
+    for zpj in zh_projects:
+        projects[zpj] = "zh"
 
     # projects.extend(
     #     ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "open-korean-text/open-korean-text",
     #      "pgrimaud/horaires-ratp-api", "miiton/Cica"])
 
-    #projects["marlonbernardes/awesome-berlin"] = "de"
+    projects["marlonbernardes/awesome-berlin"] = "de"
     projects["konlpy/konlpy"] = "ko"
     projects["open-korean-text/open-korean-text"] ="ko"
     projects["pgrimaud/horaires-ratp-api"] = "fr"
@@ -78,6 +78,6 @@ if __name__ == "__main__":
         print("Processing project {}".format(project))
         for model in models:
             for use_translate_flag in use_translate_flags:
-                exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time, lang_code=lang)
+                exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time, lang_code=lang,link_threshold_interval=1)
                 exp.cl_wv = cl_wv
                 exp.run()
