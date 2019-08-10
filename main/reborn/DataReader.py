@@ -221,7 +221,7 @@ class GtiProjectReader:
             # Fix for the bug when read translated data. Translated data have no Chinese at all
             origin_source_dict = origin_dataset.gold_link_sets[linkset_id].artiPair.source_artif
             origin_target_dict = origin_dataset.gold_link_sets[linkset_id].artiPair.target_artif
-            #links = [x for x in links if (self.isIL(origin_source_dict[x[0]], origin_target_dict[x[1]]))]
+            # links = [x for x in links if (self.isIL(origin_source_dict[x[0]], origin_target_dict[x[1]]))]
 
             print("links = {}".format(len(links)))
 
@@ -271,7 +271,7 @@ class GtiProjectReader:
             return False
         return True
 
-    def __readData(self, issue_path, commit_path, link_path, do_filter=True):
+    def __readData(self, issue_path, commit_path, link_path, min_doc_length=3, do_filter=True):
         def all_english(content: str) -> bool:
             def get_en(doc):
                 pattern = re.compile("[a-zA-Z]+")
@@ -285,7 +285,7 @@ class GtiProjectReader:
         issue_close_time_dict = dict()
         issue_create_time_dict = dict()
         commit_time_dict = dict()
-        MIN_DOC_SIZE = 15
+
         filtered_issued = 0
         filtered_commit = 0
         with open(issue_path, encoding='utf8') as fin:
@@ -293,27 +293,25 @@ class GtiProjectReader:
                 if i == 0:
                     continue
                 id, content, close_time, create_time = line.strip("\n\t\r").split(",")
-                if (len(content.split()) < MIN_DOC_SIZE) and do_filter:
+                if (len(content.split()) < min_doc_length):
                     filtered_issued += 1
                     continue
                 issues[id] = content
                 issue_close_time_dict[id] = close_time
                 issue_create_time_dict[id] = create_time
 
-        # print("{} issues are filtered with minimal lenght {}...".format(filtered_issued, MIN_DOC_SIZE,
-        #                                                                 len(issues)))
         with open(commit_path, encoding='utf8') as fin:
             for i, line in enumerate(fin):
                 if i == 0:
                     continue
                 id, summary, content, commit_time_info = line.strip("\n\t\r").split(",")
                 commit_content = summary + content
-                if (len(commit_content.split()) < MIN_DOC_SIZE) and do_filter:
+                if len(commit_content.split()) < min_doc_length:
                     filtered_commit += 1
                     continue
                 commits[id] = commit_content
                 commit_time_dict[id] = commit_time_info
-        # print("{} commit are filtered minimal lenght {}".format(filtered_commit, MIN_DOC_SIZE, len(commits)))
+
         artif_pair = ArtifactPair(issues, "issues", commits, "commits")
         issue_time_info = {}
         commit_time_info = {}
@@ -338,11 +336,11 @@ class GtiProjectReader:
                         continue
                     issue_content = issues[issue_id]
                     commit_content = commits[commit_id]
-                    if all_english(issue_content) and all_english(commit_content):
-                        continue
+                    # if all_english(issue_content) and all_english(commit_content):
+                    #     continue
                 link = (issue_id, commit_id)
                 links.append(link)
-        # print("Link size:{}/{}".format(len(links), origin_link_cnt))
+        print("Link size:{}/{}".format(len(links), origin_link_cnt))
         link_set = LinkSet(artif_pair, links)
         return Dataset([link_set])
 
