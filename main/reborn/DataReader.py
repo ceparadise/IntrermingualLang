@@ -274,7 +274,7 @@ class GtiProjectReader:
     def __readData(self, issue_path, commit_path, link_path, min_doc_length=3, do_filter=True):
         def all_english(content: str) -> bool:
             def get_en(doc):
-                pattern = re.compile("[a-zA-Z]+")
+                pattern = re.compile("[a-zA-Z0-9]+")
                 res = pattern.findall(doc)
                 return res
 
@@ -336,8 +336,8 @@ class GtiProjectReader:
                         continue
                     issue_content = issues[issue_id]
                     commit_content = commits[commit_id]
-                    # if all_english(issue_content) and all_english(commit_content):
-                    #     continue
+                    if all_english(issue_content) and all_english(commit_content):
+                        continue
                 link = (issue_id, commit_id)
                 links.append(link)
         print("Link size:{}/{}".format(len(links), origin_link_cnt))

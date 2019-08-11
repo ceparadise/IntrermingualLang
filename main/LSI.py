@@ -16,8 +16,8 @@ class LSI(Model):
         for doc in docs:
             # print(cnt, len(docs))
             cnt += 1
-            #docs_tokens.append(self.preprocessor.get_stemmed_tokens(doc, self.fo_lang_code))
-            docs_tokens.append(self.preprocessor.get_tokens(doc, self.fo_lang_code))
+            docs_tokens.append(self.preprocessor.get_stemmed_tokens(doc, self.fo_lang_code))
+            #docs_tokens.append(self.preprocessor.get_tokens(doc, self.fo_lang_code))
         dictionary = corpora.Dictionary(docs_tokens)
         corpus = [dictionary.doc2bow(x) for x in docs_tokens]
         self.lsi = gensim.models.LsiModel(corpus, num_topics= num_topics,id2word=dictionary)
