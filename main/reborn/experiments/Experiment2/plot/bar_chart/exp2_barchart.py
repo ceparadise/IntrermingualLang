@@ -27,7 +27,7 @@ def bar_plot(data_dict, model, title):
     bar_width = 0.2
     opacity = 0.8
     if model.startswith("gvsm"):
-        rects1 = plt.bar(index+bar_width, data_dict[model], bar_width,
+        rects1 = plt.bar(index, data_dict[model], bar_width,
                          alpha=opacity,
                          color='r',
                          label='basic')
@@ -35,7 +35,7 @@ def bar_plot(data_dict, model, title):
                          alpha=opacity,
                          color='g',
                          label='trans')
-        rects1 = plt.bar(index + bar_width , data_dict["{}_clwv".format(model)], bar_width,
+        rects1 = plt.bar(index + bar_width*2 , data_dict["{}_clwv".format(model)], bar_width,
                          alpha=opacity,
                          color='b',
                          label='cross_lingual')
