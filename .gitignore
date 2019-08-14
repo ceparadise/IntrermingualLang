@@ -13,3 +13,5 @@ main/reborn/experiments/Experiment3/data/*
 main/reborn/experiments/Experiment3/cache/*
 data/wordVectors/wiki.*.align.vec
 *.zip
+
+main/reborn/experiments/Experiment2/results/*
