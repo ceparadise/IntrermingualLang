@@ -29,10 +29,14 @@ class GVSM(Model):
         :return:
         """
         data = {}
+        cnt = 0
         with open(fname, 'r', encoding='utf-8') as fin:
             n, d = map(int, fin.readline().split())
             print("vector #:{} vector dimension:{}".format(n, d))
             for line in fin:
+                cnt+=1
+                if cnt> 332647:
+                    continue
                 tokens = line.rstrip().split()
                 term = tokens[0]
                 if self.fo_lang_code == 'en' or self.fo_lang_code == "zh":
