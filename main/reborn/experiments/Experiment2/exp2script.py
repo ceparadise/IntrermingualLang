@@ -19,7 +19,11 @@ def load_vectors(fname):
     with open(fname, 'r', encoding='utf-8') as fin:
         n, d = map(int, fin.readline().split())
         print("vector #:{} vector dimension:{}".format(n, d))
+        cnt = 0
         for line in fin:
+            cnt += 1
+            if cnt > 332647:  # experiments to limit en wv size for a fair comparision against zh
+                break
             tokens = line.rstrip().split()
             term = tokens[0]
             term = HanziConv.toSimplified(term)  # conver to simpified Chinese
@@ -70,7 +74,7 @@ if __name__ == "__main__":
     models = ["gvsm"]
     # "vsm", "gvsm", "lda",lsi
     # use_translate_flags = [False,True]
-    use_translate_flags = [True,False]
+    use_translate_flags = [True, False]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     cl_wv = None
     # cl_wv = get_cl_wv_en()
@@ -79,7 +83,7 @@ if __name__ == "__main__":
         print("Processing project {}".format(project))
         for model in models:
             for use_translate_flag in use_translate_flags:
-                exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time, lang_code=lang,
+                exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time, lang_code="en",
                                   link_threshold_interval=1)
                 exp.cl_wv = cl_wv
                 exp.run()
