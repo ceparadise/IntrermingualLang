@@ -16,13 +16,14 @@ def split_gvsm(data_dict):
     return gvsms, others
 
 
-def bar_plot(data_dict, model, title):
+def bar_plot(data_dict, model, title, labels):
     key = list(data_dict.keys())[0]
     # data to plot
     n_groups = len(data_dict[key])
 
     # create plot
     fig, ax = plt.subplots()
+
     index = np.arange(n_groups)
     bar_width = 0.2
     opacity = 0.8
@@ -31,14 +32,14 @@ def bar_plot(data_dict, model, title):
                          alpha=opacity,
                          color='r',
                          label='basic')
-        rects1 = plt.bar(index + bar_width, data_dict["{}_trans".format(model)], bar_width,
+        rects1 = plt.bar(index + bar_width*1 , data_dict["{}_clwv".format(model)], bar_width,
                          alpha=opacity,
                          color='g',
-                         label='trans')
-        rects1 = plt.bar(index + bar_width*2 , data_dict["{}_clwv".format(model)], bar_width,
+                         label='cross_lingual')
+        rects1 = plt.bar(index + bar_width*2, data_dict["{}_trans".format(model)], bar_width,
                          alpha=opacity,
                          color='b',
-                         label='cross_lingual')
+                         label='trans')
     else:
         rects1 = plt.bar(index, data_dict[model], bar_width,
                          alpha=opacity,
@@ -53,8 +54,9 @@ def bar_plot(data_dict, model, title):
     plt.ylabel('Scores')
     plt.title(title)
 
-    titles = [str(x) for x in range(26)]
-    plt.xticks(index + bar_width, titles)
+    #titles = [str(x) for x in range(26)]
+    titles = [str(x) for x in labels]
+    plt.xticks(index + bar_width, titles, rotation='vertical')
     plt.legend()
 
     plt.tight_layout()
@@ -68,12 +70,13 @@ if __name__ == "__main__":
     parser.add_argument("-r", default="results")
     args = parser.parse_args()
     root = os.path.join(args.r, args.d)
-    valid_projects = ["baidu/san", "Tencent/bk-cmdb",
-                      "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-                      "Tencent/weui",
-                      "NetEase/Emmagee", ]
+    valid_projects = []
     valid_projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
+    valid_projects.extend(["baidu/san", "Tencent/bk-cmdb",
+                      "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                      "Tencent/weui","Tencent/xLua","XiaoMi/pegasus",
+                      "NetEase/Emmagee" ])
     valid_projects.extend(
         ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "miiton/Cica"])
 
@@ -82,6 +85,7 @@ if __name__ == "__main__":
     f1_dict = {}
     f2_dict = {}
     map_dict = {}
+    labels = []
     with open(os.path.join(args.r, args.d, "result_summary.csv"), encoding='utf8') as fin:
         lines = fin.readlines()
         project_names = lines[0].split(",")
@@ -95,7 +99,9 @@ if __name__ == "__main__":
             for i in range(0, (int)((len(parts) - 1) / 3)):
                 project_name = project_names[i * 3 + 1]
                 if project_name not in valid_projects:
+                    print(project_name)
                     continue
+                labels.append(project_name)
                 f1 = float(parts[(i * 3) + 1].split(",")[2].strip("\"\n)"))
                 f2 = float(parts[(i * 3) + 2].split(",")[2].strip("\"\n)"))
                 map = float(parts[(i * 3) + 3].strip("\"\n"))
@@ -116,4 +122,4 @@ if __name__ == "__main__":
                     data_list = gvsm_data_list
                 else:
                     data_list = other_data_list
-                bar_plot(data_list[index], model, title)
+                bar_plot(data_list[index], model, title,labels)

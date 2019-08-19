@@ -7,11 +7,12 @@ from DataReader import GtiProjectReader
 def en_zh_ratio(docs: dict):
     en_cnt = 0
     zh_cnt = 0
-    for doc_id in docs:
+    for doc_id in docs.keys():
         doc = docs[doc_id]
         tokens = doc.split()
         for token in tokens:
-            if re.match("[a-z]+", token) is not None:
+            match_res = re.match("[a-zA-Z0-9]+", token)
+            if match_res!=None and len(match_res.group()) == len(token):
                 en_cnt += 1
             else:
                 zh_cnt += 1
@@ -28,15 +29,12 @@ if __name__ == "__main__":
         group_dir = os.path.join(git_project_root, group_name)
         projects = os.listdir(group_dir)
         for project_name in projects:
-            if project_name != "open-korean-text" and project_name!="horaires-ratp-api":
-                continue
             repo_path = os.path.join(group_name, project_name)
             reader = GtiProjectReader(repo_path)
 
-            dataSet = reader.readData(use_translated_data=True)
             origin_dataset = reader.readData(False)
-            dataSet, dataset_info = reader.limit_artifacts_in_links(dataSet, origin_dataset)
-            print(dataSet)
+            dataSet, dataset_info = reader.limit_artifacts_in_links(origin_dataset, origin_dataset)
+            print(dataset_info)
             project_title.append(project_name)
             for link_set_id in dataSet.gold_link_sets:
                 link_set = dataSet.gold_link_sets[link_set_id]

@@ -74,7 +74,7 @@ if __name__ == "__main__":
     models = ["gvsm"]
     # "vsm", "gvsm", "lda",lsi
     # use_translate_flags = [False,True]
-    use_translate_flags = [True, False]
+    use_translate_flags = [False,True]
     time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     cl_wv = None
     # cl_wv = get_cl_wv_en()
@@ -83,7 +83,7 @@ if __name__ == "__main__":
         print("Processing project {}".format(project))
         for model in models:
             for use_translate_flag in use_translate_flags:
-                exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time, lang_code="en",
+                exp = Experiment2(project, model, use_translate_flag, "cl_wv_en", output_sub_dir=time, lang_code=lang,
                                   link_threshold_interval=1)
                 exp.cl_wv = cl_wv
                 exp.run()

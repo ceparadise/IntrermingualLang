@@ -37,12 +37,12 @@ if __name__ == "__main__":
     parser.add_argument("-r", default="results")
     args = parser.parse_args()
     root = os.path.join(args.r, args.d)
-    valid_projects = ["baidu/san", "Tencent/bk-cmdb",
-                      "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-                      "Tencent/weui",
-                      "NetEase/Emmagee",]
+    valid_projects = []
     valid_projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
+    valid_projects.extend(["baidu/san", "Tencent/bk-cmdb",
+                      "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                      "Tencent/weui","NetEase/Emmagee",])
     valid_projects.extend(
         ["marlonbernardes/awesome-berlin", "konlpy/konlpy","miiton/Cica"])
 
