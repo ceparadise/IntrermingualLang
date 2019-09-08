@@ -56,24 +56,26 @@ if __name__ == "__main__":
         project_names = lines[0].split(",")
         for line_num in range(2, len(lines)):
             cur_line = lines[line_num]
-            parts = cur_line.split(",\"")
+            parts = cur_line.split(",")
             model_name = parts[0].strip("\"")
             map_dict[model_name] = []
             f2_dict[model_name] = []
             f1_dict[model_name] = []
-            for i in range(0, (int)((len(parts) - 1) / 3)):
+            for i in range(0, (int)((len(parts) - 1) / 7)):
                 project_name = project_names[i * 3 + 1]
                 if project_name not in valid_projects:
                     continue
-                f1 = float(parts[(i * 3) + 1].split(",")[2].strip("\"\n)"))
-                f2 = float(parts[(i * 3) + 2].split(",")[2].strip("\"\n)"))
-                map = float(parts[(i * 3) + 3].strip("\"\n"))
+                f1 = float(parts[(i * 7) + 3].strip("\"\n()"))
+                f2 = float(parts[(i * 7) + 6].strip("\"\n()"))
+                map = float(parts[(i * 7) + 7].strip("\"\n()"))
                 f1_dict[model_name].append(f1)
                 f2_dict[model_name].append(f2)
                 map_dict[model_name].append(map)
         f1_gvsm, f1_other = split_gvsm(f1_dict)
         f2_gvsm, f2_other = split_gvsm(f2_dict)
         map_gvsm, map_other = split_gvsm(map_dict)
+
+
         box_plot(f1_gvsm, "f1_gvsm")
         box_plot(f1_other, "f1_other")
 
@@ -82,3 +84,16 @@ if __name__ == "__main__":
 
         box_plot(map_gvsm, "map_gvsm")
         box_plot(map_other, "map_other")
+
+
+        fig3_f2 = dict()
+        fig3_map = dict()
+
+        fig3_f2["vsm_trans"] = f2_other["vsm_trans"]
+        fig3_f2["gvsm_enwv_trans"] = f2_gvsm["gvsm_enwv_trans"]
+
+        fig3_map["vsm_trans"] = map_other["vsm_trans"]
+        fig3_map["gvsm_enwv_trans"] = map_gvsm["gvsm_enwv_trans"]
+
+        box_plot(fig3_f2, "Compare F2 score of gvsm_tran and vsm_trans ")
+        box_plot(fig3_map, "Compare MAP score of gvsm_tran and vsm_trans ")
