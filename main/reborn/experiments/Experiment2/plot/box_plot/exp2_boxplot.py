@@ -9,9 +9,21 @@ def split_gvsm(data_dict):
     others = dict()
     for k in data_dict.keys():
         if k.startswith("gvsm"):
-            gvsms[k] = data_dict[k]
+            if k == "gvsm_clwv":
+                t = "clwv_gvsm"
+            if k == "gvsm_enwv":
+                t = "enwv_gvsm"
+            if k == "gvsm_enwv_trans":
+                t = "enwv_gvsm+trans"
+            gvsms[t] = data_dict[k]
         else:
-            others[k] = data_dict[k]
+            if k == "lda_trans":
+                t = "lda+trans"
+            if k == "lsi_trans":
+                t = "lsi+trans"
+            if k == "vsm_trans":
+                t = "vsm+trans"
+            others[t] = data_dict[k]
     return gvsms, others
 
 
@@ -41,10 +53,10 @@ if __name__ == "__main__":
     valid_projects.extend(
         ["alibaba/arthas", "alibaba/canal", "alibaba/druid", "alibaba/nacos", "alibaba/rax"])
     valid_projects.extend(["baidu/san", "Tencent/bk-cmdb",
-                      "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
-                      "Tencent/weui","NetEase/Emmagee",])
+                           "Tencent/ncnn", "Tencent/QMUI_Android", "Tencent/QMUI_IOS",
+                           "Tencent/weui", "NetEase/Emmagee", ])
     valid_projects.extend(
-        ["marlonbernardes/awesome-berlin", "konlpy/konlpy","miiton/Cica"])
+        ["marlonbernardes/awesome-berlin", "konlpy/konlpy", "miiton/Cica"])
 
     valid_projects = [x.split("/")[1] for x in valid_projects]
 
@@ -75,7 +87,6 @@ if __name__ == "__main__":
         f2_gvsm, f2_other = split_gvsm(f2_dict)
         map_gvsm, map_other = split_gvsm(map_dict)
 
-
         box_plot(f1_gvsm, "f1_gvsm")
         box_plot(f1_other, "f1_other")
 
@@ -85,15 +96,14 @@ if __name__ == "__main__":
         box_plot(map_gvsm, "map_gvsm")
         box_plot(map_other, "map_other")
 
-
         fig3_f2 = dict()
         fig3_map = dict()
 
-        fig3_f2["vsm_trans"] = f2_other["vsm_trans"]
-        fig3_f2["gvsm_enwv_trans"] = f2_gvsm["gvsm_enwv_trans"]
+        fig3_f2["vsm+trans"] = f2_other["vsm+trans"]
+        fig3_f2["enwv_gvsm+trans"] = f2_gvsm["enwv_gvsm+trans"]
 
-        fig3_map["vsm_trans"] = map_other["vsm_trans"]
-        fig3_map["gvsm_enwv_trans"] = map_gvsm["gvsm_enwv_trans"]
+        fig3_map["vsm+trans"] = map_other["vsm+trans"]
+        fig3_map["enwv_gvsm+trans"] = map_gvsm["enwv_gvsm+trans"]
 
         box_plot(fig3_f2, "Compare F2 score of gvsm_tran and vsm_trans ")
         box_plot(fig3_map, "Compare MAP score of gvsm_tran and vsm_trans ")

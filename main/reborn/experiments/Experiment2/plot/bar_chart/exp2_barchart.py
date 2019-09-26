@@ -4,6 +4,24 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+pj_name_convert = dict()
+pj_name_convert["arthas"] = "Ar"
+pj_name_convert["canal"] = "Ca"
+pj_name_convert["druid"] = "Dr"
+pj_name_convert["nacos"] = "Na"
+pj_name_convert["rax"] = "Ra"
+pj_name_convert["san"] = "Sa"
+pj_name_convert["Emmagee"] = "Em"
+pj_name_convert["bk-cmdb"] = "BK"
+pj_name_convert["ncnn"] = "Nc"
+pj_name_convert["QMUI_Android"] = "QMA"
+pj_name_convert["QMUI_IOS"] = "QMI"
+pj_name_convert["weui"] = "We"
+pj_name_convert["xLua"] = "xL"
+pj_name_convert["pegasus"] = "Pe"
+pj_name_convert["konlpy"] = "Ko"
+pj_name_convert["Cica"] = "Ci"
+pj_name_convert["awesome-berlin"] = "Ab"
 
 def split_gvsm(data_dict):
     gvsms = dict()
@@ -35,10 +53,10 @@ def fig3_plot(data_dict, title, labels):
 
     plt.xlabel('Project')
     plt.ylabel('Scores')
-    plt.title(title)
+    #plt.title(title)
 
     titles = [str(x) for x in labels]
-    plt.xticks(index + bar_width, titles, rotation='vertical')
+    plt.xticks(index + bar_width, titles)
     plt.legend()
 
     plt.tight_layout()
@@ -88,11 +106,12 @@ def bar_plot(data_dict, model, title, labels):
 
     plt.xlabel('Project')
     plt.ylabel('Scores')
-    plt.title(title)
+    #plt.title(title)
 
     # titles = [str(x) for x in range(26)]
-    titles = [str(x) for x in labels]
-    plt.xticks(index + bar_width, titles, rotation='vertical')
+
+    titles = [pj_name_convert[str(x)] for x in labels]
+    plt.xticks(index + bar_width, titles)
     plt.legend()
 
     plt.tight_layout()
